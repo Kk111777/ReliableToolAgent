@@ -150,3 +150,16 @@ tool_output/
 
 # Gradio runtime
 .gradio/
+# Local development and experiment output
+.venv/
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+artifacts/
+.cache/
+models/
+checkpoints/
+.DS_Store
