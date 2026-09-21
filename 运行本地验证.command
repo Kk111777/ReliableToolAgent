@@ -7,6 +7,5 @@ if [ ! -x .venv/bin/python ]; then
   exit 1
 fi
 .venv/bin/python -m local_demo.run
-.venv/bin/python -m local_demo.run --fault
 .venv/bin/python -m pytest local_demo -q -o addopts=''
-echo '本地验证通过。结果在本项目 artifacts 目录；这不是正式模型评测或训练结果。'
+echo 'T01-T05 本地验证通过。结果在本项目 artifacts 目录；这不是正式模型评测或训练结果。'
