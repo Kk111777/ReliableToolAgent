@@ -2,7 +2,7 @@
   "source": "https://github.com/huggingface/smolagents",
   "fork": "https://github.com/Kk111777/ReliableToolAgent",
   "commit": "30bb1161095dbae2271e6bc3cc4c219cc3897a57",
-  "local_branch": "setup/local-baseline",
+  "local_branch": "research/reliability-guards",
   "python": "3.12.14",
   "platform": "macOS arm64",
   "checked_on": "2026-09-20"

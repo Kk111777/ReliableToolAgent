@@ -159,6 +159,8 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 artifacts/
+# Independent pinned public-benchmark checkout; publish only benchmark/tau3/.
+tau2-bench-baseline/
 .cache/
 models/
 checkpoints/
