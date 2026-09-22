@@ -1,0 +1,53 @@
+{
+  "study": "tau3-retail-clean-development-audit",
+  "benchmark": {
+    "repository": "sierra-research/tau2-bench",
+    "commit": "b7ea9074c1cba482b30687fecdb5c8425fd6f619",
+    "domain": "retail",
+    "task_ids": "0-19",
+    "trials_per_task": 1
+  },
+  "configuration": {
+    "agent_model": "openai/qwen3.5-flash-2026-02-23",
+    "user_simulator_model": "openai/qwen3.8-max-2026-09-02",
+    "temperature": 0,
+    "max_tokens": 512,
+    "request_timeout_seconds": 60,
+    "request_retries": 3,
+    "simulation_timeout": null,
+    "max_steps": 200,
+    "runner_retries": 0,
+    "concurrency": 1,
+    "seed": 300
+  },
+  "results": {
+    "attempted_simulations": 20,
+    "valid_simulations": 19,
+    "infrastructure_invalid": 1,
+    "simulation_timeouts": 0,
+    "final_reward_one": 18,
+    "db_reward_one": 18,
+    "nl_reward_one": 19,
+    "tasks_with_expected_write": 17,
+    "successful_expected_write": 16,
+    "cross_turn_exact_repeat_calls": 0,
+    "same_message_duplicate_tasks": 1,
+    "same_message_duplicate_calls": 2,
+    "explicit_tool_failure_tasks": 3,
+    "valid_reward_zero_tasks": 1
+  },
+  "excluded_case": {
+    "task_id": "T04",
+    "reason": "evaluator JSON parse failure after bounded infrastructure retries",
+    "included_in_agent_behavior_statistics": false
+  },
+  "residual_case": {
+    "task_id": "T05",
+    "final_reward": 0,
+    "db_reward": 0,
+    "nl_reward": 1,
+    "terminal_signal": "TRANSFER",
+    "interpretation": "Residual candidate with a mismatched final WRITE and User Simulator termination; no primary cause assigned."
+  },
+  "interpretation_boundary": "Development diagnostic configuration, not an official tau3 leaderboard submission and not evidence of a recovery-method improvement."
+}

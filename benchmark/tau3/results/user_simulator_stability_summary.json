@@ -1,0 +1,37 @@
+{
+  "study": "tau3-retail-user-simulator-stability-diagnostic",
+  "benchmark_commit": "b7ea9074c1cba482b30687fecdb5c8425fd6f619",
+  "task_ids": ["0", "4", "5", "6", "7"],
+  "trials_per_task": 3,
+  "fixed_agent_model": "openai/qwen3.5-flash-2026-02-23",
+  "conditions": {
+    "U0": {
+      "user_simulator_model": "openai/qwen3.5-flash-2026-02-23",
+      "valid_simulations": 15,
+      "premature_user_termination_before_write": 8,
+      "expected_write_executed": 5,
+      "db_reward_one": 5,
+      "final_reward_one": 5
+    },
+    "U2": {
+      "user_simulator_model": "openai/qwen3.8-max-2026-09-02",
+      "valid_simulations": 15,
+      "premature_user_termination_before_write": 0,
+      "expected_write_executed": 14,
+      "db_reward_one": 14,
+      "final_reward_one": 14
+    }
+  },
+  "controls": {
+    "temperature": 0,
+    "max_tokens": 512,
+    "request_timeout_seconds": 60,
+    "request_retries": 3,
+    "simulation_timeout": null,
+    "max_steps": 200,
+    "runner_retries": 0,
+    "concurrency": 1,
+    "seed": 300
+  },
+  "interpretation_boundary": "Development diagnostic comparison; not an official tau3 leaderboard comparison or a general model ranking."
+}
