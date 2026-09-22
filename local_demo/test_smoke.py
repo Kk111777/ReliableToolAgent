@@ -28,7 +28,7 @@ def test_t03_error_is_recorded_before_repair_call():
         "get_inventory",
         "final_answer",
     ]
-    assert trajectory[0]["error_type"] == "UnknownSKU"
+    assert trajectory[0]["error_type"] == "UNKNOWN_ENTITY"
     assert trajectory[1]["error"] is None
     assert trajectory[2]["result"] == {"sku": "SKU_C", "stock": 3}
 
@@ -41,7 +41,7 @@ def test_t05_counts_identical_failed_calls_without_duplicate_guard():
     assert len(failed) == 2
     assert failed[0]["tool_name"] == failed[1]["tool_name"] == "get_inventory"
     assert failed[0]["normalized_arguments"] == failed[1]["normalized_arguments"]
-    assert failed[0]["error_type"] == failed[1]["error_type"] == "UnknownSKU"
+    assert failed[0]["error_type"] == failed[1]["error_type"] == "UNKNOWN_ENTITY"
 
 
 def test_fault_schedule_is_deterministic():

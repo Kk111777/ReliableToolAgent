@@ -28,6 +28,7 @@ from contextvars import copy_context
 from dataclasses import dataclass
 from logging import getLogger
 from pathlib import Path
+from threading import Lock
 from typing import TYPE_CHECKING, Any, Literal, Type, TypeAlias, TypedDict, Union
 
 import yaml
@@ -87,10 +88,12 @@ from .utils import (
     AgentParsingError,
     AgentToolCallError,
     AgentToolExecutionError,
+    build_structured_error,
     create_agent_gradio_app_template,
     extract_code_from_text,
     is_valid_name,
     make_init_file,
+    normalize_tool_arguments,
     parse_code_blobs,
     truncate_content,
 )
@@ -120,6 +123,16 @@ class ToolOutput:
     is_final_answer: bool
     observation: str
     tool_call: ToolCall
+
+
+@dataclass(frozen=True)
+class FailureRecord:
+    """One actually executed tool failure used by Duplicate Failure Guard V1."""
+
+    tool_name: str
+    normalized_arguments: str
+    error_type: str | None
+    retryable_same_call: bool | None
 
 
 class PlanningPromptTemplate(TypedDict):
@@ -309,6 +322,7 @@ class MultiStepAgent(ABC):
         final_answer_checks: list[Callable] | None = None,
         return_full_result: bool = False,
         logger: AgentLogger | None = None,
+        retry_framing: bool = True,
     ):
         self.agent_name = self.__class__.__name__
         self.model = model
@@ -335,6 +349,7 @@ class MultiStepAgent(ABC):
         self.final_answer_checks = final_answer_checks if final_answer_checks is not None else []
         self.return_full_result = return_full_result
         self.instructions = instructions
+        self.retry_framing = retry_framing
         self._setup_managed_agents(managed_agents)
         self._setup_tools(tools, add_base_tools)
         self._validate_tools_and_managed_agents(tools, managed_agents)
@@ -433,6 +448,11 @@ class MultiStepAgent(ABC):
         # Register monitor update_metrics only for ActionStep for backward compatibility
         self.step_callbacks.register(ActionStep, self.monitor.update_metrics)
 
+    def _reset_run_state(self) -> None:
+        """Hook for run-local execution state maintained by agent subclasses."""
+
+        return None
+
     def run(
         self,
         task: str,
@@ -468,6 +488,7 @@ class MultiStepAgent(ABC):
         max_steps = max_steps or self.max_steps
         self.task = task
         self.interrupt_switch = False
+        self._reset_run_state()
         if additional_args:
             self.state.update(additional_args)
             self.task += f"""
@@ -571,6 +592,7 @@ You have been provided with these additional arguments, that you can access dire
             action_step = ActionStep(
                 step_number=self.step_number,
                 timing=Timing(start_time=action_step_start_time),
+                retry_framing=self.retry_framing,
                 observations_images=images,
             )
             self.logger.log_rule(f"Step {self.step_number}", level=LogLevel.INFO)
@@ -629,6 +651,7 @@ You have been provided with these additional arguments, that you can access dire
             step_number=self.step_number,
             error=AgentMaxStepsError("Reached max steps.", self.logger),
             timing=Timing(start_time=action_step_start_time, end_time=time.time()),
+            retry_framing=self.retry_framing,
             token_usage=final_answer.token_usage,
         )
         final_memory_step.action_output = final_answer.content
@@ -1001,6 +1024,7 @@ You have been provided with these additional arguments, that you can access dire
             "max_steps": self.max_steps,
             "verbosity_level": int(self.logger.level),
             "planning_interval": self.planning_interval,
+            "retry_framing": self.retry_framing,
             "name": self.name,
             "description": self.description,
             "requirements": sorted(requirements),
@@ -1051,9 +1075,13 @@ You have been provided with these additional arguments, that you can access dire
             "max_steps": agent_dict.get("max_steps"),
             "verbosity_level": agent_dict.get("verbosity_level"),
             "planning_interval": agent_dict.get("planning_interval"),
+            "retry_framing": agent_dict.get("retry_framing"),
             "name": agent_dict.get("name"),
             "description": agent_dict.get("description"),
         }
+        for key in ("stream_outputs", "max_tool_threads", "structured_error_feedback", "duplicate_guard"):
+            if key in agent_dict:
+                agent_args[key] = agent_dict[key]
         # Filter out None values to use defaults from __init__
         agent_args = {k: v for k, v in agent_args.items() if v is not None}
         # Update with any additional kwargs
@@ -1236,6 +1264,9 @@ class ToolCallingAgent(MultiStepAgent):
         planning_interval: int | None = None,
         stream_outputs: bool = False,
         max_tool_threads: int | None = None,
+        structured_error_feedback: bool = True,
+        retry_framing: bool = True,
+        duplicate_guard: bool = False,
         **kwargs,
     ):
         prompt_templates = prompt_templates or yaml.safe_load(
@@ -1246,6 +1277,7 @@ class ToolCallingAgent(MultiStepAgent):
             model=model,
             prompt_templates=prompt_templates,
             planning_interval=planning_interval,
+            retry_framing=retry_framing,
             **kwargs,
         )
         # Streaming setup
@@ -1256,6 +1288,73 @@ class ToolCallingAgent(MultiStepAgent):
             )
         # Tool calling setup
         self.max_tool_threads = max_tool_threads
+        self.structured_error_feedback = structured_error_feedback
+        self.duplicate_guard = duplicate_guard
+        self._failure_records: dict[tuple[str, str, str | None], FailureRecord] = {}
+        self._failure_records_lock = Lock()
+
+    def _reset_run_state(self) -> None:
+        with self._failure_records_lock:
+            self._failure_records.clear()
+
+    def _failure_key(self, tool_name: str, arguments: Any, error_type: str | None) -> tuple[str, str, str | None]:
+        return tool_name, normalize_tool_arguments(arguments), error_type
+
+    def _previous_non_retryable_failure(self, tool_name: str, arguments: Any) -> FailureRecord | None:
+        if not self.duplicate_guard:
+            return None
+        normalized_arguments = normalize_tool_arguments(arguments)
+        with self._failure_records_lock:
+            records = tuple(self._failure_records.values())
+        for record in reversed(records):
+            if (
+                record.tool_name == tool_name
+                and record.normalized_arguments == normalized_arguments
+                and record.retryable_same_call is False
+            ):
+                return record
+        return None
+
+    def _remember_failure(self, record: FailureRecord) -> None:
+        if not self.duplicate_guard:
+            return
+        key = (record.tool_name, record.normalized_arguments, record.error_type)
+        with self._failure_records_lock:
+            self._failure_records[key] = record
+
+    def to_dict(self) -> dict[str, Any]:
+        """Serialize ToolCallingAgent protocol settings as well as base settings."""
+
+        agent_dict = super().to_dict()
+        agent_dict.update(
+            {
+                "stream_outputs": self.stream_outputs,
+                "max_tool_threads": self.max_tool_threads,
+                "structured_error_feedback": self.structured_error_feedback,
+                "duplicate_guard": self.duplicate_guard,
+            }
+        )
+        return agent_dict
+
+    @classmethod
+    def from_dict(cls, agent_dict: dict[str, Any], **kwargs) -> "ToolCallingAgent":
+        """Restore serialized ToolCallingAgent protocol settings."""
+
+        # Put subclass-specific values into the root dictionary instead of
+        # passing them as recursive kwargs to managed agents.
+        agent_data = dict(agent_dict)
+        specialized_keys = (
+            "stream_outputs",
+            "max_tool_threads",
+            "structured_error_feedback",
+            "retry_framing",
+            "duplicate_guard",
+        )
+        remaining_kwargs = dict(kwargs)
+        for key in specialized_keys:
+            if key in remaining_kwargs:
+                agent_data[key] = remaining_kwargs.pop(key)
+        return super().from_dict(agent_data, **remaining_kwargs)
 
     @property
     def tools_and_managed_agents(self):
@@ -1371,23 +1470,106 @@ class ToolCallingAgent(MultiStepAgent):
             `ToolCall | ToolOutput`: The tool call or tool output.
         """
         parallel_calls: dict[str, ToolCall] = {}
+        call_indexes: dict[str, int] = {}
+        tool_call_results: list[dict[str, Any]] = []
+        results_lock = Lock()
         assert chat_message.tool_calls is not None
-        for chat_tool_call in chat_message.tool_calls:
+        for call_index, chat_tool_call in enumerate(chat_message.tool_calls, start=1):
             tool_call = ToolCall(
                 name=chat_tool_call.function.name, arguments=chat_tool_call.function.arguments, id=chat_tool_call.id
             )
             yield tool_call
             parallel_calls[tool_call.id] = tool_call
+            call_indexes[tool_call.id] = call_index
 
         # Helper function to process a single tool call
         def process_single_tool_call(tool_call: ToolCall) -> ToolOutput:
             tool_name = tool_call.name
             tool_arguments = tool_call.arguments or {}
+            normalized_arguments = normalize_tool_arguments(tool_arguments)
             self.logger.log(
                 Panel(Text(f"Calling tool: '{tool_name}' with arguments: {tool_arguments}")),
                 level=LogLevel.INFO,
             )
-            tool_call_result = self.execute_tool_call(tool_name, tool_arguments)
+            previous_failure = self._previous_non_retryable_failure(tool_name, tool_arguments)
+            if previous_failure is not None:
+                blocked_observation = json.dumps(
+                    {
+                        "status": "blocked",
+                        "error_type": "REPEATED_FAILED_CALL",
+                        "tool": tool_name,
+                        "arguments": tool_arguments,
+                        "previous_error_type": previous_failure.error_type,
+                        "message": "This identical non-retryable tool call has already failed.",
+                    },
+                    ensure_ascii=False,
+                    sort_keys=True,
+                )
+                with results_lock:
+                    tool_call_results.append(
+                        {
+                            "call_index": call_indexes[tool_call.id],
+                            "tool_name": tool_name,
+                            "arguments": tool_arguments,
+                            "normalized_arguments": normalized_arguments,
+                            "status": "blocked",
+                            "result": None,
+                            "error": None,
+                            "error_type": "REPEATED_FAILED_CALL",
+                            "retryable_same_call": False,
+                            "scope": "current_call",
+                            "message": "This identical non-retryable tool call has already failed.",
+                            "details": None,
+                            "block_reason": "duplicate_non_retryable_failure",
+                            "previous_error_type": previous_failure.error_type,
+                        }
+                    )
+                self.logger.log(
+                    f"Blocked duplicate failed tool call: {tool_name} {tool_arguments}",
+                    level=LogLevel.INFO,
+                )
+                return ToolOutput(
+                    id=tool_call.id,
+                    output=blocked_observation,
+                    is_final_answer=False,
+                    observation=blocked_observation,
+                    tool_call=tool_call,
+                )
+            try:
+                tool_call_result = self.execute_tool_call(tool_name, tool_arguments)
+            except AgentError as error:
+                structured_error = error.structured_error
+                structured_fields = structured_error.dict() if structured_error is not None else {}
+                error_type = structured_fields.get("error_type", type(error.__cause__ or error).__name__)
+                retryable_same_call = structured_fields.get("retryable_same_call")
+                self._remember_failure(
+                    FailureRecord(
+                        tool_name=tool_name,
+                        normalized_arguments=normalized_arguments,
+                        error_type=error_type,
+                        retryable_same_call=retryable_same_call,
+                    )
+                )
+                with results_lock:
+                    tool_call_results.append(
+                        {
+                            "call_index": call_indexes[tool_call.id],
+                            "tool_name": tool_name,
+                            "arguments": tool_arguments,
+                            "normalized_arguments": normalized_arguments,
+                            "status": "error",
+                            "result": None,
+                            "error": str(error),
+                            "error_type": error_type,
+                            "retryable_same_call": retryable_same_call,
+                            "scope": structured_fields.get("scope"),
+                            "message": structured_fields.get("message"),
+                            "details": structured_fields.get("details"),
+                            "block_reason": None,
+                            "previous_error_type": None,
+                        }
+                    )
+                raise
             tool_call_result_type = type(tool_call_result)
             if tool_call_result_type in [AgentImage, AgentAudio]:
                 if tool_call_result_type == AgentImage:
@@ -1403,6 +1585,25 @@ class ToolCallingAgent(MultiStepAgent):
                 f"Observations: {observation.replace('[', '|')}",  # escape potential rich-tag-like components
                 level=LogLevel.INFO,
             )
+            with results_lock:
+                tool_call_results.append(
+                    {
+                        "call_index": call_indexes[tool_call.id],
+                        "tool_name": tool_name,
+                        "arguments": tool_arguments,
+                        "normalized_arguments": normalized_arguments,
+                        "status": "success",
+                        "result": tool_call_result,
+                        "error": None,
+                        "error_type": None,
+                        "retryable_same_call": None,
+                        "scope": None,
+                        "message": None,
+                        "details": None,
+                        "block_reason": None,
+                        "previous_error_type": None,
+                    }
+                )
             is_final_answer = tool_name == "final_answer"
 
             return ToolOutput(
@@ -1413,25 +1614,32 @@ class ToolCallingAgent(MultiStepAgent):
                 tool_call=tool_call,
             )
 
-        # Process tool calls in parallel
-        outputs = {}
-        if len(parallel_calls) == 1:
-            # If there's only one call, process it directly
-            tool_call = list(parallel_calls.values())[0]
-            tool_output = process_single_tool_call(tool_call)
-            outputs[tool_output.id] = tool_output
-            yield tool_output
-        else:
-            # If multiple tool calls, process them in parallel
-            with ThreadPoolExecutor(self.max_tool_threads) as executor:
-                futures = []
-                for tool_call in parallel_calls.values():
-                    ctx = copy_context()
-                    futures.append(executor.submit(ctx.run, process_single_tool_call, tool_call))
-                for future in as_completed(futures):
-                    tool_output = future.result()
-                    outputs[tool_output.id] = tool_output
-                    yield tool_output
+        try:
+            # Process tool calls in parallel
+            outputs = {}
+            if len(parallel_calls) == 1:
+                # If there's only one call, process it directly
+                tool_call = list(parallel_calls.values())[0]
+                tool_output = process_single_tool_call(tool_call)
+                outputs[tool_output.id] = tool_output
+                yield tool_output
+            else:
+                # If multiple tool calls, process them in parallel
+                with ThreadPoolExecutor(self.max_tool_threads) as executor:
+                    futures = []
+                    for tool_call in parallel_calls.values():
+                        ctx = copy_context()
+                        futures.append(executor.submit(ctx.run, process_single_tool_call, tool_call))
+                    for future in as_completed(futures):
+                        tool_output = future.result()
+                        outputs[tool_output.id] = tool_output
+                        yield tool_output
+        finally:
+            # Keep this separate from the existing step-level error/observation fields.
+            # In particular, do not alter the exception path or recovery messages.
+            memory_step.tool_call_results = sorted(tool_call_results, key=lambda item: item["call_index"])
+
+        # This part is intentionally unchanged for successful execution.
 
         memory_step.tool_calls = [parallel_calls[k] for k in sorted(parallel_calls.keys())]
         memory_step.observations = memory_step.observations or ""
@@ -1463,8 +1671,15 @@ class ToolCallingAgent(MultiStepAgent):
         # Check if the tool exists
         available_tools = {**self.tools, **self.managed_agents}
         if tool_name not in available_tools:
+            structured_error = (
+                build_structured_error(tool_name, arguments, LookupError("Unknown tool"))
+                if self.structured_error_feedback
+                else None
+            )
             raise AgentToolExecutionError(
-                f"Unknown tool {tool_name}, should be one of: {', '.join(available_tools)}.", self.logger
+                f"Unknown tool {tool_name}, should be one of: {', '.join(available_tools)}.",
+                self.logger,
+                structured_error=structured_error,
             )
 
         # Get the tool and substitute state variables in arguments
@@ -1475,10 +1690,24 @@ class ToolCallingAgent(MultiStepAgent):
         try:
             validate_tool_arguments(tool, arguments)
         except (ValueError, TypeError) as e:
-            raise AgentToolCallError(str(e), self.logger) from e
+            structured_error = (
+                build_structured_error(tool_name, arguments, e, argument_validation=True)
+                if self.structured_error_feedback
+                else None
+            )
+            raise AgentToolCallError(str(e), self.logger, structured_error=structured_error) from e
         except Exception as e:
             error_msg = f"Error executing tool '{tool_name}' with arguments {str(arguments)}: {type(e).__name__}: {e}"
-            raise AgentToolExecutionError(error_msg, self.logger) from e
+            structured_error = (
+                build_structured_error(tool_name, arguments, e, argument_validation=True)
+                if self.structured_error_feedback
+                else None
+            )
+            raise AgentToolExecutionError(
+                error_msg,
+                self.logger,
+                structured_error=structured_error,
+            ) from e
 
         try:
             # Call tool with appropriate arguments
@@ -1499,7 +1728,14 @@ class ToolCallingAgent(MultiStepAgent):
                     f"Error executing tool '{tool_name}' with arguments {str(arguments)}: {type(e).__name__}: {e}\n"
                     "Please try again or use another tool"
                 )
-            raise AgentToolExecutionError(error_msg, self.logger) from e
+            structured_error = (
+                build_structured_error(tool_name, arguments, e) if self.structured_error_feedback else None
+            )
+            raise AgentToolExecutionError(
+                error_msg,
+                self.logger,
+                structured_error=structured_error,
+            ) from e
 
 
 class CodeAgent(MultiStepAgent):

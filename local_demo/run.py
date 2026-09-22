@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 
 from smolagents import Model, OpenAIServerModel, Tool, ToolCallingAgent
 from smolagents.models import ChatMessage, ChatMessageToolCall, ChatMessageToolCallFunction, MessageRole
+from smolagents.utils import normalize_tool_arguments
 
 
 try:  # Support both ``python -m local_demo.run`` and direct execution.
@@ -29,13 +30,25 @@ ARTIFACTS = ROOT / "artifacts"
 class TemporaryUnavailable(TimeoutError):
     """A deterministic, retryable tool failure."""
 
+    structured_error_type = "TEMPORARY_UNAVAILABLE"
+
 
 class UnknownSKU(ValueError):
     """The caller supplied an order ID where a SKU was required."""
 
+    structured_error_type = "UNKNOWN_ENTITY"
+
 
 class OrderNotFound(LookupError):
     """The requested order is not present in the local database."""
+
+    structured_error_type = "TARGET_NOT_FOUND"
+
+
+class PermissionDenied(PermissionError):
+    """A fixture-only permission failure for structured error tests."""
+
+    structured_error_type = "PERMISSION_DENIED"
 
 
 class FaultInjector:
@@ -50,7 +63,7 @@ class FaultInjector:
     def normalize_arguments(arguments: dict[str, Any]) -> str:
         """Produce a stable representation for equivalent JSON arguments."""
 
-        return json.dumps(arguments, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        return normalize_tool_arguments(arguments)
 
     @classmethod
     def _key(cls, task_id: str, tool_name: str, arguments: dict[str, Any]) -> tuple[str, str, str]:
@@ -188,9 +201,13 @@ def _error_type(error: dict[str, Any] | None) -> str | None:
     if not error:
         return None
     message = error.get("message", "")
-    for candidate in ("TemporaryUnavailable", "UnknownSKU", "OrderNotFound"):
+    for candidate, structured_type in (
+        ("TemporaryUnavailable", "TEMPORARY_UNAVAILABLE"),
+        ("UnknownSKU", "UNKNOWN_ENTITY"),
+        ("OrderNotFound", "TARGET_NOT_FOUND"),
+    ):
         if candidate in message:
-            return candidate
+            return structured_type
     return error.get("type")
 
 
@@ -232,6 +249,40 @@ def _trajectory(run: dict[str, Any]) -> list[dict[str, Any]]:
     for step in run["steps"]:
         if "step_number" not in step:
             continue
+        per_call_results = step.get("tool_call_results")
+        if per_call_results is not None:
+            for call in per_call_results:
+                error = {"type": call.get("error_type"), "message": call.get("error")} if call.get("error") else None
+                tool_name = call["tool_name"]
+                arguments = call.get("arguments")
+                normalized_arguments = call.get("normalized_arguments")
+                if isinstance(normalized_arguments, dict):
+                    normalized_arguments = normalize_tool_arguments(normalized_arguments)
+                elif normalized_arguments is None:
+                    normalized_arguments = (
+                        FaultInjector.normalize_arguments(arguments) if isinstance(arguments, dict) else str(arguments)
+                    )
+                records.append(
+                    {
+                        "step_index": step["step_number"],
+                        "call_index": call["call_index"],
+                        "tool": tool_name,
+                        "tool_name": tool_name,
+                        "arguments": arguments,
+                        "normalized_arguments": normalized_arguments,
+                        "status": call["status"],
+                        "result": _parse_json(call.get("result")) if call["status"] == "success" else None,
+                        "error": error,
+                        "error_type": call.get("error_type"),
+                        "retryable_same_call": call.get("retryable_same_call"),
+                        "scope": call.get("scope"),
+                        "message": call.get("message"),
+                        "details": call.get("details"),
+                        "block_reason": call.get("block_reason"),
+                        "previous_error_type": call.get("previous_error_type"),
+                    }
+                )
+            continue
         step_error = step.get("error")
         tool_calls = step.get("tool_calls") or []
         if not tool_calls:
@@ -239,7 +290,7 @@ def _trajectory(run: dict[str, Any]) -> list[dict[str, Any]]:
             # the later memory_step.tool_calls assignment is skipped, so recover the
             # attempted call from model_output_message for complete error telemetry.
             tool_calls = (step.get("model_output_message") or {}).get("tool_calls") or []
-        for tool_call in tool_calls:
+        for call_index, tool_call in enumerate(tool_calls, start=1):
             function = tool_call["function"]
             tool_name = function["name"]
             arguments = function.get("arguments")
@@ -247,14 +298,23 @@ def _trajectory(run: dict[str, Any]) -> list[dict[str, Any]]:
             records.append(
                 {
                     "step_index": step["step_number"],
+                    "call_index": call_index,
+                    "tool": tool_name,
                     "tool_name": tool_name,
                     "arguments": arguments,
                     "normalized_arguments": (
                         FaultInjector.normalize_arguments(arguments) if isinstance(arguments, dict) else str(arguments)
                     ),
+                    "status": "error" if error else "success",
                     "result": None if error else _parse_json(step.get("observations")),
                     "error": error,
                     "error_type": _error_type(error),
+                    "retryable_same_call": None,
+                    "scope": None,
+                    "message": None,
+                    "details": None,
+                    "block_reason": None,
+                    "previous_error_type": None,
                 }
             )
     return records
@@ -308,34 +368,46 @@ def evaluate_case(case: TaskCase, result: Any, mode: str = "scripted") -> dict[s
     return {"output": output, "metrics": metrics, "trajectory": trajectory}
 
 
+def build_api_model(
+    model_id: str | None = None,
+    *,
+    temperature: float | None = None,
+    reasoning_effort: str | None = None,
+) -> OpenAIServerModel:
+    """Build the configured OpenAI-compatible model without changing agent behavior."""
+
+    load_dotenv(ROOT / ".env", override=False)
+    missing = [name for name in ("MODEL_ID", "OPENAI_API_BASE", "OPENAI_API_KEY") if not os.getenv(name)]
+    if missing:
+        raise ValueError("Configure .env first: " + ", ".join(missing))
+    selected_model_id = model_id or os.environ["MODEL_ID"]
+    model_kwargs: dict[str, Any] = {
+        "max_tokens": 512,
+        "client_kwargs": {"timeout": 60.0, "max_retries": 0},
+    }
+    if temperature is not None:
+        model_kwargs["temperature"] = temperature
+    # Qwen3.8-Flash thinking mode rejects smolagents' default
+    # tool_choice="required". Disable thinking for the tool-calling baseline.
+    if reasoning_effort is not None:
+        model_kwargs["reasoning_effort"] = reasoning_effort
+    elif selected_model_id.lower() == "qwen3.8-flash":
+        model_kwargs["reasoning_effort"] = os.getenv("REASONING_EFFORT", "none")
+    return OpenAIServerModel(
+        model_id=selected_model_id,
+        api_base=os.environ["OPENAI_API_BASE"],
+        api_key=os.environ["OPENAI_API_KEY"],
+        **model_kwargs,
+    )
+
+
 def run_case(task_id: str = "T01", mode: str = "scripted", fault: bool = False) -> dict[str, Any]:
     """Run one deterministic case and return its report."""
 
     if fault and task_id == "T01":  # Preserve the original ``--fault`` interface.
         task_id = "T02"
     case = get_case(task_id)
-    if mode == "scripted":
-        model = ScriptedModel(case=case)
-    else:
-        load_dotenv(ROOT / ".env", override=False)
-        missing = [name for name in ("MODEL_ID", "OPENAI_API_BASE", "OPENAI_API_KEY") if not os.getenv(name)]
-        if missing:
-            raise ValueError("Configure .env first: " + ", ".join(missing))
-        model_kwargs: dict[str, Any] = {
-            "max_tokens": 512,
-            "client_kwargs": {"timeout": 60.0, "max_retries": 0},
-        }
-        # Qwen3.8-Flash thinking mode rejects smolagents' default
-        # tool_choice="required". Disable thinking for the first tool-calling
-        # baseline; callers can override this for a compatible provider/model.
-        if os.environ["MODEL_ID"].lower() == "qwen3.8-flash":
-            model_kwargs["reasoning_effort"] = os.getenv("REASONING_EFFORT", "none")
-        model = OpenAIServerModel(
-            model_id=os.environ["MODEL_ID"],
-            api_base=os.environ["OPENAI_API_BASE"],
-            api_key=os.environ["OPENAI_API_KEY"],
-            **model_kwargs,
-        )
+    model = ScriptedModel(case=case) if mode == "scripted" else build_api_model()
 
     fault_injector = FaultInjector(case.task_id, case.fault_rules)
     inventory = InventoryTool(task_id=case.task_id, fault_injector=fault_injector)
