@@ -9,7 +9,7 @@
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/Framework-smolagents-FFD21E)](https://github.com/huggingface/smolagents)
 [![Benchmark](https://img.shields.io/badge/Benchmark-%CF%84%C2%B3%20Retail-6F42C1)](https://github.com/sierra-research/tau2-bench)
-[![Status](https://img.shields.io/badge/Status-Research%20Complete-2EA44F)](reports/final_technical_report.md)
+[![Status](https://img.shields.io/badge/Status-Scoped%20Audit%20Complete-2EA44F)](reports/final_technical_report.md)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 [Technical Report](reports/final_technical_report.md) · [Artifact Index](reports/artifact_index.md) · [T05 Case Study](reports/residual_case_T05.md)
@@ -17,6 +17,12 @@
 </div>
 
 ---
+
+## My progress — 2026-10-02
+
+已完成：T01–T05 故障 harness、逐工具调用日志、结构化错误、受控消融、τ³ retail 审计与残余失败归因。公开结果为 20 次尝试、19 次有效、18/19 final reward success；这些是固定开发配置下的观测结果。
+
+本轮研究停在证据支持的范围：没有将 toy Guard 作为 τ³ intervention 评测，没有宣称 leaderboard 提升。项目验证与发布状态见 [GitHub publication checks](reports/github_publication_20261002.md)。
 
 ## At a glance
 
