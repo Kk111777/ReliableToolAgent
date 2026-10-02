@@ -24,6 +24,8 @@ import os
 import random
 import re
 import time
+from dataclasses import dataclass
+from enum import Enum
 from functools import lru_cache
 from io import BytesIO
 from logging import Logger
@@ -38,7 +40,14 @@ if TYPE_CHECKING:
     from smolagents.memory import AgentLogger
 
 
-__all__ = ["AgentError"]
+__all__ = [
+    "AgentError",
+    "StructuredError",
+    "StructuredErrorType",
+    "build_structured_error",
+    "register_structured_error_exception",
+    "normalize_tool_arguments",
+]
 
 
 @lru_cache
@@ -89,16 +98,136 @@ def sanitize_for_rich(value) -> str:
     return "".join(out)
 
 
+class StructuredErrorType(str, Enum):
+    INVALID_ARGUMENT = "INVALID_ARGUMENT"
+    UNKNOWN_ENTITY = "UNKNOWN_ENTITY"
+    TEMPORARY_UNAVAILABLE = "TEMPORARY_UNAVAILABLE"
+    TARGET_NOT_FOUND = "TARGET_NOT_FOUND"
+    PERMISSION_DENIED = "PERMISSION_DENIED"
+
+
+def normalize_tool_arguments(arguments: Any) -> str:
+    """Canonicalize tool arguments without changing identifier string values."""
+
+    return json.dumps(arguments, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=str)
+
+
+@dataclass(frozen=True)
+class StructuredError:
+    """Serializable feedback metadata for one failed tool call."""
+
+    error_type: StructuredErrorType
+    tool: str
+    retryable_same_call: bool
+    scope: str
+    message: str
+    details: dict[str, Any]
+    status: str = "error"
+
+    def dict(self) -> dict[str, Any]:
+        return {
+            "status": self.status,
+            "error_type": self.error_type.value,
+            "tool": self.tool,
+            "retryable_same_call": self.retryable_same_call,
+            "scope": self.scope,
+            "message": self.message,
+            "details": make_json_serializable(self.details),
+        }
+
+    def to_json(self) -> str:
+        return json.dumps(self.dict(), ensure_ascii=False, sort_keys=True)
+
+
+_STRUCTURED_ERROR_SEMANTICS = {
+    StructuredErrorType.INVALID_ARGUMENT: (False, "current_call", "The tool arguments are invalid."),
+    StructuredErrorType.UNKNOWN_ENTITY: (
+        False,
+        "current_call",
+        "The supplied entity is not valid for this tool.",
+    ),
+    StructuredErrorType.TEMPORARY_UNAVAILABLE: (
+        True,
+        "current_call",
+        "The tool is temporarily unavailable.",
+    ),
+    StructuredErrorType.TARGET_NOT_FOUND: (False, "current_target", "The requested target does not exist."),
+    StructuredErrorType.PERMISSION_DENIED: (
+        False,
+        "tool_capability",
+        "The tool capability is not permitted.",
+    ),
+}
+
+_STRUCTURED_ERROR_EXCEPTION_REGISTRY: dict[type[BaseException], StructuredErrorType] = {}
+
+
+def register_structured_error_exception(
+    exception_type: type[BaseException], error_type: StructuredErrorType | str
+) -> None:
+    """Register a domain exception without coupling the core to that domain."""
+
+    if not isinstance(exception_type, type) or not issubclass(exception_type, BaseException):
+        raise TypeError("exception_type must be an exception class")
+    _STRUCTURED_ERROR_EXCEPTION_REGISTRY[exception_type] = StructuredErrorType(error_type)
+
+
+def _registered_structured_error_type(error: BaseException) -> StructuredErrorType | None:
+    for exception_type in type(error).__mro__:
+        mapped = _STRUCTURED_ERROR_EXCEPTION_REGISTRY.get(exception_type)
+        if mapped is not None:
+            return mapped
+    return None
+
+
+def build_structured_error(
+    tool: str, arguments: Any, error: BaseException, *, argument_validation: bool = False
+) -> StructuredError | None:
+    """Map known exception classes to the fixed V1 feedback vocabulary."""
+
+    explicit_type = getattr(error, "structured_error_type", None)
+    if explicit_type is not None:
+        error_type = StructuredErrorType(explicit_type)
+    elif (registered_type := _registered_structured_error_type(error)) is not None:
+        error_type = registered_type
+    elif isinstance(error, PermissionError):
+        error_type = StructuredErrorType.PERMISSION_DENIED
+    elif argument_validation and isinstance(error, (TypeError, ValueError)):
+        error_type = StructuredErrorType.INVALID_ARGUMENT
+    else:
+        return None
+
+    retryable_same_call, scope, message = _STRUCTURED_ERROR_SEMANTICS[error_type]
+    details = arguments if isinstance(arguments, dict) else {"arguments": arguments}
+    return StructuredError(
+        error_type=error_type,
+        tool=tool,
+        retryable_same_call=retryable_same_call,
+        scope=scope,
+        message=message,
+        details=details,
+    )
+
+
 class AgentError(Exception):
     """Base class for other agent-related exceptions"""
 
-    def __init__(self, message, logger: "AgentLogger"):
+    def __init__(self, message, logger: "AgentLogger", structured_error: StructuredError | None = None):
         super().__init__(message)
         self.message = message
+        self.structured_error = structured_error
         logger.log_error(message)
 
-    def dict(self) -> dict[str, str]:
-        return {"type": self.__class__.__name__, "message": str(self.message)}
+    def dict(self) -> dict[str, Any]:
+        result = {"type": self.__class__.__name__, "message": str(self.message)}
+        if self.structured_error is not None:
+            result["structured_error"] = self.structured_error.dict()
+        return result
+
+    def to_observation(self) -> str:
+        """Return the representation written into the next model context."""
+
+        return self.structured_error.to_json() if self.structured_error is not None else str(self)
 
 
 class AgentParsingError(AgentError):

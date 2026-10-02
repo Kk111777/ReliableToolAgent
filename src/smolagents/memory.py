@@ -51,6 +51,7 @@ class MemoryStep:
 class ActionStep(MemoryStep):
     step_number: int
     timing: Timing
+    retry_framing: bool = True
     model_input_messages: list[ChatMessage] | None = None
     tool_calls: list[ToolCall] | None = None
     error: AgentError | None = None
@@ -60,6 +61,7 @@ class ActionStep(MemoryStep):
     observations: str | None = None
     observations_images: list["PIL.Image.Image"] | None = None
     action_output: Any = None
+    tool_call_results: list[dict[str, Any]] | None = None
     token_usage: TokenUsage | None = None
     is_final_answer: bool = False
 
@@ -85,6 +87,7 @@ class ActionStep(MemoryStep):
             if self.observations_images
             else None,
             "action_output": make_json_serializable(self.action_output),
+            "tool_call_results": make_json_serializable(self.tool_call_results),
             "token_usage": asdict(self.token_usage) if self.token_usage else None,
             "is_final_answer": self.is_final_answer,
         }
@@ -136,11 +139,13 @@ class ActionStep(MemoryStep):
                 )
             )
         if self.error is not None:
-            error_message = (
-                "Error:\n"
-                + str(self.error)
-                + "\nNow let's retry: take care not to repeat previous errors! If you have retried several times, try a completely different approach.\n"
-            )
+            error_observation = self.error.to_observation()
+            error_message = "Error:\n" + error_observation
+            if self.retry_framing:
+                error_message += (
+                    "\nNow let's retry: take care not to repeat previous errors! "
+                    "If you have retried several times, try a completely different approach.\n"
+                )
             message_content = f"Call id: {self.tool_calls[0].id}\n" if self.tool_calls else ""
             message_content += error_message
             messages.append(

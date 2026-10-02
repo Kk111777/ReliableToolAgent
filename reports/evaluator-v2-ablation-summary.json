@@ -1,0 +1,42 @@
+{
+  "evaluator_version": "pilot-evaluator-v2",
+  "source": "artifacts/qwen35-flash-ablation",
+  "model_id": "qwen3.5-flash-2026-02-23",
+  "task_scope": "P01-P08, single-target terminal tasks only",
+  "runs_per_condition": 24,
+  "conditions": {
+    "E0_raw_retry": {
+      "task_success_rate": 1.0,
+      "timely_stop_rate": 0.1667,
+      "terminal_violation_call_total": 32,
+      "unnecessary_tool_call_total": 32,
+      "average_tool_calls": 2.3333,
+      "task_level_bootstrap_ci_timely_stop": [0.0, 0.3333]
+    },
+    "E1_structured_retry": {
+      "task_success_rate": 1.0,
+      "timely_stop_rate": 0.0417,
+      "terminal_violation_call_total": 53,
+      "unnecessary_tool_call_total": 53,
+      "average_tool_calls": 3.2083,
+      "task_level_bootstrap_ci_timely_stop": [0.0, 0.125]
+    },
+    "E2_raw_no_retry": {
+      "task_success_rate": 1.0,
+      "timely_stop_rate": 0.2083,
+      "terminal_violation_call_total": 36,
+      "unnecessary_tool_call_total": 36,
+      "average_tool_calls": 2.5,
+      "task_level_bootstrap_ci_timely_stop": [0.0417, 0.375]
+    },
+    "E3_structured_no_retry": {
+      "task_success_rate": 1.0,
+      "timely_stop_rate": 0.125,
+      "terminal_violation_call_total": 40,
+      "unnecessary_tool_call_total": 40,
+      "average_tool_calls": 2.6667,
+      "task_level_bootstrap_ci_timely_stop": [0.0, 0.2917]
+    }
+  },
+  "interpretation": "Descriptive aggregate only; no significance claim. Original raw artifacts remain under the ignored artifacts/ directory."
+}

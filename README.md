@@ -1,291 +1,199 @@
-<!---
-Copyright 2024 The HuggingFace Team. All rights reserved.
+<div align="center">
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+# ReliableToolAgent
 
-    http://www.apache.org/licenses/LICENSE-2.0
+### Evidence-first reliability engineering for tool-calling agents
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
-<p align="center">
-    <!-- Uncomment when CircleCI is set up
-    <a href="https://circleci.com/gh/huggingface/accelerate"><img alt="Build" src="https://img.shields.io/circleci/build/github/huggingface/transformers/master"></a>
-    -->
-    <a href="https://github.com/huggingface/smolagents/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/huggingface/smolagents.svg?color=blue"></a>
-    <a href="https://huggingface.co/docs/smolagents"><img alt="Documentation" src="https://img.shields.io/website/http/huggingface.co/docs/smolagents/index.html.svg?down_color=red&down_message=offline&up_message=online"></a>
-    <a href="https://github.com/huggingface/smolagents/releases"><img alt="GitHub release" src="https://img.shields.io/github/release/huggingface/smolagents.svg"></a>
-    <a href="https://github.com/huggingface/smolagents/blob/main/CODE_OF_CONDUCT.md"><img alt="Contributor Covenant" src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg"></a>
-    <a href="https://deepwiki.com/huggingface/smolagents"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
-</p>
+从可控故障注入到公开 τ³ retail benchmark：记录每一次工具调用，区分 Agent、User Simulator 与基础设施故障，并用证据决定是否值得实现 recovery method。
 
-<h3 align="center">
-  <div style="display:flex;flex-direction:row;">
-    <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/smolagents/smolagents.png" alt="Hugging Face mascot as James Bond" width=400px>
-    <p>Agents that think in code!</p>
-  </div>
-</h3>
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Framework](https://img.shields.io/badge/Framework-smolagents-FFD21E)](https://github.com/huggingface/smolagents)
+[![Benchmark](https://img.shields.io/badge/Benchmark-%CF%84%C2%B3%20Retail-6F42C1)](https://github.com/sierra-research/tau2-bench)
+[![Status](https://img.shields.io/badge/Status-Scoped%20Audit%20Complete-2EA44F)](reports/final_technical_report.md)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-`smolagents` is a library that enables you to run powerful agents in a few lines of code. It offers:
+[Technical Report](reports/final_technical_report.md) · [Artifact Index](reports/artifact_index.md) · [T05 Case Study](reports/residual_case_T05.md)
 
-✨ **Simplicity**: the logic for agents fits in ~1,000 lines of code (see [agents.py](https://github.com/huggingface/smolagents/blob/main/src/smolagents/agents.py)). We kept abstractions to their minimal shape above raw code!
+</div>
 
-🧑‍💻 **First-class support for Code Agents**. Our [`CodeAgent`](https://huggingface.co/docs/smolagents/reference/agents#smolagents.CodeAgent) writes its actions in code (as opposed to "agents being used to write code"). To make it secure, we support executing in sandboxed environments via [Blaxel](https://blaxel.ai), [E2B](https://e2b.dev/), [Modal](https://modal.com/), or Docker.
+---
 
-🤗 **Hub integrations**: you can [share/pull tools or agents to/from the Hub](https://huggingface.co/docs/smolagents/reference/tools#smolagents.Tool.from_hub) for instant sharing of the most efficient agents!
+## My progress — 2026-10-02
 
-🌐 **Model-agnostic**: smolagents supports any LLM. It can be a local `transformers` or `ollama` model, one of [many providers on the Hub](https://huggingface.co/blog/inference-providers), or any model from OpenAI, Anthropic and many others via our [LiteLLM](https://www.litellm.ai/) integration.
+已完成：T01–T05 故障 harness、逐工具调用日志、结构化错误、受控消融、τ³ retail 审计与残余失败归因。公开结果为 20 次尝试、19 次有效、18/19 final reward success；这些是固定开发配置下的观测结果。
 
-👁️ **Modality-agnostic**: Agents support text, vision, video, even audio inputs! Cf [this tutorial](https://huggingface.co/docs/smolagents/examples/web_browser) for vision.
+本轮研究停在证据支持的范围：没有将 toy Guard 作为 τ³ intervention 评测，没有宣称 leaderboard 提升。项目验证与发布状态见 [GitHub publication checks](reports/github_publication_20261002.md)。
 
-🛠️ **Tool-agnostic**: you can use tools from any [MCP server](https://huggingface.co/docs/smolagents/reference/tools#smolagents.ToolCollection.from_mcp), from [LangChain](https://huggingface.co/docs/smolagents/reference/tools#smolagents.Tool.from_langchain), you can even use a [Hub Space](https://huggingface.co/docs/smolagents/reference/tools#smolagents.Tool.from_space) as a tool.
+## At a glance
 
-Full documentation can be found [here](https://huggingface.co/docs/smolagents/index).
+| What was built | Public benchmark evidence | Research outcome |
+|---|---|---|
+| Deterministic fault harness, per-call telemetry, structured errors, ablations, and an isolated duplicate-failure guard | 20 τ³ retail tasks attempted; 19 valid; 18/19 final reward and DB reward; 19/19 NL reward | Strong observability and failure attribution; insufficient evidence for another Agent intervention |
 
-> [!NOTE]
-> Check out our [launch blog post](https://huggingface.co/blog/smolagents) to learn more about `smolagents`!
+ReliableToolAgent is a research-engineering fork of HuggingFace `smolagents`. The project asks a practical question:
 
-## Quick demo
+> When a tool-calling workflow fails, is the cause the Agent, the tool, the environment, the User Simulator, the evaluator, or the runtime?
 
-First install the package with a default set of tools:
-```bash
-pip install "smolagents[toolkit]"
-```
-Then define your agent, give it the tools it needs and run it!
-```py
-from smolagents import CodeAgent, WebSearchTool, InferenceClientModel
+The project does **not** claim a τ³ leaderboard improvement. Its contribution is a reproducible measurement pipeline and a documented decision to stop adding recovery logic when the public-benchmark evidence did not justify it.
 
-model = InferenceClientModel()
-agent = CodeAgent(tools=[WebSearchTool()], model=model, stream_outputs=True)
+## What I built
 
-agent.run("How many seconds would it take for a leopard at full speed to run through Pont des Arts?")
-```
+- A deterministic T01–T05 harness covering clean multi-step execution, transient failure, wrong-entity repair, legitimate not-found state, and repeated failure.
+- Independent per-tool-call telemetry for tool name, canonical arguments, result/error, error type, status, and same-step parallel calls.
+- Structured Error Feedback V1 with explicit error semantics, without automatic retry, replanning, or stopping policy.
+- A fixed-model raw/structured error × retry-framing 2×2 ablation.
+- Duplicate Failure Guard V1 as an isolated toy smoke experiment, including retryable-error and run-isolation checks.
+- A τ³ retail observability analyzer for READ/WRITE calls, explicit tool failures, exact duplicates/repeats, reward components, confirmation flow, and infrastructure validity.
+- A User Simulator confound study and a clean public-benchmark failure audit.
 
-https://github.com/user-attachments/assets/84b149b4-246c-40c9-a48d-ba013b08e600
-
-You can even share your agent to the Hub, as a Space repository:
-```py
-agent.push_to_hub("m-ric/my_agent")
-
-# agent.from_hub("m-ric/my_agent") to load an agent from Hub
-```
-
-Our library is LLM-agnostic: you could switch the example above to any inference provider.
-
-<details>
-<summary> <b>InferenceClientModel, gateway for all <a href="https://huggingface.co/docs/inference-providers/index">inference providers</a> supported on HF</b></summary>
-
-```py
-from smolagents import InferenceClientModel
-
-model = InferenceClientModel(
-    model_id="deepseek-ai/DeepSeek-R1",
-    provider="together",
-)
-```
-</details>
-<details>
-<summary> <b>LiteLLM to access 100+ LLMs</b></summary>
-
-```py
-from smolagents import LiteLLMModel
-
-model = LiteLLMModel(
-    model_id="anthropic/claude-4-sonnet-latest",
-    temperature=0.2,
-    api_key=os.environ["ANTHROPIC_API_KEY"]
-)
-```
-</details>
-<details>
-<summary> <b>OpenAI-compatible servers: Together AI</b></summary>
-
-```py
-import os
-from smolagents import OpenAIModel
-
-model = OpenAIModel(
-    model_id="deepseek-ai/DeepSeek-R1",
-    api_base="https://api.together.xyz/v1/", # Leave this blank to query OpenAI servers.
-    api_key=os.environ["TOGETHER_API_KEY"], # Switch to the API key for the server you're targeting.
-)
-```
-</details>
-<details>
-<summary> <b>OpenAI-compatible servers: OpenRouter</b></summary>
-
-```py
-import os
-from smolagents import OpenAIModel
-
-model = OpenAIModel(
-    model_id="openai/gpt-4o",
-    api_base="https://openrouter.ai/api/v1", # Leave this blank to query OpenAI servers.
-    api_key=os.environ["OPENROUTER_API_KEY"], # Switch to the API key for the server you're targeting.
-)
-```
-
-</details>
-<details>
-<summary> <b>Local `transformers` model</b></summary>
-
-```py
-from smolagents import TransformersModel
-
-model = TransformersModel(
-    model_id="Qwen/Qwen3-Next-80B-A3B-Thinking",
-    max_new_tokens=4096,
-    device_map="auto"
-)
-```
-</details>
-<details>
-<summary> <b>Azure models</b></summary>
-
-```py
-import os
-from smolagents import AzureOpenAIModel
-
-model = AzureOpenAIModel(
-    model_id = os.environ.get("AZURE_OPENAI_MODEL"),
-    azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),
-    api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
-    api_version=os.environ.get("OPENAI_API_VERSION")    
-)
-```
-</details>
-<details>
-<summary> <b>Amazon Bedrock models</b></summary>
-
-```py
-import os
-from smolagents import AmazonBedrockModel
-
-model = AmazonBedrockModel(
-    model_id = os.environ.get("AMAZON_BEDROCK_MODEL_ID") 
-)
-```
-</details>
-
-## CLI
-
-You can run agents from CLI using two commands: `smolagent` and `webagent`.
-
-`smolagent` is a generalist command to run a multi-step `CodeAgent` that can be equipped with various tools.
-
-```bash
-# Run with direct prompt and options
-smolagent "Plan a trip to Tokyo, Kyoto and Osaka between Mar 28 and Apr 7."  --model-type "InferenceClientModel" --model-id "Qwen/Qwen3-Next-80B-A3B-Thinking" --imports pandas numpy --tools web_search
-
-# Run in interactive mode (launches setup wizard when no prompt provided)
-smolagent
-```
-
-Interactive mode guides you through:
-- Agent type selection (CodeAgent vs ToolCallingAgent)  
-- Tool selection from available toolbox
-- Model configuration (type, ID, API settings)
-- Advanced options like additional imports
-- Task prompt input
-
-Meanwhile `webagent` is a specific web-browsing agent using [helium](https://github.com/mherrmann/helium) (read more [here](https://github.com/huggingface/smolagents/blob/main/src/smolagents/vision_web_browser.py)).
-
-For instance:
-```bash
-webagent "go to xyz.com/men, get to sale section, click the first clothing item you see. Get the product details, and the price, return them. note that I'm shopping from France" --model-type "LiteLLMModel" --model-id "gpt-5"
-```
-
-## How do Code agents work?
-
-Our [`CodeAgent`](https://huggingface.co/docs/smolagents/reference/agents#smolagents.CodeAgent) works mostly like classical ReAct agents - the exception being that the LLM engine writes its actions as Python code snippets.
+## System view
 
 ```mermaid
-flowchart TB
-    Task[User Task]
-    Memory[agent.memory]
-    Generate[Generate from agent.model]
-    Execute[Execute Code action - Tool calls are written as functions]
-    Answer[Return the argument given to 'final_answer']
+flowchart LR
+    T[Task] --> A[Agent]
+    U[User Simulator] <--> A
+    A --> C[Tool Call]
+    C --> E[Tool / Environment]
+    E --> O[Result or Error]
+    O --> M[Trajectory / Memory]
+    M --> A
+    M --> V[Evaluator]
+    V --> R[Reward + Audit Metrics]
 
-    Task -->|Add task to agent.memory| Memory
-
-    subgraph ReAct[ReAct loop]
-        Memory -->|Memory as chat messages| Generate
-        Generate -->|Parse output to extract code action| Execute
-        Execute -->|No call to 'final_answer' tool => Store execution logs in memory and keep running| Memory
-    end
-    
-    Execute -->|Call to 'final_answer' tool| Answer
-
-    %% Styling
-    classDef default fill:#d4b702,stroke:#8b7701,color:#ffffff
-    classDef io fill:#4a5568,stroke:#2d3748,color:#ffffff
-    
-    class Task,Answer io
+    style M fill:#fff4cc,stroke:#d4a72c
+    style R fill:#dafbe1,stroke:#2da44e
 ```
 
-Actions are now Python code snippets. Hence, tool calls will be performed as Python function calls. For instance, here is how the agent can perform web search over several websites in one single action:
-```py
-requests_to_search = ["gulf of mexico america", "greenland denmark", "tariffs"]
-for request in requests_to_search:
-    print(f"Here are the search results for {request}:", web_search(request))
+The controlled toy harness and τ³ benchmark stay separate. The τ³ study keeps the official Agent, tools, RetailDB environment, orchestrator, and evaluator behavior unchanged.
+
+## Experiment map
+
+| Phase | Purpose | Evidence-based result |
+|---|---|---|
+| A. Controlled toy pilot | Validate fault injection, memory, evaluator, logging, and intervention isolation | Full experimental path worked; structured errors and retry framing had mixed effects |
+| B. τ³ migration | Move from a toy environment to a pinned public retail benchmark | Official execution loop ran with call-level offline observability |
+| C. User Simulator study | Test whether terminal behavior was a simulator confound | U0 premature termination 8/15; U2 0/15 under the fixed development setup |
+| D. Clean 20×1 audit | Audit residual Agent-side failures without interventions | 19 valid runs, 18 reward successes, one residual reward-zero case |
+
+## Key evidence
+
+### Clean τ³ retail audit
+
+| Metric | Result |
+|---|---:|
+| Simulations attempted | 20 |
+| Valid simulations | 19 |
+| Final reward = 1 | 18/19 |
+| DB reward = 1 | 18/19 |
+| NL reward = 1 | 19/19 |
+| Successful expected WRITE | 16/17 |
+| Cross-turn exact repeats | 0 |
+| Same-message duplicate | 1 task / 2 calls |
+| Explicit tool-failure tasks | 3 |
+| Valid reward-zero residual cases | 1 — T05 |
+
+T04 was an evaluator JSON parse failure and is excluded from Agent behavior statistics. T05 contains both a mismatched final WRITE and a User Simulator `###TRANSFER###`, so the project records it as a residual candidate rather than assigning a single cause.
+
+Machine-readable snapshot: [reports/tau3-clean-audit-summary.json](reports/tau3-clean-audit-summary.json)
+
+### User Simulator confound
+
+The Agent stayed fixed at `openai/qwen3.5-flash-2026-02-23`.
+
+| 5 tasks × 3 trials | U0: Qwen3.5 Flash | U2: Qwen3.8 Max |
+|---|---:|---:|
+| Premature user termination | 8/15 | 0/15 |
+| Expected WRITE executed | 5/15 | 14/15 |
+| DB success | 5/15 | 14/15 |
+
+This is a development diagnostic comparison—not an official τ³ leaderboard comparison or a general model ranking.
+
+### Negative results matter
+
+- Structured error feedback did not consistently improve timely stopping or task success in the toy ablation.
+- Retry framing did not produce a stable positive effect.
+- The toy Duplicate Failure Guard blocked repeated non-retryable failures in a 3-task smoke run, but it was never evaluated as a τ³ improvement.
+- The clean τ³ audit had zero cross-turn exact repeats, so it did not support migrating that Guard.
+
+## Evaluation setup
+
+```yaml
+benchmark: sierra-research/tau2-bench
+commit: b7ea9074c1cba482b30687fecdb5c8425fd6f619
+domain: retail
+
+agent: openai/qwen3.5-flash-2026-02-23
+user_simulator: openai/qwen3.8-max-2026-09-02
+temperature: 0
+max_tokens: 512
+request_timeout: 60s
+request_retries: 3
+simulation_timeout: unset
+max_steps: 200
+runner_retries: 0
+concurrency: 1
+seed: 300
 ```
 
-Writing actions as code snippets is demonstrated to work better than the current industry practice of letting the LLM output a dictionary of the tools it wants to call: [uses 30% fewer steps](https://huggingface.co/papers/2402.01030) (thus 30% fewer LLM calls) and [reaches higher performance on difficult benchmarks](https://huggingface.co/papers/2411.01747). Head to [our high-level intro to agents](https://huggingface.co/docs/smolagents/conceptual_guides/intro_agents) to learn more on that.
+U2 is the project's frozen **development evaluation configuration**. It is not the official leaderboard default.
 
-Since code execution can be a serious security concern (arbitrary code execution!), **you should run agent code in a sandbox**. We support several options:
-  - [E2B](https://e2b.dev/), [Blaxel](https://blaxel.ai), [Modal](https://modal.com/) — managed cloud sandboxes, simplest to set up
-  - [Docker](https://www.docker.com/) — self-hosted container isolation
+## Reproduce locally
 
-The built-in `LocalPythonExecutor` is **not a security sandbox**. It applies some restrictions but can be bypassed and must not be used as a security boundary.
+### Deterministic project tests
 
-Alongside [`CodeAgent`](https://huggingface.co/docs/smolagents/reference/agents#smolagents.CodeAgent), we also provide the standard [`ToolCallingAgent`](https://huggingface.co/docs/smolagents/reference/agents#smolagents.ToolCallingAgent) which writes actions as JSON/text blobs. You can pick whichever style best suits your use case.
+```bash
+git clone https://github.com/Kk111777/ReliableToolAgent.git
+cd ReliableToolAgent
 
-## How smol is this library?
+bash setup-local.sh
 
-We strived to keep abstractions to a strict minimum: the main code in `agents.py` has <1,000 lines of code.
-Still, we implement several types of agents: `CodeAgent` writes its actions as Python code snippets, and the more classic `ToolCallingAgent` leverages built-in tool calling methods. We also have multi-agent hierarchies, import from tool collections, remote code execution, vision models...
-
-By the way, why use a framework at all? Well, because a big part of this stuff is non-trivial. For instance, the code agent has to keep a consistent format for code throughout its system prompt, its parser, the execution. So our framework handles this complexity for you. But of course we still encourage you to hack into the source code and use only the bits that you need, to the exclusion of everything else!
-
-## How strong are open models for agentic workflows?
-
-We've created [`CodeAgent`](https://huggingface.co/docs/smolagents/reference/agents#smolagents.CodeAgent) instances with some leading models, and compared them on [this benchmark](https://huggingface.co/datasets/m-ric/agents_medium_benchmark_2) that gathers questions from a few different benchmarks to propose a varied blend of challenges.
-
-[Find the benchmarking code here](https://github.com/huggingface/smolagents/blob/main/examples/smolagents_benchmark/run.py) for more detail on the agentic setup used, and see a comparison of using LLMs code agents compared to vanilla (spoilers: code agents works better).
-
-<p align="center">
-    <img src="https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/smolagents/benchmark_code_agents.jpeg" alt="benchmark of different models on agentic workflows. Open model DeepSeek-R1 beats closed-source models." width=60% max-width=500px>
-</p>
-
-This comparison shows that open-source models can now take on the best closed models!
-
-## Security
-
-Security is a critical consideration when working with code-executing agents. Ensure you are using one of the sandboxed execution options that provide isolation from untrusted code.
-
-**Warning:** `LocalPythonExecutor` provides best-effort mitigations only and is **not a security boundary**. Do not use it to run untrusted code.
-
-For security policies, vulnerability reporting, and more information on secure agent execution, please see our [Security Policy](SECURITY.md).
-
-## Contribute
-
-Everyone is welcome to contribute, get started with our [contribution guide](https://github.com/huggingface/smolagents/blob/main/CONTRIBUTING.md).
-
-## Cite smolagents
-
-If you use `smolagents` in your publication, please cite it by using the following BibTeX entry.
-
-```bibtex
-@Misc{smolagents,
-  title =        {`smolagents`: a smol library to build great agentic systems.},
-  author =       {Aymeric Roucher and Albert Villanova del Moral and Thomas Wolf and Leandro von Werra and Erik Kaunismäki},
-  howpublished = {\url{https://github.com/huggingface/smolagents}},
-  year =         {2025}
-}
+.venv/bin/python -m pytest -q local_demo
 ```
+
+### Re-score frozen toy artifacts
+
+```bash
+.venv/bin/python -m local_demo.rescore --source all
+```
+
+### Inspect or reproduce the τ³ study
+
+The public [τ³ evidence bundle](benchmark/tau3/README.md) contains the pinned benchmark configuration, launchers, offline analyzers, and compact result snapshots. Re-running the benchmark requires a separate τ³ checkout and provider credentials; reviewing the project does not.
+
+Raw API trajectories and the independent τ³ checkout are intentionally excluded from the public repository. Their provenance and local locations are documented in the [artifact index](reports/artifact_index.md).
+
+## Repository guide
+
+```text
+local_demo/          Deterministic harness, pilot tasks, evaluators, ablations
+src/smolagents/      Per-call logging, structured errors, Guard instrumentation
+tests/               Project and regression tests
+benchmark/tau3/      Public τ³ launchers, analyzers, config, compact evidence
+reports/             Public evidence, technical report, case study, resume notes
+artifacts/           Local raw toy trajectories; ignored when large
+```
+
+Recommended reading order:
+
+1. [Final technical report](reports/final_technical_report.md)
+2. [T05 residual case](reports/residual_case_T05.md)
+3. [Artifact index](reports/artifact_index.md)
+4. [τ³ evidence bundle](benchmark/tau3/README.md)
+5. [`local_demo/run.py`](local_demo/run.py)
+6. [`local_demo/test_tool_call_logging.py`](local_demo/test_tool_call_logging.py)
+7. [`local_demo/test_duplicate_guard.py`](local_demo/test_duplicate_guard.py)
+
+## Scope and limitations
+
+- The toy environment is narrow and synthetic.
+- The clean τ³ audit used one trial per task and produced 19 valid simulations.
+- The development User Simulator is not the official leaderboard default.
+- No Guard, Completion Controller, recovery prompt, or Agent intervention was evaluated on τ³.
+- Qwen costs were unavailable from the local LiteLLM price map; `$0.0000` runner output is not a real cost estimate.
+- Public claims should use the compact reports in `reports/`; local raw artifacts remain the source of truth for detailed trajectory review.
+
+## Upstream and license
+
+This repository is based on HuggingFace `smolagents` commit `30bb1161095dbae2271e6bc3cc4c219cc3897a57`. The public benchmark study used Sierra τ³-bench commit `b7ea9074c1cba482b30687fecdb5c8425fd6f619`.
+
+Licensed under Apache 2.0. See [LICENSE](LICENSE).
