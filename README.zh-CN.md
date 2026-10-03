@@ -88,6 +88,10 @@ Reward 为零可能来自 Agent 决策、工具执行、Simulator 行为，也�
 
 **T05** 是唯一有效的 reward-zero 运行。台灯换货成功后，用户改为要求水瓶退货，Simulator 在预期 return WRITE 前结束并转接会话。轨迹没有工具失败或精确重复，完成行为与 Simulator 终止仍交织在一起。[查看案例分析](reports/residual_case_T05.md)。
 
+## Retail 配对复核
+
+[35 个 test 任务的冻结主实验](benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md)与独立的[20 任务分层补充复核](benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md)，合计增加 55 个不同 retail 任务、330 条计划配对轨迹。运行器保存每次尝试与中断轨迹，记录请求用量和估算费用，并支持离线任务级 bootstrap。实验正在运行，计划槽位与上方历史结果分开报告。
+
 ## 快速开始（Quick Start）
 
 需要 Python 3.12 和 `uv`。以下检查不需要模型凭据。

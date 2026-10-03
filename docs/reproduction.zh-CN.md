@@ -60,3 +60,16 @@ E2 原始任务成功为 23/24，已有 evaluator-v2 重评分为 24/24，使用
 [τ³ 文档](../benchmark/tau3/README.md)列出固定 commit、模型配置、独立环境、运行脚本及离线分析器。运行脚本会产生付费模型调用；离线分析器读取已保存的运行记录，并写出派生分析报告。上述项目环境与基准环境相互独立。
 
 [技术报告](../reports/final_technical_report.md#13-limitations)说明开发子集、Simulator 配置、评估器重试及成本数据缺失。从已有计数重新生成图表的步骤见[图表说明](../assets/README.md)。
+
+## 检查配对留出集协议
+
+[留出集说明](../benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md) 介绍新任务选择、首次尝试分母、输出限制、请求费用记录和任务级 bootstrap。下列公开检查不调用 API：
+
+```bash
+.venv/bin/python -m pytest -q benchmark/tau3/tests
+.venv/bin/python benchmark/tau3/scripts/audit_frozen_study.py
+```
+
+30 条开发集检查轨迹与十二个合成协议片段用于核对事件测量，不是新增基准结果，也不是独立人工标注。正式运行的精简指标发布后支持离线重算汇总；完整官方评分核验仍需要本地原始轨迹。
+
+[独立的分层补充复核](../benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md) 扩大任务覆盖，test 与 train 两个批次分别报告。

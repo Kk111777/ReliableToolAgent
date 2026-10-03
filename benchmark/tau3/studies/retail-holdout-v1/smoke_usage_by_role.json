@@ -1,0 +1,18 @@
+{
+  "user": {
+    "observed_requests": 30,
+    "known_list_price_rmb": 0.43064539999999996,
+    "budget_debit_rmb": 0.4851635999999999,
+    "unknown_usage_requests": 3,
+    "known_prompt_tokens": 38709,
+    "known_completion_tokens": 30730
+  },
+  "agent": {
+    "observed_requests": 45,
+    "known_list_price_rmb": 0.10699840000000001,
+    "budget_debit_rmb": 0.10699840000000001,
+    "unknown_usage_requests": 0,
+    "known_prompt_tokens": 349742,
+    "known_completion_tokens": 18525
+  }
+}

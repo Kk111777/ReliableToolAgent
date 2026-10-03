@@ -1,0 +1,424 @@
+[
+  {
+    "name": "explicit_error",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "a",
+              "name": "get_order_details",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "id": "a",
+          "error": true,
+          "content": "ok"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [],
+        "reward": null
+      }
+    },
+    "expected": {
+      "explicit_tool_errors": 1
+    }
+  },
+  {
+    "name": "failure_word_is_not_error",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "a",
+              "name": "get_order_details",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "id": "a",
+          "error": false,
+          "content": "failed delivery"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [],
+        "reward": null
+      }
+    },
+    "expected": {
+      "explicit_tool_errors": 0
+    }
+  },
+  {
+    "name": "missing_error_flag",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "a",
+              "name": "get_order_details",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "id": "a",
+          "content": "ok"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [],
+        "reward": null
+      }
+    },
+    "expected": {
+      "unknown_tool_results": 1
+    }
+  },
+  {
+    "name": "missing_result",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "a",
+              "name": "get_order_details",
+              "arguments": {}
+            }
+          ]
+        }
+      ],
+      "reward_info": {
+        "action_checks": [],
+        "reward": null
+      }
+    },
+    "expected": {
+      "unknown_tool_results": 1
+    }
+  },
+  {
+    "name": "duplicate_batch",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "a",
+              "name": "get_order_details",
+              "arguments": {}
+            },
+            {
+              "id": "b",
+              "name": "get_order_details",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "id": "a",
+          "error": false,
+          "content": "ok"
+        },
+        {
+          "role": "tool",
+          "id": "b",
+          "error": false,
+          "content": "ok"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [],
+        "reward": null
+      }
+    },
+    "expected": {
+      "same_message_duplicate_calls": 2,
+      "same_message_excess_calls": 1,
+      "cross_turn_exact_repeats": 0
+    }
+  },
+  {
+    "name": "repeated_id_ambiguous",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "a",
+              "name": "get_order_details",
+              "arguments": {}
+            },
+            {
+              "id": "a",
+              "name": "get_order_details",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "id": "a",
+          "error": false,
+          "content": "ok"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [],
+        "reward": null
+      }
+    },
+    "expected": {
+      "unknown_tool_results": 2
+    }
+  },
+  {
+    "name": "changed_arguments",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "a",
+              "name": "get_order_details",
+              "arguments": {
+                "a": 1
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "id": "a",
+          "error": false,
+          "content": "ok"
+        },
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "b",
+              "name": "get_order_details",
+              "arguments": {
+                "a": 2
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "id": "b",
+          "error": false,
+          "content": "ok"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [],
+        "reward": null
+      }
+    },
+    "expected": {
+      "cross_turn_exact_repeats": 0
+    }
+  },
+  {
+    "name": "cross_turn_repeat",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "a",
+              "name": "get_order_details",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "id": "a",
+          "error": false,
+          "content": "ok"
+        },
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "b",
+              "name": "get_order_details",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "id": "b",
+          "error": false,
+          "content": "ok"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [],
+        "reward": null
+      }
+    },
+    "expected": {
+      "cross_turn_exact_repeats": 1
+    }
+  },
+  {
+    "name": "received_confirmation",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Yes please proceed"
+        },
+        {
+          "role": "assistant",
+          "tool_calls": [
+            {
+              "id": "a",
+              "name": "return_delivered_order_items",
+              "arguments": {}
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "id": "a",
+          "error": false,
+          "content": "ok"
+        },
+        {
+          "role": "user",
+          "content": "thanks ###STOP###"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [
+          {
+            "tool_type": "write",
+            "action": {
+              "name": "return_delivered_order_items",
+              "arguments": {}
+            }
+          }
+        ],
+        "reward": null
+      }
+    },
+    "expected": {
+      "latest_confirmation_received_candidate": true,
+      "write_after_latest_confirmation_candidate": true
+    }
+  },
+  {
+    "name": "terminal_confirmation",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "assistant",
+          "content": "Please confirm"
+        },
+        {
+          "role": "user",
+          "content": "Yes please proceed ###STOP###"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [
+          {
+            "tool_type": "write",
+            "action": {
+              "name": "return_delivered_order_items",
+              "arguments": {}
+            }
+          }
+        ],
+        "reward": null
+      }
+    },
+    "expected": {
+      "confirmation_terminal_before_write_candidate": true
+    }
+  },
+  {
+    "name": "changed_request_terminal",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Actually return a different item ###STOP###"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [
+          {
+            "tool_type": "write",
+            "action": {
+              "name": "return_delivered_order_items",
+              "arguments": {}
+            }
+          }
+        ],
+        "reward": null
+      }
+    },
+    "expected": {
+      "terminal_before_reference_write_candidate": true,
+      "confirmation_terminal_before_write_candidate": false
+    }
+  },
+  {
+    "name": "no_reference_write",
+    "kind": "synthetic protocol fragment; not benchmark evidence",
+    "simulation": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Yes ###STOP###"
+        }
+      ],
+      "reward_info": {
+        "action_checks": [],
+        "reward": null
+      }
+    },
+    "expected": {
+      "any_expected_write_observed": null,
+      "confirmation_terminal_before_write_candidate": false
+    }
+  }
+]

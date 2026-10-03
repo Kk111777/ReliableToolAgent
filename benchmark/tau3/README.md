@@ -77,3 +77,9 @@ The launcher makes paid external model calls. It is not needed to review the che
 - Tool errors, Simulator terminal signals, and evaluator failures are reported separately. The analyzer does not infer hidden model reasoning or assign a causal explanation from reward alone.
 
 For project setup and public-file checks, see the [reproduction guide](../../docs/reproduction.md) · [中文](../../docs/reproduction.zh-CN.md).
+
+## Paired Holdout Extension
+
+The [paired holdout guide](studies/retail-holdout-v1/README.md) · [中文](studies/retail-holdout-v1/README.zh-CN.md) describes the frozen 35-task U0/U2 follow-up, measurement fixtures, attempt ledger, bounded worker, usage observation, and paired bootstrap. Use `run_frozen_study.py` for this study; the historical launchers above remain unchanged.
+
+The [stratified replication](studies/retail-replication-v1/README.md) · [中文](studies/retail-replication-v1/README.zh-CN.md) adds a separately reported 20-task train sample. Both cohorts use fixed paired trials and a shared execution supervisor.

@@ -1,0 +1,47 @@
+name: Reliability study checks
+
+on:
+  pull_request:
+    paths:
+      - "src/smolagents/**"
+      - "local_demo/**"
+      - "benchmark/tau3/**"
+      - "reports/**"
+      - "scripts/**"
+      - "README*"
+      - "docs/reproduction*"
+      - ".github/workflows/reliability-study.yml"
+  push:
+    branches: [main]
+    paths:
+      - "local_demo/**"
+      - "benchmark/tau3/**"
+      - "reports/**"
+      - "scripts/**"
+      - ".github/workflows/reliability-study.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+        with:
+          python-version: "3.12"
+      - name: Install project and offline check dependencies
+        run: pip install -e . pytest==9.1.1 httpx==0.28.1 markdown-it-py==4.2.0 ruff==0.16.8
+      - name: Test runtime and study protocol without model credentials
+        run: python -m pytest -q local_demo benchmark/tau3/tests
+      - name: Check public evidence and protocol fragments
+        run: |
+          python scripts/audit_packaging_evidence.py
+          python benchmark/tau3/scripts/audit_frozen_study.py
+          python scripts/check_markdown_links.py
+          python scripts/check_markdown_links.py benchmark/tau3/studies/retail-holdout-v1/README.md benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md benchmark/tau3/studies/retail-replication-v1/README.md benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md 开始这里.md
+      - name: Check study code style
+        run: |
+          ruff check benchmark/tau3/scripts/frozen_study.py benchmark/tau3/scripts/study_worker.py benchmark/tau3/scripts/run_frozen_study.py benchmark/tau3/scripts/analyze_frozen_study.py benchmark/tau3/scripts/audit_frozen_study.py benchmark/tau3/scripts/prepare_frozen_replay.py benchmark/tau3/scripts/extend_retail_design.py benchmark/tau3/scripts/analyze_replication.py benchmark/tau3/scripts/finish_retail_studies.py benchmark/tau3/tests
+          ruff format --check benchmark/tau3/scripts/frozen_study.py benchmark/tau3/scripts/study_worker.py benchmark/tau3/scripts/run_frozen_study.py benchmark/tau3/scripts/analyze_frozen_study.py benchmark/tau3/scripts/audit_frozen_study.py benchmark/tau3/scripts/prepare_frozen_replay.py benchmark/tau3/scripts/extend_retail_design.py benchmark/tau3/scripts/analyze_replication.py benchmark/tau3/scripts/finish_retail_studies.py benchmark/tau3/tests

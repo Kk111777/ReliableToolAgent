@@ -27,6 +27,21 @@ ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "artifacts"
 
 
+def upstream_revision(root: Path = ROOT) -> str | None:
+    """Optional provenance; forks and source archives may lack upstream/main."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--verify", "upstream/main^{commit}"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        return None
+    return result.stdout.strip() if result.returncode == 0 else None
+
+
 class TemporaryUnavailable(TimeoutError):
     """A deterministic, retryable tool failure."""
 
@@ -430,7 +445,7 @@ def run_case(task_id: str = "T01", mode: str = "scripted", fault: bool = False) 
         "fault": bool(case.fault_rules),
         **evaluated,
         "run": run,
-        "upstream_commit": subprocess.check_output(["git", "rev-parse", "upstream/main"], cwd=ROOT, text=True).strip(),
+        "upstream_commit": upstream_revision(),
     }
 
 

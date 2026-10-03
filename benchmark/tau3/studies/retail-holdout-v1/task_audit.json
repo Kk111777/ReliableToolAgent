@@ -1,0 +1,365 @@
+{
+  "scope": "retained local task exposure only; model training exposure and external copies are unknown",
+  "comparison": "normalized user_scenario plus initial_state; reference actions excluded from similarity",
+  "near_duplicate_threshold": 0.9,
+  "tasks": [
+    {
+      "task_id": "26",
+      "scenario_sha256": "4d48fee65352ac0d45f0790c76ffa71b9526341f057a768f7b5325c756535caf",
+      "nearest_development_task": "2",
+      "similarity": 0.543353,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "return_delivered_order_items",
+      "user_entity_cluster": "isabella_johansson_2152"
+    },
+    {
+      "task_id": "27",
+      "scenario_sha256": "c546d0e8c8d92e6be88012a3d8481332d3bc704f56e9849c0279ba583afe6508",
+      "nearest_development_task": "7",
+      "similarity": 0.505914,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "exchange_delivered_order_items",
+      "user_entity_cluster": "isabella_johansson_2152"
+    },
+    {
+      "task_id": "32",
+      "scenario_sha256": "8af9483c58d0d4b21df3dfeecf3285f1f4160bda2bdae60de0011e0ee76374f2",
+      "nearest_development_task": "16",
+      "similarity": 0.335548,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "cancel_pending_order+return_delivered_order_items",
+      "user_entity_cluster": "olivia_lopez_3865"
+    },
+    {
+      "task_id": "33",
+      "scenario_sha256": "3fd4c3916c5d28a4df8ee5dd2d42555cf412121ce457bcb6742e6e8a5b02d751",
+      "nearest_development_task": "7",
+      "similarity": 0.261993,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_user_address",
+      "user_entity_cluster": "noah_patel_6952"
+    },
+    {
+      "task_id": "36",
+      "scenario_sha256": "73e2c8c650f23c51311cd4702884eb6dc21f0f3509eed103c2135f5f7ace3462",
+      "nearest_development_task": "19",
+      "similarity": 0.218281,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_items",
+      "user_entity_cluster": "60a2c592d54c3ff9"
+    },
+    {
+      "task_id": "38",
+      "scenario_sha256": "f7dc535aa5dc10715eac49bdfafca09c4e27f8505dcc3bdaf7059803ae98df2e",
+      "nearest_development_task": "19",
+      "similarity": 0.22069,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "cancel_pending_order",
+      "user_entity_cluster": "60a2c592d54c3ff9"
+    },
+    {
+      "task_id": "39",
+      "scenario_sha256": "b0161678614f93e69c514c9c3b8ffe7e02f967871ce9c56e9dbb13c770885b9c",
+      "nearest_development_task": "17",
+      "similarity": 0.330373,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_user_address",
+      "user_entity_cluster": "fatima_taylor_3452"
+    },
+    {
+      "task_id": "40",
+      "scenario_sha256": "d994fecb3b7d927d7f017760743386fb359bd10c12f40d2ef85376ad64cdd6bd",
+      "nearest_development_task": "14",
+      "similarity": 0.31,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_payment",
+      "user_entity_cluster": "isabella_lopez_6490"
+    },
+    {
+      "task_id": "42",
+      "scenario_sha256": "06477ff81d973ffc3eab5ed5ad1c7e8c8b1362af0f14e899cfe5fff89eb5b69d",
+      "nearest_development_task": "17",
+      "similarity": 0.302521,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_address+modify_pending_order_items+modify_user_address",
+      "user_entity_cluster": "mei_patel_7272"
+    },
+    {
+      "task_id": "45",
+      "scenario_sha256": "1b48fe9b2f845e4b6f04eff6dc20fd4e988c5b707dbef55403d649075d9b5d1e",
+      "nearest_development_task": "8",
+      "similarity": 0.381599,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "exchange_delivered_order_items",
+      "user_entity_cluster": "8de580f29290b883"
+    },
+    {
+      "task_id": "49",
+      "scenario_sha256": "e9d32a1f1c0bea8b4449310b7ce2be8479b2aa1076cf800dfbdee0712a305fe8",
+      "nearest_development_task": "8",
+      "similarity": 0.459075,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "exchange_delivered_order_items",
+      "user_entity_cluster": "aarav_anderson_8794"
+    },
+    {
+      "task_id": "51",
+      "scenario_sha256": "2c60b52f5c47aafc4bd5a4b7b0532577a1497faba1136bb24718233717416038",
+      "nearest_development_task": "8",
+      "similarity": 0.496395,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "return_delivered_order_items",
+      "user_entity_cluster": "sofia_li_9219"
+    },
+    {
+      "task_id": "53",
+      "scenario_sha256": "07d8169fd2acc0d3af1ea623c75939807b1aef77431f4cc372441a0bbb7cf466",
+      "nearest_development_task": "7",
+      "similarity": 0.464529,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "return_delivered_order_items",
+      "user_entity_cluster": "sofia_li_9219"
+    },
+    {
+      "task_id": "55",
+      "scenario_sha256": "52d0362e01fa1db358e2cb98bb7445070b5e1ce059c38b6b9eb9816208651a2f",
+      "nearest_development_task": "14",
+      "similarity": 0.256158,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "cancel_pending_order+return_delivered_order_items",
+      "user_entity_cluster": "amelia_silva_7726"
+    },
+    {
+      "task_id": "56",
+      "scenario_sha256": "7330580826358db3ec1cb222f78f091877552c34d412d88ff105fe138cf26632",
+      "nearest_development_task": "19",
+      "similarity": 0.331534,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_items",
+      "user_entity_cluster": "ivan_hernandez_6923"
+    },
+    {
+      "task_id": "60",
+      "scenario_sha256": "b4199c7114991969d4128c575855ad6c2cae867367de10f8eb3d2e8d5df504f9",
+      "nearest_development_task": "2",
+      "similarity": 0.38716,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_items",
+      "user_entity_cluster": "e099fb908d2750f3"
+    },
+    {
+      "task_id": "61",
+      "scenario_sha256": "bae38abe4d12a79fc04ce70c29f337d4ef23b6a9d972b156a213390aaccb1761",
+      "nearest_development_task": "2",
+      "similarity": 0.464411,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_items",
+      "user_entity_cluster": "e099fb908d2750f3"
+    },
+    {
+      "task_id": "62",
+      "scenario_sha256": "7609d68e8c310991811acd763089caa5adccb25bd17a9fe03bba91b768057e2e",
+      "nearest_development_task": "2",
+      "similarity": 0.246287,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "no_reference_write",
+      "user_entity_cluster": "chen_johnson_4204"
+    },
+    {
+      "task_id": "64",
+      "scenario_sha256": "3825905420712bff78dc733069f91cf868b91d35939a5d1e989b699db459ac93",
+      "nearest_development_task": "7",
+      "similarity": 0.565022,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "exchange_delivered_order_items+modify_pending_order_items",
+      "user_entity_cluster": "james_sanchez_3954"
+    },
+    {
+      "task_id": "65",
+      "scenario_sha256": "50c15edfa3324efa25ed88eee2f40648da0a091ac749c78d8db995d85b01ea98",
+      "nearest_development_task": "2",
+      "similarity": 0.588529,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "no_reference_write",
+      "user_entity_cluster": "james_kovacs_9247"
+    },
+    {
+      "task_id": "68",
+      "scenario_sha256": "1294eb260b897a68c3b5643df069d4603f1d3560f91a5e6cb1d5dc97ce3a31f1",
+      "nearest_development_task": "15",
+      "similarity": 0.436,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "no_reference_write",
+      "user_entity_cluster": "noah_ito_3850"
+    },
+    {
+      "task_id": "70",
+      "scenario_sha256": "041045795e95952e075e777c9de8abd2d7cd0ee8abd0d92bac6a902d8d3333d2",
+      "nearest_development_task": "2",
+      "similarity": 0.4,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "exchange_delivered_order_items",
+      "user_entity_cluster": "b1d11f9958fa9992"
+    },
+    {
+      "task_id": "71",
+      "scenario_sha256": "e9504f48a24a57e17347eca26c855c6498fa2a5371b2d001bdbab3f7ac827145",
+      "nearest_development_task": "7",
+      "similarity": 0.297931,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_address+modify_pending_order_items",
+      "user_entity_cluster": "30736e1aa00d125a"
+    },
+    {
+      "task_id": "74",
+      "scenario_sha256": "44de4c907119e9c7b8e08a49cdd51eb1307201d772c8dd4e7a05d19a10793c73",
+      "nearest_development_task": "19",
+      "similarity": 0.324117,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "cancel_pending_order+modify_pending_order_items",
+      "user_entity_cluster": "6f424a0bde122482"
+    },
+    {
+      "task_id": "77",
+      "scenario_sha256": "841108f32ae3de64ceb09c4168dd73a4977b6c04167fde7cfa8242a77811adea",
+      "nearest_development_task": "8",
+      "similarity": 0.454454,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "exchange_delivered_order_items",
+      "user_entity_cluster": "877892f62327b042"
+    },
+    {
+      "task_id": "79",
+      "scenario_sha256": "f6a3d29301a4638c05228bf55bc2befa2b2c25560e564a20295c3754e793a9f3",
+      "nearest_development_task": "19",
+      "similarity": 0.338876,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_items",
+      "user_entity_cluster": "d9c98607d2c71d72"
+    },
+    {
+      "task_id": "86",
+      "scenario_sha256": "9e58f6b335f2dc96b699ae6563ee20222c978bad72caa1609a2d63cc3f6bdf2b",
+      "nearest_development_task": "13",
+      "similarity": 0.380765,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_items+modify_user_address",
+      "user_entity_cluster": "yusuf_hernandez_6785"
+    },
+    {
+      "task_id": "90",
+      "scenario_sha256": "2ef0e80fc30e0ac135ed220ec78d5b2e7d8a784c6f93e9fb1e9af8c9c0db1dd2",
+      "nearest_development_task": "19",
+      "similarity": 0.26045,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "cancel_pending_order",
+      "user_entity_cluster": "3acde3c85e97285f"
+    },
+    {
+      "task_id": "94",
+      "scenario_sha256": "a4eee05070c3ef6bfa2b183de2c4f92d418a484f9f0cb11686304b8a7b2a3c89",
+      "nearest_development_task": "7",
+      "similarity": 0.505263,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "exchange_delivered_order_items",
+      "user_entity_cluster": "ba3a4007839d3e5d"
+    },
+    {
+      "task_id": "97",
+      "scenario_sha256": "f2ea5634440a74bf3cb6a0ef39638b0e2e1f7dffabcf4ab65ccba1415b6fb78b",
+      "nearest_development_task": "5",
+      "similarity": 0.399314,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_address+modify_pending_order_items",
+      "user_entity_cluster": "3280bab95741d872"
+    },
+    {
+      "task_id": "100",
+      "scenario_sha256": "8ec137b80d66ef23f7801793950a634249063bc27c42ec3fe68b8028bd5192c4",
+      "nearest_development_task": "19",
+      "similarity": 0.385886,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_items+return_delivered_order_items",
+      "user_entity_cluster": "4bc82f2c25defb8c"
+    },
+    {
+      "task_id": "101",
+      "scenario_sha256": "5b566b94ec46292cc2d7c92cc568606c5fe777b8ce27856516ed26a53cf8817a",
+      "nearest_development_task": "19",
+      "similarity": 0.32755,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_address+modify_pending_order_items",
+      "user_entity_cluster": "95bb06b3346d6297"
+    },
+    {
+      "task_id": "102",
+      "scenario_sha256": "724e952220911844bb1be72fc1ab25c5cb6793833a217805f6a5a28b6074bf58",
+      "nearest_development_task": "19",
+      "similarity": 0.34963,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "exchange_delivered_order_items+modify_pending_order_address+modify_pending_order_items",
+      "user_entity_cluster": "95bb06b3346d6297"
+    },
+    {
+      "task_id": "108",
+      "scenario_sha256": "349fab08c6abad8c7d93b8d206f3750e5cfe18a0cac4b7baa85081b9a08f4038",
+      "nearest_development_task": "2",
+      "similarity": 0.585308,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "return_delivered_order_items",
+      "user_entity_cluster": "72ee8a876b4eafeb"
+    },
+    {
+      "task_id": "111",
+      "scenario_sha256": "492f5d636ff713f2d38d59740cdbdb79329f041298fc2e9798790048c1bd98c2",
+      "nearest_development_task": "8",
+      "similarity": 0.437168,
+      "exact_duplicate": false,
+      "near_duplicate_at_0_90": false,
+      "write_family": "modify_pending_order_address+modify_pending_order_items",
+      "user_entity_cluster": "af7f94c9dc5e97aa"
+    }
+  ],
+  "near_duplicate_pairs_within_holdout": [
+    {
+      "a": "36",
+      "b": "38",
+      "similarity": 0.982227
+    }
+  ],
+  "near_duplicate_review": "T36 and T38 share the same user/order and scenario template but change credit thresholds and reference outcomes (modify vs cancel). Keep both, report user-entity-cluster bootstrap and a prespecified sensitivity excluding T38."
+}
