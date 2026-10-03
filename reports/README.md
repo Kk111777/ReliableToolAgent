@@ -1,19 +1,22 @@
-# Evidence bundle
+# Reports and Evidence
 
-This directory contains the small, reviewable project evidence intended for GitHub. Large raw trajectories remain local and ignored.
+Use these files to follow an experiment from its design to its recorded result.
 
-| File | Purpose |
+| Question | Read |
 |---|---|
-| [`final_technical_report.md`](final_technical_report.md) | Full research and engineering narrative |
-| [`tau3-clean-audit-summary.json`](tau3-clean-audit-summary.json) | Machine-readable clean benchmark snapshot |
-| [`../benchmark/tau3/`](../benchmark/tau3/) | Public τ³ launchers, analyzers, fixed configuration, and compact evidence |
-| [`residual_case_T05.md`](residual_case_T05.md) | Offline reconstruction of the only valid reward-zero case |
-| [`artifact_index.md`](artifact_index.md) | Map from each study phase to configs, summaries, and local raw evidence |
-| [`evaluator-v2-ablation-summary.json`](evaluator-v2-ablation-summary.json) | Compact toy ablation summary after evaluator corrections |
-| [`packaging_audit_20261003.md`](packaging_audit_20261003.md) | Read-only source checks, original/v2 score discrepancy, and presentation boundaries |
-| [`packaging_evidence_20261003.json`](packaging_evidence_20261003.json) | New presentation snapshot of existing results with checked source hashes |
-| [`../assets/README.md`](../assets/README.md) | Data-derived chart and regeneration/provenance notes |
+| How were the studies designed, and what were the results? | [Technical report](final_technical_report.md) |
+| What happened in the remaining failed task? | [T05 case analysis](residual_case_T05.md) |
+| Which code and files support each number? | [Evidence index](artifact_index.md) |
+| How can I check the repository or analyze saved runs? | [Reproduction guide](../docs/reproduction.md) · [中文](../docs/reproduction.zh-CN.md) |
+| Why do the original and v2 toy scores differ? | [Source and scoring audit](packaging_audit_20261003.md) |
 
-The original E2 toy success is 23/24; the existing evaluator-v2 rescore is 24/24 for the same trajectories. The difference is disclosed rather than replaced with a new result. This packaging update does not run experiments or alter either scoring artifact.
+## Result Snapshots
 
-Interpretation boundary: the project validates observability and failure attribution. It does not claim that a Guard, Controller, or structured error intervention improved τ³ performance.
+| File | Contents |
+|---|---|
+| [Clean audit](tau3-clean-audit-summary.json) | Frozen configuration, attempted/valid counts, rewards, and residual case |
+| [Simulator diagnostic](../benchmark/tau3/results/user_simulator_stability_summary.json) | Fixed-Agent U0/U2 conditions and valid-trial counts |
+| [Existing evaluator-v2 ablation](evaluator-v2-ablation-summary.json) | Toy results after the recorded scoring correction |
+| [Evidence snapshot](packaging_evidence_20261003.json) | Original toy, Guard, Simulator, and clean-audit values with source hashes |
+
+The [τ³ guide](../benchmark/tau3/README.md) documents native benchmark setup and analysis. The [figure notes](../assets/README.md) explain how the chart uses saved counts. Raw model trajectories remain in the local workspace; the public repository contains compact snapshots and the code used to inspect them.
