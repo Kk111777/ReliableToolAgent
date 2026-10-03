@@ -16,6 +16,8 @@ This index separates files intended for GitHub review from raw local artifacts. 
 
 Important scope boundary: the Guard evidence is a three-task toy smoke run. It is not a completed public-benchmark intervention experiment and is not presented as a τ³ improvement.
 
+The 48-run baselines/paired comparison are historical pilots, distinct from the E0–E3 four-condition ablation. E2 original success is 23/24, whereas the existing v2 rescore is 24/24: one P04/r01 wording correction, with unchanged answer/trajectory. See the [score-version audit](packaging_audit_20261003.md). The original table and v2 JSON remain separately identified.
+
 ## Phase B — τ³ Public Benchmark Migration
 
 | Item | Public evidence | Local source of truth |
@@ -65,12 +67,25 @@ tau2-bench-baseline/data/analysis/retail-observability/clean-u2-20x1/
 
 T04 is infrastructure-invalid and excluded from Agent-behavior rates. T05 is the only valid reward-zero residual case; no repair method was implemented after the audit.
 
+## Presentation and verification (2026-10-03)
+
+| Item | Entry | Scope |
+|---|---|---|
+| Project overview | [README](../README.md) | Original implementation, findings, two Mermaid diagrams, one diagnostic chart |
+| Read-only evidence check | [`audit_packaging_evidence.py`](../scripts/audit_packaging_evidence.py) | Public snapshot consistency; optional retained-raw re-analysis and source hashes |
+| Presentation snapshot | [`packaging_evidence_20261003.json`](packaging_evidence_20261003.json) | Existing toy, Guard, Simulator, clean-audit values; no new experiment |
+| Packaging/source audit | [`packaging_audit_20261003.md`](packaging_audit_20261003.md) | Claim provenance, scoring discrepancy, denominator and interpretation boundaries |
+| Simulator figure | [Asset notes](../assets/README.md), [generator](../scripts/build_presentation_assets.py) | Plots existing saved counts; source and figure hashes |
+| Documentation checks | [`check_markdown_links.py`](../scripts/check_markdown_links.py) | Local links, Markdown anchors, image existence; no external URL fetches |
+
+Formal reproduction scripts, historical pilots, diagnostic intermediates, and retained raw artifacts remain in their current locations. No archive relocation is needed to navigate them. Inherited `examples/` and most `docs/source/` are upstream framework material.
+
 ## Fast review order
 
-1. [`final_technical_report.md`](final_technical_report.md)
-2. [τ³ evidence bundle](../benchmark/tau3/README.md)
-3. [`clean_audit_summary.json`](../benchmark/tau3/results/clean_audit_summary.json)
-4. [`residual_case_T05.md`](residual_case_T05.md)
-5. [`evaluator-v2-ablation-summary.json`](evaluator-v2-ablation-summary.json)
+1. [README](../README.md)
+2. [`final_technical_report.md`](final_technical_report.md)
+3. [τ³ evidence bundle](../benchmark/tau3/README.md)
+4. [`packaging_audit_20261003.md`](packaging_audit_20261003.md)
+5. [`residual_case_T05.md`](residual_case_T05.md)
 6. [`local_demo/run.py`](../local_demo/run.py)
 7. [`analyze_retail_observability.py`](../benchmark/tau3/scripts/analyze_retail_observability.py)

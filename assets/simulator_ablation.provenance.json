@@ -1,0 +1,26 @@
+{
+  "source": "reports/packaging_evidence_20261003.json",
+  "source_sha256": "ea6e81109a0f71b26c2f80ec183deed116abb30724affab62b5f2d8d7be2bb49",
+  "canonical_snapshot": "benchmark/tau3/results/user_simulator_stability_summary.json",
+  "canonical_sha256": "6c64ee3d03edf9477c3769e4b1d8a651539b2062e5b18a2e53c74fa55e161720",
+  "generator": "scripts/build_presentation_assets.py",
+  "generator_sha256": "dd257f3bb830ba31169a9fef60d1ae582da1df4bf3cfc47211ef4bed3ae575d8",
+  "matplotlib_version": "3.10.7",
+  "denominators": {
+    "U0": 15,
+    "U2": 15
+  },
+  "plotted_counts": {
+    "expected_write_executed": {
+      "U0": 5,
+      "U2": 14
+    },
+    "premature_user_termination_before_write": {
+      "U0": 8,
+      "U2": 0
+    }
+  },
+  "figure": "assets/simulator_ablation.png",
+  "figure_sha256": "b446d07bf47fcd0eead04c64dec37dddaba1d53415a045fe1f3c57a1e34f7eeb",
+  "interpretation_boundary": "Development diagnostic comparison; not an official tau3 leaderboard comparison or a general model ranking."
+}
