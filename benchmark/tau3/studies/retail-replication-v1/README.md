@@ -19,11 +19,11 @@ The supplementary tasks come from the official **train split** and had not appea
 
 The [task audit](task_audit.json) records selection seed `20261003`, quotas, scenario hashes, shared user entities, and five rejected candidates with scenario similarity at least 0.90 to development or reserved primary tasks. Selection also rejects near-duplicates within the new sample. The selected IDs are `21, 24, 29, 37, 41, 43, 44, 46, 54, 57, 76, 81, 83, 84, 85, 95, 96, 103, 104, 107`.
 
-The [plan manifest](manifest.json) freezes this selection before any replication calls. The one-shot [supervisor](../../scripts/finish_retail_studies.py) waits for the primary run, checks its source hashes and completeness, analyzes it, then materializes the replication's remaining budget before starting its first request. The four validated smoke attempts are reused with their original identities and hashes. Combined cost accounting counts those paid attempts once.
+The [plan manifest](manifest.json) freezes this selection before any replication calls. At the budget pause on 2026-10-04, replication had not started. The historical [supervisor](../../scripts/finish_retail_studies.py) and its RMB 500 plan are retained as provenance; they must not restart the recorded run. The [external budget policy](../../../../docs/budgeted_execution.md) supersedes those caps while preserving the task and model protocol. Replication starts only after primary source/completeness checks and budget verification. The four validated smoke attempts retain their original identities and hashes and count once in combined costs.
 
-Both cohorts together have a RMB 500 conservative cap. The primary study retains its original limit; the supplementary study receives the remaining combined allowance. Successful requests use observed usage, including reasoning output; missing usage retains its reservation. Provider invoices and balance are not verified. Three consecutive infrastructure/deadline failures stop execution for diagnosis.
+Successful requests use observed usage, including reasoning output; missing usage retains its reservation. A confirmed discount is applied separately from the original list-price evidence. Provider invoices and account balances are not independently verified. Three consecutive infrastructure/deadline failures stop execution for diagnosis.
 
-The supervisor preserves first attempts, limits infrastructure reruns, and produces separate local reports:
+Execution preserves first attempts, limits infrastructure reruns, and produces separate local reports:
 
 ```text
 artifacts/frozen_study/retail-holdout-v1c/analysis/
@@ -35,4 +35,4 @@ The [replication analyzer](../../scripts/analyze_replication.py) reports first-a
 
 An implementation fixture is different from a business task. The larger run adds real native benchmark tasks while the existing T01–T05 scripted mechanism tests remain fixed. No recovery controller is tuned on either cohort.
 
-The [compact evidence exporter](../../scripts/study_evidence.py) and its offline audit work for this cohort too. Use `artifacts/frozen_study/retail-replication-v1` as the input directory after completion. It selects the replication audit and all seven strata, keeps the train-split label, and checks first-attempt and retry identities. Export each cohort separately; their reused smoke costs must be deduplicated before computing a combined bill. No final bundle is available while execution is in progress.
+The [compact evidence exporter](../../scripts/study_evidence.py) and its offline audit work for this cohort too. Use `artifacts/frozen_study/retail-replication-v1` as the input directory after completion. It selects the replication audit and all seven strata, keeps the train-split label, and checks first-attempt and retry identities. Export each cohort separately; their reused smoke costs must be deduplicated before computing a combined bill. No final replication bundle is available before execution and review.

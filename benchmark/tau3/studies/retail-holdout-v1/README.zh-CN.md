@@ -43,7 +43,7 @@
   --output artifacts/frozen_study/retail-holdout-v1c --phase formal
 ```
 
-付费运行需要将独立固定版本基准放在 `tau2-bench-baseline/`，并为它创建自己的 `.venv`。项目根目录的 `.env` 保存 `OPENAI_API_KEY` 和 `OPENAI_API_BASE`，该文件已被 Git 忽略。运行器只有收到 `--run` 才读取凭据，随后调用基准自己的解释器：
+以下原始命令保留作为历史 smoke／复跑说明。当前实验恢复必须使用[外部费用策略](../../../../docs/budgeted_execution.zh-CN.md)，原预算值已被覆盖。付费运行需要将独立固定版本基准放在 `tau2-bench-baseline/`，并为它创建自己的 `.venv`。项目根目录的 `.env` 保存 `OPENAI_API_KEY` 和 `OPENAI_API_BASE`，该文件已被 Git 忽略。运行器只有收到 `--run` 才读取凭据，随后调用基准自己的解释器：
 
 ```bash
 .venv/bin/python benchmark/tau3/scripts/run_frozen_study.py \
@@ -81,7 +81,7 @@
 - 置信区间以任务为单位重采样，同一任务的三个 trial 对一起进入抽样；5,000 次，seed 为 `20261003`。同时报告共享实体聚类和任务家族敏感性结果。
 - 有效配对完整度至少 90%、首次尝试中的基础设施错误／超时至多 10%，属于工程验收条件，不是显著性检验。缺失配对和不完整的三次 trial 任务不会隐藏。
 - 价格来自[服务商北京地域价格表](https://help.aliyun.com/zh/model-studio/model-pricing)。已返回用量按原价估算，包含推理输出；缺失用量和未完成请求保留保守预算预留。估算不等于已核对账单或账户余额。
-- 初始 preflight 与修订实验合计最多 300 元、224 次模拟尝试。连续三次基础设施错误／超时后停止并诊断。
+- 历史 manifest 记录了 300 元上限，当前执行已由外部策略覆盖；恢复按已确认折扣、当前授权余额及历史请求预留核算。原最多 224 次模拟尝试的限制保留。连续三次基础设施错误／超时后停止并诊断。
 - 不根据留出集结果调整 Agent、Guard、prompt 或事件规则。新增恢复机制需要另立假设及评估集；目标失败不足五个不同公开任务时，停止扩展控制器。
 
 完整轨迹保留在本地。公开精简指标支持重算汇总和置信区间，但不能独立核实每条官方 reward；选定的开发片段支持在没有 API 的情况下检查事件分析器。
@@ -90,7 +90,7 @@
 
 [`study_evidence.py`](../../scripts/study_evidence.py) 核对本地 outcome、轨迹和请求记录的哈希后，导出不可覆盖的精简证据包。它的离线 `audit` 入口重算冻结汇总、任务级区间、缺失槽位、延迟及各角色用量。只累加已返回用量的输入和输出 token；推理 token 已包含在输出中。缺失用量单列，并保留费用预留。校验和用于识别文件和检查一致性；没有私有轨迹时，它不能认证官方 reward。
 
-实验仍在运行，尚未发布最终证据包。完整本地实验结束后执行：
+2026-10-04 因预算调整暂停时已保留 108/210 个正式首次尝试（101 个 valid、五个基础设施错误、两次人为取消保存为 timeout），尚未发布最终证据包。完整本地实验结束后执行：
 
 ```bash
 .venv/bin/python benchmark/tau3/scripts/study_evidence.py export \
