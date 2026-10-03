@@ -85,3 +85,20 @@ Then use that manifest and a new output directory with the runner commands above
 - Holdout outcomes do not tune the Agent, Guard, prompt, or event rules. A new recovery mechanism needs a separate hypothesis and evaluation set; fewer than five distinct tasks with the target failure stops controller expansion.
 
 Full trajectories remain local. Published compact metrics support recomputing aggregates and confidence intervals; they do not independently verify every official reward. The selected development fragments support checking the event analyzer without API access.
+
+## Compact evidence checks
+
+[`study_evidence.py`](../../scripts/study_evidence.py) exports an immutable compact bundle after checking retained outcome, trajectory and request hashes. Its offline `audit` command recomputes the frozen aggregates, task-level intervals, missing-slot list, latency and usage by role. Input and completion tokens are counted only where usage was returned; reasoning tokens are a part of completion tokens. Missing usage keeps its budget reservation and is reported separately. Checksums identify files and detect inconsistencies; they do not authenticate a reward without the private trajectory.
+
+The study is still running, so no final bundle is published yet. After a local study finishes:
+
+```bash
+.venv/bin/python benchmark/tau3/scripts/study_evidence.py export \
+  --input artifacts/frozen_study/retail-holdout-v1c \
+  --output artifacts/frozen_study/retail-holdout-v1c/public_evidence.json
+
+.venv/bin/python benchmark/tau3/scripts/study_evidence.py audit \
+  --input artifacts/frozen_study/retail-holdout-v1c/public_evidence.json
+```
+
+Export requires the retained local evidence. Audit needs only the compact bundle and its matching public source version, without model credentials or the native benchmark checkout. The default export rejects incomplete studies and existing output files. `--allow-incomplete` is an explicit local diagnostic option; it labels the result incomplete and lists unstarted slots. The [contract tests](../../tests/test_study_evidence.py) exercise corrupted identities, altered summaries, missing usage and the separate replication strata.

@@ -73,3 +73,5 @@ The [holdout guide](../benchmark/tau3/studies/retail-holdout-v1/README.md) expla
 The 30 development inspection traces and 12 synthetic protocol fragments check event measurement. They are not additional benchmark outcomes or independent human annotations. Formal-run compact metrics, when published, support offline aggregate recomputation; full official reward verification still needs the local raw trajectories.
 
 The [separate stratified replication](../benchmark/tau3/studies/retail-replication-v1/README.md) extends coverage while keeping test and train cohorts separate.
+
+The [compact evidence commands](../benchmark/tau3/studies/retail-holdout-v1/README.md#compact-evidence-checks) separate local raw verification/export from public offline aggregate checks. The audit verifies identities, source versions, billing coverage and recomputed summaries; it does not call a model or independently rescore private trajectories. Final bundles will be published after execution and review.
