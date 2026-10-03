@@ -90,3 +90,19 @@ Launchers run the studies; analyzers read saved trajectories. Historical pilots 
 5. [`residual_case_T05.md`](residual_case_T05.md)
 6. [`local_demo/run.py`](../local_demo/run.py)
 7. [`analyze_retail_observability.py`](../benchmark/tau3/scripts/analyze_retail_observability.py)
+
+
+## Frozen primary release (2026-10-04)
+
+The new test cohort is separate from the historical development results above: 35 tasks, all 210 first attempts retained, 197 valid scores and 13 invalid attempts. Valid pairs were 93/105, below the frozen engineering gate; the 20-task train plan was not started and has no model scores.
+
+| Public artifact | What it supports | Retained local input |
+|---|---|---|
+| [Results and limits](frozen_study/retail-holdout-v1/README.md) · [中文](frozen_study/retail-holdout-v1/README.zh-CN.md) | Final interpretation and disposition | Completed first-attempt schedule |
+| [Compact bundle](frozen_study/retail-holdout-v1/public_evidence.json) | Offline identity, source, aggregate, interval and usage checks | `artifacts/frozen_study/retail-holdout-v1c/attempts.jsonl` and per-attempt outcome/simulation/request files |
+| [Generated summary](frozen_study/retail-holdout-v1/summary.json) | Every missing pair, task/family denominators and frozen diagnostics | Audited compact bundle |
+| [Case index](frozen_study/retail-holdout-v1/case_index.json) | Attempt/source matching and tool-counter recomputation | Same-author raw review; positions and semantics cannot be authenticated from hashes alone |
+| [Invalid attempts](frozen_study/retail-holdout-v1/invalid_first_attempts.json) | Original classes, request metadata and cancellation annotations | Retained calls and outcomes |
+| [Release status](frozen_study/retail-holdout-v1/release_status.json) | Author closure attestation, artifact hashes and unstarted train disposition | Local locks, finished jobs and raw hash checks |
+
+No paid secondary retries were made. Complete raw logs, datasets, account balances and credentials remain outside Git. The manifest's old budget cap is historical metadata, not the actual bill or current spending authority.

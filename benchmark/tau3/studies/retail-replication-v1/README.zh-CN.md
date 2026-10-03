@@ -2,7 +2,7 @@
 
 [English](README.md) | **简体中文**
 
-这项补充实验在[原有 35 个 test 任务的主实验](../retail-holdout-v1/README.zh-CN.md)之外，增加 20 个不同的 retail 任务。固定 Agent、U0/U2 Simulator snapshot、生成限制、事件规则和三个配对 trial 均沿用主实验。两个批次合计 55 个不同任务、330 条计划主分析轨迹。
+这份补充计划在[35 题 test 主实验](../retail-holdout-v1/README.zh-CN.md)之外选定 20 个不同的 retail 任务。**本轮没有启动**：主实验最终有效配对 93/105，未达到冻结的 90% 门槛。120 个复核槽位全部未启动、无模型成绩，见[发布状态](../../../../reports/frozen_study/retail-holdout-v1/release_status.json)。固定 Agent、U0/U2 Simulator snapshot、生成限制、事件规则和三个配对 trial 均沿用主实验。两个批次合计 55 个不同任务、330 条计划主分析轨迹。
 
 补充任务来自官方 **train split**，没有出现在保留的本地运行中。它们单独作为复核报告，不计为扩大的官方 test 成绩。选择过程只读取任务元数据和 ID，不读取新 reward，也不挑某个条件表现更好的案例。
 
@@ -21,7 +21,7 @@
 
 ## 当前执行状态
 
-2026-10-04 因预算调整暂停时，补充复核尚未启动。原监督器和 500 元计划只作为历史来源保留，不能用其恢复当前执行。[外部费用策略](../../../../docs/budgeted_execution.zh-CN.md)按已确认折扣、当前授权余额和历史缺失用量预留核算，覆盖原预算值，任务及模型协议不变。主实验来源及完整度通过后，才可在剩余预算内开始本批次；复用 smoke 的原始身份和哈希保留，合计费用只计一次。
+2026-10-04 最终收尾时，补充复核因主批次工程门槛未通过而没有启动。原监督器和 500 元计划只作为历史来源保留，不能用其恢复当前执行。[外部费用策略](../../../../docs/budgeted_execution.zh-CN.md)按已确认折扣、当前授权余额和历史缺失用量预留核算，覆盖原预算值，任务及模型协议不变。本轮因完整度检查未通过而停止扩展，下文保留的是计划设计，不是运行中的批次；复用 smoke 的原始身份和哈希保留，合计费用只计一次。
 
 [计划 manifest](manifest.json) 在补充实验调用 API 前冻结任务选择。原[一次性监督器](../../scripts/finish_retail_studies.py)及其预算保留作历史来源，不用于恢复当前付费执行。
 
@@ -39,4 +39,4 @@ artifacts/frozen_study/combined_execution_status.json
 
 实现夹具与业务任务用途不同。本轮增加原生公开基准任务，已有 T01–T05 脚本机制测试保持固定。两个批次都不用于调优恢复控制器。
 
-[精简证据导出与离线复算](../../scripts/study_evidence.py)也支持本批次。完成后将输入目录换为 `artifacts/frozen_study/retail-replication-v1`；程序使用补充任务审计和全部七种分层，保留 train split 标签，检查首次尝试与补跑身份。两个批次分别导出；计算累计费用时，沿用的 smoke 费用需要去重。执行及审阅完成前尚无最终补充证据包。
+[精简证据导出与离线复算](../../scripts/study_evidence.py)也支持本批次。完成后将输入目录换为 `artifacts/frozen_study/retail-replication-v1`；程序使用补充任务审计和全部七种分层，保留 train split 标签，检查首次尝试与补跑身份。两个批次分别导出；计算累计费用时，沿用的 smoke 费用需要去重。没有正式复核尝试，因此没有复核结果包；冻结计划和任务审计仅作为设计证据。

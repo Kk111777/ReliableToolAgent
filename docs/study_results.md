@@ -4,6 +4,8 @@
 
 The test-split study and the train-split replication are separate cohorts. Each report starts with execution coverage: planned slots, retained first attempts, valid results, scored non-successes, invalid attempts and unstarted slots. Repeated trials are not additional independent tasks.
 
+[Released primary results](../reports/frozen_study/retail-holdout-v1/README.md): all 210 first attempts retained, engineering gate failed. The train plan has zero started slots and no scores. Public paths for the report and case commands are under `reports/frozen_study/retail-holdout-v1/`.
+
 ## Offline reports
 
 [`report_study_evidence.py`](../benchmark/tau3/scripts/report_study_evidence.py) reads one compact bundle, runs its source and aggregate audit, then writes `summary.json`, `report.md` and `report.zh-CN.md` into a new directory. It makes no model calls and requires neither credentials nor the native benchmark checkout. The bilingual reports use the same derived counts; existing outputs are never overwritten.
@@ -27,7 +29,7 @@ The [compact export and audit](../benchmark/tau3/studies/retail-holdout-v1/READM
 
 The check first audits the evidence bundle, then matches every case to its retained attempt, outcome hash, simulation hash and frozen metrics. It recomputes tool calls, explicit errors, unknown results, same-message duplicates and cross-turn repeats from the sanitized event sequence. Duplicate case identities, omitted tool events, mismatched metrics and unexpected raw argument or message fields are rejected. A case with no tool calls is allowed.
 
-Only argument hashes and message positions are retained. Positions and roles are checked for internal consistency; the public check cannot establish that they match an unpublished trajectory. Source hashes likewise identify local evidence rather than authenticate it. Semantic interpretation still requires the author's raw review, and a selected case collection is not random or independent annotation. This entry point is available before final cases are published; it does not certify that a study has finished.
+Only argument hashes and message positions are retained. Positions and roles are checked for internal consistency; the public check cannot establish that they match an unpublished trajectory. Source hashes likewise identify local evidence rather than authenticate it. Semantic interpretation still requires the author's raw review, and a selected case collection is not random or independent annotation. The released cases are linked above. This entry point checks consistency; it does not itself certify execution closure.
 
 ## Denominators and missing results
 

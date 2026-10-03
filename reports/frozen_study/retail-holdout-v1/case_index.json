@@ -1,0 +1,935 @@
+{
+  "schema_version": 1,
+  "study_id": "retail-holdout-v1c-20261003",
+  "manifest_sha256": "9b2eb5376fa23e61fcf7f173d3977f69700ac02e91c8ed6690f308b7654af1fd",
+  "source_review_sha256": "eeb4c52ed1c2d80854349c326e521184af504e6a69025b6f32a53966d018cea0",
+  "selection": "Eight purposively selected first-attempt cases, reviewed by the analyzer author; not random or independent annotation",
+  "boundary": "Tool arguments and message text are omitted. Hashes identify retained local evidence; they do not independently authenticate the official reward or semantic interpretation. Frozen metrics are unchanged.",
+  "cases": [
+    {
+      "case_id": "C01",
+      "study_id": "retail-holdout-v1c-20261003",
+      "slot_id": "formal-t26-U0-r1",
+      "attempt": 0,
+      "status": "valid",
+      "outcome_sha256": "617c690ffb46e289fcdc54ddf1e66ecfa6f46dbbe5777fa3a43ca83a04578a99",
+      "simulation_sha256": "be6928266db5bf71f7899ba511ec9e6891c001c9d9bba9b4bd6b5e68e3daf6bb",
+      "message_indices": [
+        16,
+        17
+      ],
+      "selected_message_roles": [
+        {
+          "message_index": 16,
+          "role": "assistant"
+        },
+        {
+          "message_index": 17,
+          "role": "user"
+        }
+      ],
+      "tool_events": [
+        {
+          "message_index": 4,
+          "tool_name": "find_user_id_by_name_zip",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "262805527d873e91615e947bbc5146e8a4eef8f94d6581592f66befa788ff789"
+        },
+        {
+          "message_index": 6,
+          "tool_name": "get_user_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "fe71d2e687455b9f05b100fc2ee1fe88d543b15a92bad2c890d96c732c5b2db0"
+        },
+        {
+          "message_index": 8,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "cb92701789cd8d9d1e549cca59edc99b27ec8759f3c853a5ff3d50e1cb602131"
+        },
+        {
+          "message_index": 10,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "8455e169cd4642259300ec4873b7fa70b145ab1298017b5cfe67d213f50b8a3d"
+        },
+        {
+          "message_index": 12,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "a196c922b02908119182010e87bb8b9c229d5b7e70b2497d861600cc04fe6089"
+        },
+        {
+          "message_index": 14,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "5d69dea54314da1f071fc7b87ecd17f1c3c2023060f157f0c82ead9fd8fe60b8"
+        }
+      ],
+      "metrics": {
+        "agent_after_terminal_user": false,
+        "all_expected_writes_observed": false,
+        "analyzer_version": "retail-events-v1",
+        "any_expected_write_observed": false,
+        "communicate_reward": null,
+        "confirmation_terminal_before_write_candidate": true,
+        "cross_turn_exact_repeats": 0,
+        "db_reward": 0.0,
+        "duration_seconds": 69.2835477910121,
+        "expected_write_key_count": 1,
+        "expected_write_matched_count": 0,
+        "explicit_tool_errors": 0,
+        "latest_confirmation_received_candidate": false,
+        "nl_reward": 1.0,
+        "official_final_reward": 0.0,
+        "same_message_duplicate_calls": 0,
+        "same_message_excess_calls": 0,
+        "terminal_before_reference_write_candidate": true,
+        "terminal_confirmation_candidate": true,
+        "terminal_marker": "STOP",
+        "termination_reason": "user_stop",
+        "tool_calls": 6,
+        "unknown_tool_results": 0,
+        "write_after_latest_confirmation_candidate": false
+      }
+    },
+    {
+      "case_id": "C02",
+      "study_id": "retail-holdout-v1c-20261003",
+      "slot_id": "formal-t27-U2-r1",
+      "attempt": 0,
+      "status": "valid",
+      "outcome_sha256": "ffabba77310b51ca386facad18b61befe6468dbe20a75955b32f3d3e04bf87f9",
+      "simulation_sha256": "e94848641bd6898c03398b4028aa5d44a02947cec26f7465d8fe02690fdea2ad",
+      "message_indices": [
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ],
+      "selected_message_roles": [
+        {
+          "message_index": 22,
+          "role": "assistant"
+        },
+        {
+          "message_index": 23,
+          "role": "tool"
+        },
+        {
+          "message_index": 24,
+          "role": "assistant"
+        },
+        {
+          "message_index": 25,
+          "role": "tool"
+        },
+        {
+          "message_index": 26,
+          "role": "assistant"
+        },
+        {
+          "message_index": 27,
+          "role": "tool"
+        },
+        {
+          "message_index": 28,
+          "role": "assistant"
+        },
+        {
+          "message_index": 29,
+          "role": "user"
+        }
+      ],
+      "tool_events": [
+        {
+          "message_index": 6,
+          "tool_name": "find_user_id_by_name_zip",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "262805527d873e91615e947bbc5146e8a4eef8f94d6581592f66befa788ff789"
+        },
+        {
+          "message_index": 8,
+          "tool_name": "get_user_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "fe71d2e687455b9f05b100fc2ee1fe88d543b15a92bad2c890d96c732c5b2db0"
+        },
+        {
+          "message_index": 10,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "cb92701789cd8d9d1e549cca59edc99b27ec8759f3c853a5ff3d50e1cb602131"
+        },
+        {
+          "message_index": 12,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "8455e169cd4642259300ec4873b7fa70b145ab1298017b5cfe67d213f50b8a3d"
+        },
+        {
+          "message_index": 14,
+          "tool_name": "get_product_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "587cd39bd8b44f405ed4721af2a9bcefdc96dd1d85799fb131368ef10ee6d2ea"
+        },
+        {
+          "message_index": 16,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "a196c922b02908119182010e87bb8b9c229d5b7e70b2497d861600cc04fe6089"
+        },
+        {
+          "message_index": 18,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "5d69dea54314da1f071fc7b87ecd17f1c3c2023060f157f0c82ead9fd8fe60b8"
+        },
+        {
+          "message_index": 22,
+          "tool_name": "return_delivered_order_items",
+          "tool_type": "write",
+          "status": "success",
+          "arguments_sha256": "ea995d84399def2c8cc8d6e9f37bd423578770b46d6db382c97d3c948c1bcfe7"
+        },
+        {
+          "message_index": 24,
+          "tool_name": "exchange_delivered_order_items",
+          "tool_type": "write",
+          "status": "error",
+          "arguments_sha256": "d958bc39b3bb002d804c8ef1547d0be7b27cae59043eb0dcd7e741d72d9f37b1"
+        },
+        {
+          "message_index": 26,
+          "tool_name": "transfer_to_human_agents",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "7cdd1850df856f554f6089211780e5856d8aae2ae34a07cbb6dbe8f930f8bd67"
+        }
+      ],
+      "metrics": {
+        "agent_after_terminal_user": false,
+        "all_expected_writes_observed": false,
+        "analyzer_version": "retail-events-v1",
+        "any_expected_write_observed": false,
+        "communicate_reward": null,
+        "confirmation_terminal_before_write_candidate": false,
+        "cross_turn_exact_repeats": 0,
+        "db_reward": 0.0,
+        "duration_seconds": 92.33400579198496,
+        "expected_write_key_count": 1,
+        "expected_write_matched_count": 0,
+        "explicit_tool_errors": 1,
+        "latest_confirmation_received_candidate": true,
+        "nl_reward": 1.0,
+        "official_final_reward": 0.0,
+        "same_message_duplicate_calls": 0,
+        "same_message_excess_calls": 0,
+        "terminal_before_reference_write_candidate": true,
+        "terminal_confirmation_candidate": false,
+        "terminal_marker": "TRANSFER",
+        "termination_reason": "user_stop",
+        "tool_calls": 10,
+        "unknown_tool_results": 0,
+        "write_after_latest_confirmation_candidate": true
+      }
+    },
+    {
+      "case_id": "C03",
+      "study_id": "retail-holdout-v1c-20261003",
+      "slot_id": "formal-t32-U0-r0",
+      "attempt": 0,
+      "status": "valid",
+      "outcome_sha256": "b7f8e79dadb6bbb7589f6e3c25c8d421179d5ac74e075469514f9ecf3a88fad7",
+      "simulation_sha256": "98402a272f31312bf377a6ce448e91619471db9304de2fd313547e46f946ecdf",
+      "message_indices": [
+        28,
+        29,
+        32,
+        33,
+        35,
+        36,
+        37
+      ],
+      "selected_message_roles": [
+        {
+          "message_index": 28,
+          "role": "assistant"
+        },
+        {
+          "message_index": 29,
+          "role": "tool"
+        },
+        {
+          "message_index": 32,
+          "role": "assistant"
+        },
+        {
+          "message_index": 33,
+          "role": "tool"
+        },
+        {
+          "message_index": 35,
+          "role": "user"
+        },
+        {
+          "message_index": 36,
+          "role": "assistant"
+        },
+        {
+          "message_index": 37,
+          "role": "user"
+        }
+      ],
+      "tool_events": [
+        {
+          "message_index": 6,
+          "tool_name": "find_user_id_by_name_zip",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "1987c6e3ea674cd2fa2d320c03e02c0cafe009a65bf09d0ba10f7616cf774e38"
+        },
+        {
+          "message_index": 8,
+          "tool_name": "get_user_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "4ee338608e890045c4e3c633186aea8f2fb520fa2852a76ff4eb87df3fff8009"
+        },
+        {
+          "message_index": 10,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "a01c854855c81bfc2e45ab71c48be1654772bd35b8545bc99d11705768a3264b"
+        },
+        {
+          "message_index": 12,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "09419b79d9b95ed536eaf244ce98d9beec65b80c369d073a57805bb7748dcef1"
+        },
+        {
+          "message_index": 14,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "53569089394f43c9b287d7b1031c956e9b1f300e85928f627e9b4d8588389574"
+        },
+        {
+          "message_index": 18,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "b01b91f90707faf0889540cd4ce7ddcc7c2037f0cdb11b4dc405161a00e8c253"
+        },
+        {
+          "message_index": 20,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "47e12224676d986bfad6766bea435cc2f06ee4eac393ffe26215ee43c5614a4f"
+        },
+        {
+          "message_index": 24,
+          "tool_name": "cancel_pending_order",
+          "tool_type": "write",
+          "status": "success",
+          "arguments_sha256": "6082e1e45bc78793445856741b6f42be52d784e6e4aa4452b19aa012029f59c5"
+        },
+        {
+          "message_index": 28,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "09419b79d9b95ed536eaf244ce98d9beec65b80c369d073a57805bb7748dcef1"
+        },
+        {
+          "message_index": 32,
+          "tool_name": "cancel_pending_order",
+          "tool_type": "write",
+          "status": "success",
+          "arguments_sha256": "c9684423c423907de822bc2c38222b19e77fdc8df3b9aecbdfe7a10ad1cd19db"
+        }
+      ],
+      "metrics": {
+        "agent_after_terminal_user": false,
+        "all_expected_writes_observed": false,
+        "analyzer_version": "retail-events-v1",
+        "any_expected_write_observed": true,
+        "communicate_reward": null,
+        "confirmation_terminal_before_write_candidate": false,
+        "cross_turn_exact_repeats": 1,
+        "db_reward": 0.0,
+        "duration_seconds": 174.8527794170077,
+        "expected_write_key_count": 3,
+        "expected_write_matched_count": 2,
+        "explicit_tool_errors": 0,
+        "latest_confirmation_received_candidate": false,
+        "nl_reward": 1.0,
+        "official_final_reward": 0.0,
+        "same_message_duplicate_calls": 0,
+        "same_message_excess_calls": 0,
+        "terminal_before_reference_write_candidate": false,
+        "terminal_confirmation_candidate": true,
+        "terminal_marker": "STOP",
+        "termination_reason": "user_stop",
+        "tool_calls": 10,
+        "unknown_tool_results": 0,
+        "write_after_latest_confirmation_candidate": false
+      }
+    },
+    {
+      "case_id": "C04",
+      "study_id": "retail-holdout-v1c-20261003",
+      "slot_id": "formal-t36-U0-r0",
+      "attempt": 0,
+      "status": "valid",
+      "outcome_sha256": "72d7cb79d4851a1605982592a0a536d16a9328ff92c365c45276ac8b46ba30a0",
+      "simulation_sha256": "a476f31eb3368feeeedc383849b20834865d5816b3d3a0179bf0c45e3ca9e7bb",
+      "message_indices": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        30,
+        31,
+        34,
+        35
+      ],
+      "selected_message_roles": [
+        {
+          "message_index": 4,
+          "role": "assistant"
+        },
+        {
+          "message_index": 5,
+          "role": "tool"
+        },
+        {
+          "message_index": 6,
+          "role": "assistant"
+        },
+        {
+          "message_index": 7,
+          "role": "user"
+        },
+        {
+          "message_index": 8,
+          "role": "assistant"
+        },
+        {
+          "message_index": 9,
+          "role": "tool"
+        },
+        {
+          "message_index": 30,
+          "role": "assistant"
+        },
+        {
+          "message_index": 31,
+          "role": "tool"
+        },
+        {
+          "message_index": 34,
+          "role": "assistant"
+        },
+        {
+          "message_index": 35,
+          "role": "user"
+        }
+      ],
+      "tool_events": [
+        {
+          "message_index": 4,
+          "tool_name": "find_user_id_by_email",
+          "tool_type": "other",
+          "status": "error",
+          "arguments_sha256": "65ab7803287ebedf10b738d766d35165f89950bba0669e90f1dd906b79c1b7af"
+        },
+        {
+          "message_index": 8,
+          "tool_name": "find_user_id_by_name_zip",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "537f26506d75d3dbe93e604a849033e9e50bce412d9a3594396eec83cbe5ed69"
+        },
+        {
+          "message_index": 10,
+          "tool_name": "get_user_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "1dce37805c3aeea7b1a72b12d2dd8d239f9506dda8818e20099db22e2bbe3787"
+        },
+        {
+          "message_index": 12,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "2986dbbe85a14d17edb37cc826f0bffbae562948b063099646aad135fd0839f4"
+        },
+        {
+          "message_index": 18,
+          "tool_name": "get_product_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "808f98cc667d2239b75ffa055368b9af71e33359d6394856d9460de45063069c"
+        },
+        {
+          "message_index": 20,
+          "tool_name": "get_product_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "8f46777ef5654649729b11c051abb8bdedc69f9547ec1a30ec07787bcdc2aadb"
+        },
+        {
+          "message_index": 22,
+          "tool_name": "get_product_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "e5b6cc8727e5ae9970c23e14fe9a9696e893b0260636929155642abd83d8f607"
+        },
+        {
+          "message_index": 24,
+          "tool_name": "get_product_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "b3eed698117d1e0e854154a70c8acee924b38c8430a7ddecfb223f7e030d5ea8"
+        },
+        {
+          "message_index": 26,
+          "tool_name": "get_product_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "0b3dca30068c688782dd0cd44b6725c9daf8147e40f53abc820266c0e313e3a6"
+        },
+        {
+          "message_index": 30,
+          "tool_name": "modify_pending_order_items",
+          "tool_type": "write",
+          "status": "success",
+          "arguments_sha256": "dbbdb8fcb80c095bb4a9eee569020af115e6fa644d4210dd2c685dde3305c9a9"
+        }
+      ],
+      "metrics": {
+        "agent_after_terminal_user": false,
+        "all_expected_writes_observed": true,
+        "analyzer_version": "retail-events-v1",
+        "any_expected_write_observed": true,
+        "communicate_reward": null,
+        "confirmation_terminal_before_write_candidate": false,
+        "cross_turn_exact_repeats": 0,
+        "db_reward": 1.0,
+        "duration_seconds": 207.61103825003374,
+        "expected_write_key_count": 1,
+        "expected_write_matched_count": 1,
+        "explicit_tool_errors": 1,
+        "latest_confirmation_received_candidate": true,
+        "nl_reward": 1.0,
+        "official_final_reward": 1.0,
+        "same_message_duplicate_calls": 0,
+        "same_message_excess_calls": 0,
+        "terminal_before_reference_write_candidate": false,
+        "terminal_confirmation_candidate": false,
+        "terminal_marker": "STOP",
+        "termination_reason": "user_stop",
+        "tool_calls": 10,
+        "unknown_tool_results": 0,
+        "write_after_latest_confirmation_candidate": true
+      }
+    },
+    {
+      "case_id": "C05",
+      "study_id": "retail-holdout-v1c-20261003",
+      "slot_id": "formal-t39-U0-r0",
+      "attempt": 0,
+      "status": "infrastructure_error",
+      "outcome_sha256": "8b7eb41e60474496368be6575b7854fc3be8926137eef9fa186ff0c83cbeb746",
+      "simulation_sha256": "011f4ac4c2184d9a3541b275b2ff845fd69973bdfc406bb9b3b5ba8a2d238af6",
+      "message_indices": [
+        16,
+        17
+      ],
+      "selected_message_roles": [
+        {
+          "message_index": 16,
+          "role": "assistant"
+        },
+        {
+          "message_index": 17,
+          "role": "user"
+        }
+      ],
+      "tool_events": [
+        {
+          "message_index": 6,
+          "tool_name": "find_user_id_by_name_zip",
+          "tool_type": "other",
+          "status": "error",
+          "arguments_sha256": "6f121932d006c4c18d930e73c4ad43b9186ea0e47c5d01c26ab74fce56065be4"
+        },
+        {
+          "message_index": 8,
+          "tool_name": "get_user_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "27a60a4bbcec240081b82a8d73218c7fbff93e4903811329ff7616cf66f34e65"
+        },
+        {
+          "message_index": 10,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "1dd464c05f9bfd2f72105bc5a79ecb0e3a4d35f2b59575cfeb11dfe393dd1303"
+        },
+        {
+          "message_index": 12,
+          "tool_name": "list_all_product_types",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+        },
+        {
+          "message_index": 14,
+          "tool_name": "get_product_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "b3eed698117d1e0e854154a70c8acee924b38c8430a7ddecfb223f7e030d5ea8"
+        }
+      ],
+      "metrics": {
+        "agent_after_terminal_user": false,
+        "all_expected_writes_observed": null,
+        "analyzer_version": "retail-events-v1",
+        "any_expected_write_observed": null,
+        "communicate_reward": null,
+        "confirmation_terminal_before_write_candidate": false,
+        "cross_turn_exact_repeats": 0,
+        "db_reward": null,
+        "duration_seconds": 91.58176933298819,
+        "expected_write_key_count": 0,
+        "expected_write_matched_count": 0,
+        "explicit_tool_errors": 1,
+        "latest_confirmation_received_candidate": false,
+        "nl_reward": null,
+        "official_final_reward": null,
+        "same_message_duplicate_calls": 0,
+        "same_message_excess_calls": 0,
+        "terminal_before_reference_write_candidate": false,
+        "terminal_confirmation_candidate": true,
+        "terminal_marker": "STOP",
+        "termination_reason": "user_stop",
+        "tool_calls": 5,
+        "unknown_tool_results": 0,
+        "write_after_latest_confirmation_candidate": false
+      }
+    },
+    {
+      "case_id": "C06",
+      "study_id": "retail-holdout-v1c-20261003",
+      "slot_id": "formal-t40-U0-r1",
+      "attempt": 0,
+      "status": "infrastructure_error",
+      "outcome_sha256": "b05a026c61aaf9157249c6e5aba7c504b19def0e6d622de027555041aa105f8f",
+      "simulation_sha256": "4c97f73455217ba3e456ba078dd855a1e0492b4ff34a2af282b1abf47cc8c48a",
+      "message_indices": [
+        10,
+        11,
+        12
+      ],
+      "selected_message_roles": [
+        {
+          "message_index": 10,
+          "role": "assistant"
+        },
+        {
+          "message_index": 11,
+          "role": "user"
+        },
+        {
+          "message_index": 12,
+          "role": "assistant"
+        }
+      ],
+      "tool_events": [
+        {
+          "message_index": 4,
+          "tool_name": "find_user_id_by_email",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "f6c00b84078bb274bea553c844da13a6b8a908c584242a0dceef16159fd1304c"
+        },
+        {
+          "message_index": 6,
+          "tool_name": "get_user_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "14d59ba870df96725769f46919104f05f546132fba00828bdad4c329396833f9"
+        },
+        {
+          "message_index": 8,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "0db0227d71c8cb93065f1fc096d4ac7e3ec982d181daed90c26bf121403294dc"
+        }
+      ],
+      "metrics": {
+        "agent_after_terminal_user": true,
+        "all_expected_writes_observed": null,
+        "analyzer_version": "retail-events-v1",
+        "any_expected_write_observed": null,
+        "communicate_reward": null,
+        "confirmation_terminal_before_write_candidate": false,
+        "cross_turn_exact_repeats": 0,
+        "db_reward": null,
+        "duration_seconds": null,
+        "expected_write_key_count": 0,
+        "expected_write_matched_count": 0,
+        "explicit_tool_errors": 0,
+        "latest_confirmation_received_candidate": false,
+        "nl_reward": null,
+        "official_final_reward": null,
+        "same_message_duplicate_calls": 0,
+        "same_message_excess_calls": 0,
+        "terminal_before_reference_write_candidate": false,
+        "terminal_confirmation_candidate": false,
+        "terminal_marker": "NONE",
+        "termination_reason": "None",
+        "tool_calls": 3,
+        "unknown_tool_results": 0,
+        "write_after_latest_confirmation_candidate": false
+      }
+    },
+    {
+      "case_id": "C07",
+      "study_id": "retail-holdout-v1c-20261003",
+      "slot_id": "formal-t55-U0-r0",
+      "attempt": 0,
+      "status": "valid",
+      "outcome_sha256": "2bae5b2ee1c2e9b09a29a4bb17c6f5644781f82b0743ad17df4af7e1073397bd",
+      "simulation_sha256": "00a39d50e2cfd06b823e8b88c185c571ae6486bd5fa50920c86cae2db68c7943",
+      "message_indices": [
+        24,
+        25,
+        26,
+        27,
+        30,
+        31,
+        32,
+        33
+      ],
+      "selected_message_roles": [
+        {
+          "message_index": 24,
+          "role": "assistant"
+        },
+        {
+          "message_index": 25,
+          "role": "tool"
+        },
+        {
+          "message_index": 26,
+          "role": "assistant"
+        },
+        {
+          "message_index": 27,
+          "role": "tool"
+        },
+        {
+          "message_index": 30,
+          "role": "assistant"
+        },
+        {
+          "message_index": 31,
+          "role": "tool"
+        },
+        {
+          "message_index": 32,
+          "role": "assistant"
+        },
+        {
+          "message_index": 33,
+          "role": "user"
+        }
+      ],
+      "tool_events": [
+        {
+          "message_index": 4,
+          "tool_name": "find_user_id_by_email",
+          "tool_type": "other",
+          "status": "error",
+          "arguments_sha256": "91ba4998188a10c20fea56bac38ec59eee5636c81bad8b502358e73c0995dad0"
+        },
+        {
+          "message_index": 6,
+          "tool_name": "find_user_id_by_email",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "a85b8f0a1b7e0e9fd7951024ff87555ccd6d6262b6e8d656660424c773e70569"
+        },
+        {
+          "message_index": 8,
+          "tool_name": "get_user_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "71176c998346a8e2cd778a5169b81b4bddc7acaa0238c1da7e833b24da1a2cb7"
+        },
+        {
+          "message_index": 10,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "cbbff2a7403ea6e44af714cdbee49b2034031b0b942b6c2671eba25d7109b5fe"
+        },
+        {
+          "message_index": 12,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "d53852bc4a047fb5cd7439c02058a2abd719623cb3c465e1e9e224557641f359"
+        },
+        {
+          "message_index": 14,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "607f9db4867d12a5988debb540a95ac20ecc5b8ee93af426806a0fc25df5cc43"
+        },
+        {
+          "message_index": 16,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "bc65635a509feef657a62f815d13d460236c38d4cbececd0644db48e2fc318c5"
+        },
+        {
+          "message_index": 18,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "d5b99c3112a3df39aeb1917657e3e0e6f2d77223ef0298f022464825c19b13a2"
+        },
+        {
+          "message_index": 20,
+          "tool_name": "get_order_details",
+          "tool_type": "other",
+          "status": "success",
+          "arguments_sha256": "e4944b8e8fa9048b6fa8544aa2638868d394ed478d22cf567f9ebdb7f7320efc"
+        },
+        {
+          "message_index": 24,
+          "tool_name": "cancel_pending_order",
+          "tool_type": "write",
+          "status": "success",
+          "arguments_sha256": "4a573f0948cacfb86153807aa1a52b319543d1d2aeceebf9ccf6a6e1e4e050fa"
+        },
+        {
+          "message_index": 26,
+          "tool_name": "cancel_pending_order",
+          "tool_type": "write",
+          "status": "success",
+          "arguments_sha256": "47c28fa43f05934a9a87b814b7337665098459ba16ce4f22fd284a14f2de0c1a"
+        },
+        {
+          "message_index": 30,
+          "tool_name": "return_delivered_order_items",
+          "tool_type": "write",
+          "status": "success",
+          "arguments_sha256": "5034f053b1abf755364e4b714a247ccd4520b1f3ecab7e0ff260334f826d4372"
+        }
+      ],
+      "metrics": {
+        "agent_after_terminal_user": false,
+        "all_expected_writes_observed": false,
+        "analyzer_version": "retail-events-v1",
+        "any_expected_write_observed": true,
+        "communicate_reward": null,
+        "confirmation_terminal_before_write_candidate": false,
+        "cross_turn_exact_repeats": 0,
+        "db_reward": 0.0,
+        "duration_seconds": 103.89669383404544,
+        "expected_write_key_count": 4,
+        "expected_write_matched_count": 3,
+        "explicit_tool_errors": 1,
+        "latest_confirmation_received_candidate": false,
+        "nl_reward": 1.0,
+        "official_final_reward": 0.0,
+        "same_message_duplicate_calls": 0,
+        "same_message_excess_calls": 0,
+        "terminal_before_reference_write_candidate": false,
+        "terminal_confirmation_candidate": true,
+        "terminal_marker": "STOP",
+        "termination_reason": "user_stop",
+        "tool_calls": 12,
+        "unknown_tool_results": 0,
+        "write_after_latest_confirmation_candidate": false
+      }
+    },
+    {
+      "case_id": "C08",
+      "study_id": "retail-holdout-v1c-20261003",
+      "slot_id": "formal-t62-U2-r2",
+      "attempt": 0,
+      "status": "timeout",
+      "outcome_sha256": "93304363034e21ec4fc1210d096341c1695e7b3fa54e584ab002974021e83091",
+      "simulation_sha256": "2fe9f4c4a7885e2b387c2b22d90d0372a1a48f55e2cdeb97ec5a23b6781ff1b3",
+      "message_indices": [
+        0
+      ],
+      "selected_message_roles": [
+        {
+          "message_index": 0,
+          "role": "assistant"
+        }
+      ],
+      "tool_events": [],
+      "metrics": {
+        "agent_after_terminal_user": true,
+        "all_expected_writes_observed": null,
+        "analyzer_version": "retail-events-v1",
+        "any_expected_write_observed": null,
+        "communicate_reward": null,
+        "confirmation_terminal_before_write_candidate": false,
+        "cross_turn_exact_repeats": 0,
+        "db_reward": null,
+        "duration_seconds": null,
+        "expected_write_key_count": 0,
+        "expected_write_matched_count": 0,
+        "explicit_tool_errors": 0,
+        "latest_confirmation_received_candidate": false,
+        "nl_reward": null,
+        "official_final_reward": null,
+        "same_message_duplicate_calls": 0,
+        "same_message_excess_calls": 0,
+        "terminal_before_reference_write_candidate": false,
+        "terminal_confirmation_candidate": false,
+        "terminal_marker": "NONE",
+        "termination_reason": "None",
+        "tool_calls": 0,
+        "unknown_tool_results": 0,
+        "write_after_latest_confirmation_candidate": false
+      }
+    }
+  ],
+  "payload_sha256": "531fcb8673b798256c6d19b06bf1ffe9feb9ea1825e91f019f0957512873d2d1"
+}

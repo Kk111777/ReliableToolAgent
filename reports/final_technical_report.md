@@ -285,3 +285,8 @@ From the project environment, check the published files and retained local sourc
 ```
 
 The local check requires the retained raw files listed in the guide. For deterministic tests, follow the guide's public-file checks. For τ³ analysis or a new evaluation, use the commands in the [benchmark guide](../benchmark/tau3/README.md); its independent checkout remains pinned to commit `b7ea9074c1cba482b30687fecdb5c8425fd6f619`.
+
+
+## Subsequent frozen retail study (2026-10-04)
+
+The tables above remain the historical development results. A separate [35-task paired test study](frozen_study/retail-holdout-v1/README.md) · [中文](frozen_study/retail-holdout-v1/README.zh-CN.md) now retains all 210 first attempts. It finished below engineering acceptance (93/105 valid pairs, required 90%). Its compact metrics, task bootstrap, eight cases and offline checks are published separately. The planned 20-task train replication was not started; no native Guard improvement was measured.

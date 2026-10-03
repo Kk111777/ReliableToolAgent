@@ -82,4 +82,4 @@ For project setup and public-file checks, see the [reproduction guide](../../doc
 
 The [paired holdout guide](studies/retail-holdout-v1/README.md) · [中文](studies/retail-holdout-v1/README.zh-CN.md) describes the frozen 35-task U0/U2 follow-up, measurement fixtures, attempt ledger, bounded worker, usage observation, and paired bootstrap. Use `run_frozen_study.py` for this study; the historical launchers above remain unchanged.
 
-The [stratified replication](studies/retail-replication-v1/README.md) · [中文](studies/retail-replication-v1/README.zh-CN.md) adds a separately reported 20-task train sample. Both cohorts use fixed paired trials and a shared execution supervisor.
+The [20-task train replication plan](studies/retail-replication-v1/README.md) · [中文](studies/retail-replication-v1/README.zh-CN.md) was not started after the primary engineering gate failed. The [completed 35-task primary report](../../reports/frozen_study/retail-holdout-v1/README.md) · [中文](../../reports/frozen_study/retail-holdout-v1/README.zh-CN.md) retains all 210 first attempts. Historical supervisor caps are superseded; the recorded run used the separate budgeted runner.

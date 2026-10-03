@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "closed_at": "2026-10-04T06:59:14.552496+08:00",
+  "study_id": "retail-holdout-v1c-20261003",
+  "execution_state": "primary_schedule_finished",
+  "all_runner_locks_released_before_export": true,
+  "unfinished_paid_attempts": 0,
+  "raw_outcome_trajectory_and_request_hashes_checked_locally": true,
+  "formal_first_attempts_retained": 210,
+  "valid_formal_first_attempts": 197,
+  "invalid_formal_first_attempts": 13,
+  "additional_formal_attempts": 0,
+  "valid_first_trial_pairs": 93,
+  "planned_first_trial_pairs": 105,
+  "pair_completeness": 0.8857142857142857,
+  "required_pair_completeness": 0.9,
+  "engineering_gate_pass": false,
+  "release_boundary": "Completed execution schedule below engineering acceptance; diagnostic results only.",
+  "replication": {
+    "official_split": "train",
+    "planned_tasks": 20,
+    "planned_slots": 120,
+    "started_slots": 0,
+    "model_score": null,
+    "disposition": "not_started_engineering_gate_failed",
+    "manifest_sha256": "dfa76f5d7e427bfd1a3d399379e301e5806abfc0fdfdd78d553306985a4d0fb5"
+  },
+  "controller_decision": "No further controller expansion in this round; no independently measured native Agent Guard benefit.",
+  "file_sha256": {
+    "public_evidence.json": "958b52e1ecbcd36e40fbc33daf00983cd2ca1daa9b18cb1281820e2edee35335",
+    "summary.json": "e8c70b5acc1e8939ce724a85784ce05b893cca57be75218dc35e5825b38cda9b",
+    "report.md": "89abec3e95dfef10ced8f5d8dbf7604a0ca2c0197630130d691a0d2ae05d7183",
+    "report.zh-CN.md": "b74241ccbdd367957e683ebd00a702747f8a7cdacdede47d6631aef5949dd734",
+    "case_index.json": "fb7e5725a321bc920f5ee1c268f41db92874e30ee7ab6d80fa0c2932e7012e6f",
+    "cases.md": "40f8e2322a983c24e1e208cb352f7ffd482a2682a8784755787ef569ac7ffc27",
+    "cases.zh-CN.md": "0dae7fcda836ddbf52f06a18590f4cda3473d1eacbede3f3fbf8269985afa422",
+    "invalid_first_attempts.json": "acee2bbfd16aa46d435aa8ca8bf7a5bcdf67650acf245392d543d240e6a85fe3"
+  },
+  "boundary": "Local closure and raw checks are author attestations. Public checks recompute compact aggregates and case counters, not private semantic judgments or official rewards."
+}

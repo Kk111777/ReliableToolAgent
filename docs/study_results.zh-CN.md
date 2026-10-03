@@ -4,6 +4,8 @@
 
 test 主实验和 train 补充复核分别报告。每份报告先说明执行覆盖：计划槽位、已有首次尝试、有效结果、已评分但未满分、无效尝试和未启动槽位。重复 trial 不能算作更多独立任务。
 
+[已发布的主批次结果](../reports/frozen_study/retail-holdout-v1/README.zh-CN.md)：210 个首次尝试全部保留，工程门槛未通过。train 计划没有启动、没有分数。下方报告与案例命令的公开输入位于 `reports/frozen_study/retail-holdout-v1/`。
+
 ## 离线生成报告
 
 [`report_study_evidence.py`](../benchmark/tau3/scripts/report_study_evidence.py) 读取一个精简证据包，先核对来源版本和聚合，再在新目录中写入 `summary.json`、`report.md` 和 `report.zh-CN.md`。它不调用模型，不需要凭据或原生 benchmark checkout。两种语言使用同一份统计结果，不覆盖已有文件。
