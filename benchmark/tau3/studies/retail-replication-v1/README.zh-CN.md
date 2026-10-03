@@ -34,3 +34,5 @@ artifacts/frozen_study/combined_execution_status.json
 [补充分析器](../../scripts/analyze_replication.py) 报告首次尝试分母、缺失配对、任务级 bootstrap、共享实体敏感性和全部七种业务分层。这个分层 train 样本不会与主实验 test 样本混成一个基准分数。计划轨迹数不等于已完成结果；运行及证据核验结束后再报告统计结论。
 
 实现夹具与业务任务用途不同。本轮增加原生公开基准任务，已有 T01–T05 脚本机制测试保持固定。两个批次都不用于调优恢复控制器。
+
+[精简证据导出与离线复算](../../scripts/study_evidence.py)也支持本批次。完成后将输入目录换为 `artifacts/frozen_study/retail-replication-v1`；程序使用补充任务审计和全部七种分层，保留 train split 标签，检查首次尝试与补跑身份。两个批次分别导出；计算累计费用时，沿用的 smoke 费用需要去重。实验进行中尚无最终证据包。

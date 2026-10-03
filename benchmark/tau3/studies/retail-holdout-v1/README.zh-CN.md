@@ -85,3 +85,20 @@
 - 不根据留出集结果调整 Agent、Guard、prompt 或事件规则。新增恢复机制需要另立假设及评估集；目标失败不足五个不同公开任务时，停止扩展控制器。
 
 完整轨迹保留在本地。公开精简指标支持重算汇总和置信区间，但不能独立核实每条官方 reward；选定的开发片段支持在没有 API 的情况下检查事件分析器。
+
+## 精简证据复算
+
+[`study_evidence.py`](../../scripts/study_evidence.py) 核对本地 outcome、轨迹和请求记录的哈希后，导出不可覆盖的精简证据包。它的离线 `audit` 入口重算冻结汇总、任务级区间、缺失槽位、延迟及各角色用量。只累加已返回用量的输入和输出 token；推理 token 已包含在输出中。缺失用量单列，并保留费用预留。校验和用于识别文件和检查一致性；没有私有轨迹时，它不能认证官方 reward。
+
+实验仍在运行，尚未发布最终证据包。完整本地实验结束后执行：
+
+```bash
+.venv/bin/python benchmark/tau3/scripts/study_evidence.py export \
+  --input artifacts/frozen_study/retail-holdout-v1c \
+  --output artifacts/frozen_study/retail-holdout-v1c/public_evidence.json
+
+.venv/bin/python benchmark/tau3/scripts/study_evidence.py audit \
+  --input artifacts/frozen_study/retail-holdout-v1c/public_evidence.json
+```
+
+导出需要保留的本地证据；复算只需精简证据包及对应版本的公开源码，不需要模型凭据或原生基准 checkout。默认拒绝未完成的实验和已存在的输出文件。`--allow-incomplete` 只用于明确标记的本地诊断，会注明未完成并列出尚未开始的槽位。[合同测试](../../tests/test_study_evidence.py)覆盖身份错乱、汇总篡改、用量缺失和补充实验的独立分层。
