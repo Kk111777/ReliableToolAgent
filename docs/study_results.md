@@ -16,6 +16,19 @@ The test-split study and the train-split replication are separate cohorts. Each 
 
 The [compact export and audit](../benchmark/tau3/studies/retail-holdout-v1/README.md#compact-evidence-checks) verify local raw evidence before packaging. A public clone can regenerate the report from the matching compact bundle and source version. This recomputes reported metrics; it does not independently rescore private trajectories.
 
+## Checking case records
+
+[`audit_study_cases.py`](../benchmark/tau3/scripts/audit_study_cases.py) checks a sanitized `case_index.json` against the matching compact evidence. Once both files are available, use their actual paths:
+
+```bash
+.venv/bin/python benchmark/tau3/scripts/audit_study_cases.py \
+  --evidence /path/to/public_evidence.json --cases /path/to/case_index.json
+```
+
+The check first audits the evidence bundle, then matches every case to its retained attempt, outcome hash, simulation hash and frozen metrics. It recomputes tool calls, explicit errors, unknown results, same-message duplicates and cross-turn repeats from the sanitized event sequence. Duplicate case identities, omitted tool events, mismatched metrics and unexpected raw argument or message fields are rejected. A case with no tool calls is allowed.
+
+Only argument hashes and message positions are retained. Positions and roles are checked for internal consistency; the public check cannot establish that they match an unpublished trajectory. Source hashes likewise identify local evidence rather than authenticate it. Semantic interpretation still requires the author's raw review, and a selected case collection is not random or independent annotation. This entry point is available before final cases are published; it does not certify that a study has finished.
+
 ## Denominators and missing results
 
 | Field | Meaning |
