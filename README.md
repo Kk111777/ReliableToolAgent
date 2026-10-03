@@ -92,6 +92,8 @@ With the Agent fixed, changing the Simulator changed premature termination **8/1
 
 A [frozen 35-task test study](benchmark/tau3/studies/retail-holdout-v1/README.md) and a separate [20-task stratified replication](benchmark/tau3/studies/retail-replication-v1/README.md) add 55 different retail tasks and 330 planned paired trajectories. The runner preserves every attempt and interrupted trajectory, records request usage and estimated fees, and supports offline task-level bootstrap. At the budget pause on 2026-10-04, 108 of 210 formal first attempts had been retained; the train replication had not started. The [budgeted resume path](docs/budgeted_execution.md) checks total request costs while preserving the frozen protocol. These planned slots are separate from the historical results above.
 
+The [cohort report guide](docs/study_results.md) explains the offline bilingual reports and how incomplete coverage, infrastructure failures and additional attempts are reported.
+
 ## Quick Start
 
 Requires Python 3.12 and `uv`. No model credentials are needed for these checks.
