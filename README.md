@@ -1,5 +1,7 @@
 # ReliableToolAgent
 
+**English** | [简体中文](README.zh-CN.md)
+
 **A reproducible harness for tool-agent reliability, runtime safeguards, and trajectory-level failure analysis across controlled tests and public τ³ retail auditing.**
 
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB)](https://www.python.org/)
