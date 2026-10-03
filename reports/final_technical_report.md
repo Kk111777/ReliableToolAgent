@@ -1,5 +1,9 @@
 # ReliableToolAgent: Final Technical Report
 
+The project combines runtime changes, controlled toy experiments, and a separate τ³ retail study. This report records the experiment design and full results behind the [project overview](../README.md).
+
+Read [Sections 4–5](#4-structured-error--retry-framing-ablation) for the toy studies, [Sections 9–10](#9-user-simulator-confound) for the Simulator diagnostic and public audit, and [Section 13](#13-limitations) for limitations. Setup and data requirements are in the [reproduction guide](../docs/reproduction.md).
+
 ## 1. Motivation
 
 Tool-calling agents can produce a correct final answer while still making redundant calls, mishandling tool failures, or ending at an ambiguous point in a multi-turn workflow. ReliableToolAgent was built to make those behaviors observable and attributable before introducing a recovery mechanism.
@@ -14,11 +18,21 @@ The project therefore separates three questions:
 
 The initial research question was whether raw or structured tool-error feedback, retry framing, and a narrowly scoped duplicate-failure guard could make tool-calling behavior more reliable.
 
-The later benchmark question was more conservative:
+The public study then asked:
 
 > Can the same observability and attribution pipeline be validated on a public multi-turn benchmark without changing the official Agent loop?
 
 The final public-benchmark evidence is diagnostic. It is not a leaderboard claim and does not establish a general improvement from any intervention.
+
+```mermaid
+flowchart LR
+    P[Toy pilot] --> A[Controlled ablation]
+    A --> M[Public benchmark migration]
+    M --> F[Initial failure audit]
+    F --> S[Fixed-Agent Simulator study]
+    S --> C[Clean development audit]
+    C --> D[Stop controller extension]
+```
 
 ## 3. Controlled Pilot
 
@@ -61,6 +75,15 @@ The original artifact-level results were mixed rather than uniformly positive ac
 | E2 raw, no retry | 0.9583 | 0.2083 | 1.5000 |
 | E3 structured, no retry | 1.0000 | 0.1250 | 1.6667 |
 
+Execution counts for the same runs:
+
+| Condition | Terminal violations | Duplicate failed calls | Avg. tool calls | Avg. model calls |
+|---|---:|---:|---:|---:|
+| E0 raw + retry | 32 | 29 | 2.3333 | 3.3333 |
+| E1 structured + retry | 53 | 50 | 3.2083 | 4.2083 |
+| E2 raw, no retry | 36 | 33 | 2.5000 | 3.5000 |
+| E3 structured, no retry | 40 | 40 | 2.6667 | 3.6667 |
+
 Scoring-version note: the table preserves original recorded metrics. The existing [`evaluator-v2-ablation-summary.json`](evaluator-v2-ablation-summary.json) reports E2 success as `1.0000` (24/24) instead of `0.9583` (23/24). Only P04/r01 changes its success label: v2 accepts the already-produced Chinese missing-order wording “无法找到”. The answer and trajectory did not change. The [packaging audit](packaging_audit_20261003.md) records the comparison; neither existing result file was rewritten.
 
 In this four-condition study, structured feedback had more duplicate failed calls than raw feedback under both retry settings: 29→50 with retry ON and 33→40 with retry OFF. Its additional average tool-call burden was larger with retry ON (0.8750) than OFF (0.1667). This is a descriptive adverse interaction, without a significance claim. The separate earlier 48-pair raw/structured pilot in `artifacts/comparison/` reported a small average reduction in duplicate-failed calls; it is historical evidence from a different experiment and must not be substituted for the 2×2 results. Neither study supports a consistent general benefit from metadata or retry framing.
@@ -77,6 +100,16 @@ The recorded Guard artifact is a smoke experiment on P03, P04, and P05, one repe
 | G1, duplicate guard | 3 | 3 | 3 | 0 |
 
 Both conditions had task success `1.0` on this small smoke set. The Guard therefore demonstrated instrumentation and blocking semantics in the toy fixture, but this artifact is not a public-benchmark result and is too small to support a general reliability or cost claim.
+
+| Additional toy metric | Guard OFF | Guard ON |
+|---|---:|---:|
+| Task success | 3/3 | 3/3 |
+| Terminal violations | 6 | 3 |
+| Unnecessary attempts | 6 | 3 |
+
+A blocked call is an Agent attempt that did not execute the tool. The Guard smoke retained three such attempts, so zero duplicate executed failures does not mean the model stopped proposing duplicates. Retryable failures and different arguments remain allowed. The Guard neither selects the next tool nor produces a final answer.
+
+For example, P03 queries a missing order. Once the non-retryable failure is recorded, the same tool and normalized arguments produce a blocked observation instead of another tool execution. This checks the runtime mechanism; it does not demonstrate an improvement in Agent policy. Failure history is cleared between runs and does not provide in-flight deduplication or universal idempotence.
 
 ## 6. Why the Toy Environment Was Insufficient
 
@@ -127,6 +160,19 @@ The offline analyzer reads official serialized trajectories and records:
 Arguments are normalized with canonical JSON: dictionary keys are sorted, list order is preserved, and no fuzzy or semantic matching is applied.
 
 The analyzer is deliberately descriptive. It does not label a repeated call as unnecessary and does not infer hidden model reasoning.
+
+### Metric definitions
+
+| Metric | Definition |
+|---|---|
+| Toy timely stop | Fraction of runs with no recorded terminal violation; successful task handling and unnecessary attempts are measured separately. |
+| Expected WRITE observed | At least one successful WRITE matches an expected action's tool name and canonical arguments from official reward metadata. It is an offline check, not a substitute for final/DB reward. |
+| Explicit tool failure | A parsed tool observation has error status; Simulator or evaluator termination is not a tool error. |
+| Exact repeat | Same tool and canonical arguments; dictionary keys are sorted, list order is retained, and no semantic matching is used. |
+| Same-message duplicate calls | Counts all calls in a duplicate group. The clean audit's two calls are one pair, not two additional redundant calls beyond the first. |
+| Valid public run | A simulation that is not infrastructure-invalid. T04 remains in attempted-run counts but is excluded from Agent-behavior rates. |
+
+The [source audit](packaging_audit_20261003.md) connects these definitions to retained files and source hashes. Failed calls can be present only in `model_output_message.tool_calls`, so the toy evaluator also checks those attempted calls rather than relying solely on the completed step's tool list.
 
 ## 9. User Simulator Confound
 
@@ -194,11 +240,11 @@ The only valid reward-zero case was T05:
 - that expected return was not successfully executed;
 - the User Simulator ended the simulation after the Agent explained the order-state restriction.
 
-T05 is consequently a residual failure candidate, not a clean proof of an Agent-only defect. The artifact supports two simultaneous facts: the final expected WRITE did not happen, and the User Simulator terminal signal prevented further turns. The detailed offline reconstruction is in [`residual_case_T05.md`](residual_case_T05.md).
+The expected return was missing and the Simulator ended the conversation. The trace does not isolate which component should have handled the changed request differently. The detailed reconstruction is in [`residual_case_T05.md`](residual_case_T05.md).
 
 ## 12. Negative Results / Abandoned Hypotheses
 
-The project deliberately stops before adding another intervention.
+The findings did not justify another controller:
 
 - Structured error feedback did not produce a consistent improvement in the controlled ablation.
 - Generic retry framing did not produce a consistent improvement.
@@ -206,9 +252,7 @@ The project deliberately stops before adding another intervention.
 - The clean τ³ audit contained zero cross-turn exact repeats, so it does not provide evidence for migrating a cross-turn duplicate guard.
 - The only valid reward-zero case is entangled with User Simulator termination and a changed user request.
 
-These negative results narrow the claim: the project has stronger observability and failure attribution, not a validated recovery algorithm for τ³.
-
-The research progression is hypothesis → controlled test → external validation → Simulator-confound discovery → a no-go decision for further controller work at this measured scope. Rejecting that extension follows the observed failure distribution; it is not a claim that recovery loops never occur in other tasks or Agent configurations.
+The initial retry-loop hypothesis held in the toy tasks but did not describe the main failure pattern in the clean public subset. Controller work stopped at that point. This decision applies to the measured configuration; other tasks and Agents may have different failure patterns.
 
 ## 13. Limitations
 
@@ -219,44 +263,25 @@ The research progression is hypothesis → controlled test → external validati
 - Cost values are unavailable for the Qwen snapshots because LiteLLM did not have a matching price-map entry; runner cost displays of `$0.0000` should not be read as zero real cost.
 - The User Simulator diagnostic is not a randomized model comparison and should not be interpreted as a general model ranking.
 - The residual attribution is observational; no causal intervention was run on τ³.
+- Original E2 task success is 23/24 and the existing v2 rescore is 24/24; both versions use the same trajectory. Report the scoring version rather than treating the difference as an Agent gain.
+- Raw model trajectories remain local. A public clone can check snapshots and deterministic tests, but cannot independently recompute all recorded experimental outcomes.
+- The Guard acts on recorded failure history within one run. It does not guarantee concurrent-call deduplication, and failures dependent on changing environment state require separate invalidation semantics before wider use.
 
 ## 14. Conclusions
 
-ReliableToolAgent completed the engineering and measurement objective:
+The runtime changes made tool attempts, execution results, and blocking behavior visible. Controlled tests showed that structured errors alone did not reliably improve stopping, while the narrow Guard prevented repeated execution in its toy smoke.
 
-1. A deterministic harness made tool, fault, memory, trajectory, evaluator, and logger behavior testable.
-2. Structured errors, retry framing, and duplicate-failure behavior were isolated in controlled toy experiments.
-3. Per-tool-call observability was carried to a public benchmark without changing the official τ³ runtime.
-4. User Simulator termination was identified as an important confound.
-5. The clean U2 retail audit completed with 18/19 valid tasks receiving reward 1, while retaining one clearly documented residual case and one infrastructure-invalid task.
-
-The defensible project claim is therefore:
-
-> Built a reliability observability and failure-attribution pipeline for tool-calling agents, validated first in controlled fault-injection experiments and then on a pinned public τ³ retail benchmark; the study found mixed toy intervention results and identified User Simulator termination as a major confound, without claiming a τ³ recovery improvement.
+The native τ³ study exposed a different issue: changing the User Simulator changed measured outcomes under a fixed Agent. The clean audit then recorded 18/19 valid successes and no cross-turn exact repeats. Together, these results support the observability workflow and the decision to stop further retry-controller work for this subset.
 
 ## 15. Reproducibility
 
-The main configurations and artifacts are indexed in [`artifact_index.md`](artifact_index.md).
+The [reproduction guide](../docs/reproduction.md) separates public-file checks, retained-raw checks, and paid benchmark execution. Configurations and source paths are listed in [`artifact_index.md`](artifact_index.md).
 
-Toy tests and reports:
-
-```bash
-.venv/bin/python -m pytest -q local_demo
-.venv/bin/python -m local_demo.rescore --source all
-```
-
-τ³ analysis of already-produced artifacts:
+From the project environment, check the published files and retained local sources without making model calls:
 
 ```bash
-cd tau2-bench-baseline
-PYTHONPATH=scripts .venv/bin/python \
-  scripts/analyze_retail_observability.py \
-  --input data/simulations/tau3-retail-clean-u2-20x1/results.json \
-  --output-dir data/analysis/retail-observability/clean-u2-20x1 \
-  --max-cases 100
-
-PYTHONPATH=scripts .venv/bin/python \
-  scripts/analyze_clean_u2_failure_audit.py
+.venv/bin/python scripts/audit_packaging_evidence.py
+.venv/bin/python scripts/audit_packaging_evidence.py --local
 ```
 
-The τ³ checkout is independent of the original toy-project environment and remains pinned to commit `b7ea9074c1cba482b30687fecdb5c8425fd6f619`.
+The local check requires the retained raw files listed in the guide. For deterministic tests, follow the guide's public-file checks. For τ³ analysis or a new evaluation, use the commands in the [benchmark guide](../benchmark/tau3/README.md); its independent checkout remains pinned to commit `b7ea9074c1cba482b30687fecdb5c8425fd6f619`.

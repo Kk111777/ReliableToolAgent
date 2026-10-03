@@ -19,4 +19,4 @@ Run these commands at the repository root. `.venv-presentation` is ignored by Gi
 
 The plot is a non-randomized development diagnostic. It does not show an Agent algorithm improvement, error bars, a confidence interval, or a universal Simulator ranking. U0 includes one replacement of an infrastructure-invalid trial, disclosed in the [audit](../reports/packaging_audit_20261003.md).
 
-The two architecture diagrams remain Mermaid in [README](../README.md#system--experiment-architecture); no decorative pipeline image duplicates them.
+The runtime diagram is Mermaid in the [project overview](../README.md#architecture). The research workflow appears in the [technical report](../reports/final_technical_report.md#2-research-question).

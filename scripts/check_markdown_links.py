@@ -69,6 +69,8 @@ def main():
     defaults = [
         ROOT / "README.md",
         ROOT / "README.zh-CN.md",
+        ROOT / "docs/reproduction.md",
+        ROOT / "docs/reproduction.zh-CN.md",
         *sorted(p for p in (ROOT / "reports").glob("*.md") if p.name != "resume_notes.md"),
         ROOT / "benchmark/tau3/README.md",
         ROOT / "assets/README.md",

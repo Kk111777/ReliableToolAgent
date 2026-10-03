@@ -1,15 +1,15 @@
-# Artifact Index
+# Evidence Index
 
-This index separates files intended for GitHub review from raw local artifacts. Raw model trajectories are retained locally but omitted from the repository because they are large, provider-generated, and unnecessary for a first-pass code review.
+Each study below links its code and public snapshot to the retained local inputs. Start with the [project overview](../README.md) · [中文](../README.zh-CN.md), or use the [reproduction guide](../docs/reproduction.md) · [中文](../docs/reproduction.zh-CN.md) to check or run the project.
 
 ## Phase A — Controlled Toy Pilot
 
 | Experiment | Scope | Public implementation / report | Local raw source of truth |
 |---|---|---|---|
 | Scripted baseline and fault harness | T01–T05; deterministic fake model | [`local_demo/run.py`](../local_demo/run.py), [`test_smoke.py`](../local_demo/test_smoke.py) | `artifacts/scripted-*.json` |
-| Raw error baseline | 48 task runs | [`pilot.py`](../local_demo/pilot.py), [technical report](final_technical_report.md) | `artifacts/raw-error/` |
-| Structured error baseline | 48 task runs | [`test_structured_errors.py`](../local_demo/test_structured_errors.py), [technical report](final_technical_report.md) | `artifacts/structured-error/` |
-| Raw/structured comparison | Paired 48-run comparison | [`compare_runs.py`](../local_demo/compare_runs.py) | `artifacts/comparison/` |
+| Raw error baseline | Historical pilot: 48 task runs | [`pilot.py`](../local_demo/pilot.py), [technical report](final_technical_report.md) | `artifacts/raw-error/` |
+| Structured error baseline | Historical pilot: 48 task runs | [`test_structured_errors.py`](../local_demo/test_structured_errors.py), [technical report](final_technical_report.md) | `artifacts/structured-error/` |
+| Raw/structured comparison | Historical pilot: 48 paired runs | [`compare_runs.py`](../local_demo/compare_runs.py) | `artifacts/comparison/` |
 | Retry-framing 2×2 | E0–E3; 24 runs per condition; 96 total | [`ablation.py`](../local_demo/ablation.py), [`evaluator-v2-ablation-summary.json`](evaluator-v2-ablation-summary.json) | `artifacts/qwen35-flash-ablation/` |
 | Per-call logging | Success, failure, parallel-success, parallel-mixed steps | [`test_tool_call_logging.py`](../local_demo/test_tool_call_logging.py) | Generated test trajectories |
 | Duplicate Failure Guard V1 | P03–P05; G0/G1 smoke run | [`test_duplicate_guard.py`](../local_demo/test_duplicate_guard.py), [technical report](final_technical_report.md) | `artifacts/qwen35-flash-guard-v1/` |
@@ -71,20 +71,21 @@ T04 is infrastructure-invalid and excluded from Agent-behavior rates. T05 is the
 
 | Item | Entry | Scope |
 |---|---|---|
-| Project overview | [README](../README.md) | Original implementation, findings, two Mermaid diagrams, one diagnostic chart |
+| Project overview | [English](../README.md) · [中文](../README.zh-CN.md) | Implementation, result summary, one runtime diagram, one diagnostic chart |
+| Setup and reproduction | [English](../docs/reproduction.md) · [中文](../docs/reproduction.zh-CN.md) | Public checks, retained-raw checks, separate benchmark execution |
 | Read-only evidence check | [`audit_packaging_evidence.py`](../scripts/audit_packaging_evidence.py) | Public snapshot consistency; optional retained-raw re-analysis and source hashes |
 | Presentation snapshot | [`packaging_evidence_20261003.json`](packaging_evidence_20261003.json) | Existing toy, Guard, Simulator, clean-audit values; no new experiment |
 | Packaging/source audit | [`packaging_audit_20261003.md`](packaging_audit_20261003.md) | Claim provenance, scoring discrepancy, denominator and interpretation boundaries |
 | Simulator figure | [Asset notes](../assets/README.md), [generator](../scripts/build_presentation_assets.py) | Plots existing saved counts; source and figure hashes |
 | Documentation checks | [`check_markdown_links.py`](../scripts/check_markdown_links.py) | Local links, Markdown anchors, image existence; no external URL fetches |
 
-Formal reproduction scripts, historical pilots, diagnostic intermediates, and retained raw artifacts remain in their current locations. No archive relocation is needed to navigate them. Inherited `examples/` and most `docs/source/` are upstream framework material.
+Launchers run the studies; analyzers read saved trajectories. Historical pilots and raw inputs remain in their existing locations. `examples/` and most `docs/source/` are inherited upstream framework material.
 
 ## Fast review order
 
 1. [README](../README.md)
 2. [`final_technical_report.md`](final_technical_report.md)
-3. [τ³ evidence bundle](../benchmark/tau3/README.md)
+3. [Reproduction guide](../docs/reproduction.md)
 4. [`packaging_audit_20261003.md`](packaging_audit_20261003.md)
 5. [`residual_case_T05.md`](residual_case_T05.md)
 6. [`local_demo/run.py`](../local_demo/run.py)
