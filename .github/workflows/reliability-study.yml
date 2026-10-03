@@ -10,6 +10,7 @@ on:
       - "scripts/**"
       - "README*"
       - "docs/reproduction*"
+      - "docs/budgeted_execution*"
       - ".github/workflows/reliability-study.yml"
   push:
     branches: [main]
@@ -40,8 +41,8 @@ jobs:
           python scripts/audit_packaging_evidence.py
           python benchmark/tau3/scripts/audit_frozen_study.py
           python scripts/check_markdown_links.py
-          python scripts/check_markdown_links.py benchmark/tau3/studies/retail-holdout-v1/README.md benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md benchmark/tau3/studies/retail-replication-v1/README.md benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md 开始这里.md
+          python scripts/check_markdown_links.py benchmark/tau3/studies/retail-holdout-v1/README.md benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md benchmark/tau3/studies/retail-replication-v1/README.md benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md docs/budgeted_execution.md docs/budgeted_execution.zh-CN.md 开始这里.md
       - name: Check study code style
         run: |
-          ruff check benchmark/tau3/scripts/frozen_study.py benchmark/tau3/scripts/study_worker.py benchmark/tau3/scripts/run_frozen_study.py benchmark/tau3/scripts/analyze_frozen_study.py benchmark/tau3/scripts/audit_frozen_study.py benchmark/tau3/scripts/prepare_frozen_replay.py benchmark/tau3/scripts/extend_retail_design.py benchmark/tau3/scripts/analyze_replication.py benchmark/tau3/scripts/finish_retail_studies.py benchmark/tau3/scripts/study_evidence.py benchmark/tau3/tests
-          ruff format --check benchmark/tau3/scripts/frozen_study.py benchmark/tau3/scripts/study_worker.py benchmark/tau3/scripts/run_frozen_study.py benchmark/tau3/scripts/analyze_frozen_study.py benchmark/tau3/scripts/audit_frozen_study.py benchmark/tau3/scripts/prepare_frozen_replay.py benchmark/tau3/scripts/extend_retail_design.py benchmark/tau3/scripts/analyze_replication.py benchmark/tau3/scripts/finish_retail_studies.py benchmark/tau3/scripts/study_evidence.py benchmark/tau3/tests
+          ruff check benchmark/tau3/scripts/frozen_study.py benchmark/tau3/scripts/study_worker.py benchmark/tau3/scripts/run_frozen_study.py benchmark/tau3/scripts/analyze_frozen_study.py benchmark/tau3/scripts/audit_frozen_study.py benchmark/tau3/scripts/prepare_frozen_replay.py benchmark/tau3/scripts/extend_retail_design.py benchmark/tau3/scripts/analyze_replication.py benchmark/tau3/scripts/finish_retail_studies.py benchmark/tau3/scripts/study_evidence.py benchmark/tau3/scripts/run_budgeted_study.py benchmark/tau3/tests
+          ruff format --check benchmark/tau3/scripts/frozen_study.py benchmark/tau3/scripts/study_worker.py benchmark/tau3/scripts/run_frozen_study.py benchmark/tau3/scripts/analyze_frozen_study.py benchmark/tau3/scripts/audit_frozen_study.py benchmark/tau3/scripts/prepare_frozen_replay.py benchmark/tau3/scripts/extend_retail_design.py benchmark/tau3/scripts/analyze_replication.py benchmark/tau3/scripts/finish_retail_studies.py benchmark/tau3/scripts/study_evidence.py benchmark/tau3/scripts/run_budgeted_study.py benchmark/tau3/tests

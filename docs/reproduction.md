@@ -75,3 +75,6 @@ The 30 development inspection traces and 12 synthetic protocol fragments check e
 The [separate stratified replication](../benchmark/tau3/studies/retail-replication-v1/README.md) extends coverage while keeping test and train cohorts separate.
 
 The [compact evidence commands](../benchmark/tau3/studies/retail-holdout-v1/README.md#compact-evidence-checks) separate local raw verification/export from public offline aggregate checks. The audit verifies identities, source versions, billing coverage and recomputed summaries; it does not call a model or independently rescore private trajectories. Final bundles will be published after execution and review.
+
+
+Recorded paid execution uses the [budgeted resume guide](budgeted_execution.md). It separates original list prices, confirmed discounts, reported balances and missing-usage reservations; old manifest caps are historical. The default command makes no model calls.

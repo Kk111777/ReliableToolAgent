@@ -75,3 +75,6 @@ E2 原始任务成功为 23/24，已有 evaluator-v2 重评分为 24/24，使用
 [独立的分层补充复核](../benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md) 扩大任务覆盖，test 与 train 两个批次分别报告。
 
 [精简证据命令](../benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md#精简证据复算)将本地原始记录核验／导出与公开离线汇总复算分开。复算检查身份、源码版本、费用覆盖和重算汇总，不调用模型，也不独立重评私有轨迹。最终证据包待运行及审阅完成后发布。
+
+
+当前付费执行使用[按预算恢复说明](budgeted_execution.zh-CN.md)，分别保留原价、已确认折扣、报告余额和缺失用量预留；旧 manifest 上限只代表历史计划。默认命令不调用模型。

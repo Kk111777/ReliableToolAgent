@@ -43,7 +43,7 @@ From the project root, these checks require no credentials and make no model cal
   --output artifacts/frozen_study/retail-holdout-v1c --phase formal
 ```
 
-For paid execution, keep a separate pinned checkout at `tau2-bench-baseline/` with its own `.venv`. Put `OPENAI_API_KEY` and `OPENAI_API_BASE` in the project root's ignored `.env`. The runner reads credentials only with `--run`, then invokes the benchmark interpreter:
+The following original-run commands are retained for historical smoke/replay context. Resume of the recorded study must use the [external budget policy](../../../../docs/budgeted_execution.md), because the original saved cap is obsolete. For paid execution, keep a separate pinned checkout at `tau2-bench-baseline/` with its own `.venv`. Put `OPENAI_API_KEY` and `OPENAI_API_BASE` in the project root's ignored `.env`. The runner reads credentials only with `--run`, then invokes the benchmark interpreter:
 
 ```bash
 .venv/bin/python benchmark/tau3/scripts/run_frozen_study.py \
@@ -81,7 +81,7 @@ Then use that manifest and a new output directory with the runner commands above
 - Confidence intervals resample tasks with all three trial pairs together: 5,000 draws, seed `20261003`. Shared-entity and task-family sensitivity results accompany the primary interval.
 - At least 90% valid trial pairs and at most 10% infrastructure/timeout first attempts form an engineering gate, not a significance test. Missing pairs and incomplete three-trial tasks remain visible.
 - Prices come from the [provider's Beijing price table](https://help.aliyun.com/zh/model-studio/model-pricing). Known returned usage uses list prices, including reasoning output. Missing usage and unfinished requests retain a conservative reservation. Estimates are not a verified invoice or account balance.
-- The initial preflight plus revised study share a RMB 300 cap and at most 224 simulation attempts. Three consecutive infrastructure/deadline failures stop execution for diagnosis.
+- The historical manifest records a RMB 300 cap; this has been superseded for operational execution. The external policy uses the confirmed discount, current authorized balance and historical request reserves. The original limit of at most 224 simulation attempts remains. Three consecutive infrastructure/deadline failures stop execution for diagnosis.
 - Holdout outcomes do not tune the Agent, Guard, prompt, or event rules. A new recovery mechanism needs a separate hypothesis and evaluation set; fewer than five distinct tasks with the target failure stops controller expansion.
 
 Full trajectories remain local. Published compact metrics support recomputing aggregates and confidence intervals; they do not independently verify every official reward. The selected development fragments support checking the event analyzer without API access.
@@ -90,7 +90,7 @@ Full trajectories remain local. Published compact metrics support recomputing ag
 
 [`study_evidence.py`](../../scripts/study_evidence.py) exports an immutable compact bundle after checking retained outcome, trajectory and request hashes. Its offline `audit` command recomputes the frozen aggregates, task-level intervals, missing-slot list, latency and usage by role. Input and completion tokens are counted only where usage was returned; reasoning tokens are a part of completion tokens. Missing usage keeps its budget reservation and is reported separately. Checksums identify files and detect inconsistencies; they do not authenticate a reward without the private trajectory.
 
-The study is still running, so no final bundle is published yet. After a local study finishes:
+At the budget pause on 2026-10-04, 108/210 formal first attempts were retained (101 valid, five infrastructure errors, two operator cancellations saved as timeouts). No final bundle is published yet. After a local study finishes:
 
 ```bash
 .venv/bin/python benchmark/tau3/scripts/study_evidence.py export \

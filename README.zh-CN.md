@@ -90,7 +90,7 @@ Reward 为零可能来自 Agent 决策、工具执行、Simulator 行为，也�
 
 ## Retail 配对复核
 
-[35 个 test 任务的冻结主实验](benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md)与独立的[20 任务分层补充复核](benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md)，合计增加 55 个不同 retail 任务、330 条计划配对轨迹。运行器保存每次尝试与中断轨迹，记录请求用量和估算费用，并支持离线任务级 bootstrap。实验正在运行，计划槽位与上方历史结果分开报告。
+[35 个 test 任务的冻结主实验](benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md)与独立的[20 任务分层补充复核](benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md)，合计增加 55 个不同 retail 任务、330 条计划配对轨迹。运行器保存每次尝试与中断轨迹，记录请求用量和估算费用，并支持离线任务级 bootstrap。2026-10-04 因预算调整暂停时，210 个正式首次槽位中已有 108 个记录，train 补充复核尚未启动。[按预算恢复的入口](docs/budgeted_execution.zh-CN.md)检查总请求费用并保留冻结协议。计划槽位与上方历史结果分开报告。
 
 ## 快速开始（Quick Start）
 
