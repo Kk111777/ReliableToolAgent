@@ -45,6 +45,8 @@ Adding `--run` reads the ignored root `.env` and starts paid attempts only after
 
 Cancellation saves the current worker's partial evidence before releasing locks. A policy or runner edit during execution stops the next attempt; frozen source edits are also rejected. No request is launched if its reservation cannot fit. If returned usage exceeds a reservation, the excess is recorded and execution stops; the guard cannot undo a provider charge already incurred.
 
+Known operator cancellations can be annotated by original outcome hashes retained in the immutable balance baseline. They keep their frozen `timeout / StudyDeadline` status and cost, but do not count as provider failures in the consecutive-failure stop gate. The runner rejects annotations for valid results, other error classes or outcomes absent from the baseline. Three genuine execution failures still stop the run.
+
 ## Validation and result boundary
 
 The [contracts](../benchmark/tau3/tests/test_budgeted_study.py) cover reused smoke, preflight and retry costs, unknown usage, torn evidence, discounts, balance anchors, competing locks, dry-run isolation, and refusal before a request reaches the provider. They verify accounting and execution behavior, not model quality.

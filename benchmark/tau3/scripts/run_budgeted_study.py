@@ -83,6 +83,7 @@ class BudgetPolicy:
     inventory: CostInventory
     discount_factor: float = 1.0
     baseline_records: tuple[dict, ...] = ()
+    operator_cancellations: frozenset[str] = frozenset()
 
     @classmethod
     def load(cls, path: Path, base: Path) -> BudgetPolicy:
@@ -128,7 +129,18 @@ class BudgetPolicy:
             maximum = Decimal(str(known)) * Decimal(str(factor)) + Decimal(str(amount))
             if Decimal(str(cap)) > maximum:
                 raise ValueError("total cap exceeds the reported balance plus already measured cost")
-        return cls(float(cap), data["frozen_manifest_sha256"], CostInventory(outputs), float(factor), baseline_records)
+        cancellations = frozenset(data.get("operator_cancelled_outcomes", []))
+        historical_outcomes = {row["files_sha256"].get("outcome.json") for row in baseline_records}
+        if not cancellations <= historical_outcomes:
+            raise ValueError("operator cancellation must reference immutable baseline outcomes")
+        return cls(
+            float(cap),
+            data["frozen_manifest_sha256"],
+            CostInventory(outputs),
+            float(factor),
+            baseline_records,
+            cancellations,
+        )
 
     def verify_baseline(self) -> None:
         """The balance anchor remains valid only while all earlier records are retained."""
@@ -186,6 +198,18 @@ def lock_outputs(stack: ExitStack, base: Path, output: Path, inventory: CostInve
         fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
 
+def systemic_failures(ledger: list[dict], operator_cancellations: frozenset[str]) -> bool:
+    """Operation cancellations stay in the ledger but are not provider failures."""
+    relevant = []
+    for row in ledger:
+        if row.get("outcome_sha256") in operator_cancellations:
+            if row["status"] != "timeout" or row.get("error_class") != "StudyDeadline":
+                raise ValueError("operator-cancellation annotation disagrees with saved outcome")
+        else:
+            relevant.append(row)
+    return len(relevant) >= 3 and all(r["status"] != "valid" for r in relevant[-3:])
+
+
 def execute(
     root: Path, output: Path, policy_path: Path, *, run: bool, limit: int | None = None, retries: bool = False
 ) -> dict:
@@ -231,7 +255,7 @@ def execute(
             raise ValueError("four original smoke attempts must pass validation")
         if any(r["status"] == "budget_stop" for r in ledger):
             raise ValueError("a prior budget stop is final for this operational run")
-        if len(ledger) >= 3 and all(r["status"] != "valid" for r in ledger[-3:]):
+        if systemic_failures(ledger, policy.operator_cancellations):
             raise ValueError("three consecutive execution failures require diagnosis")
         snapshot = policy.snapshot()
         policy.verify_baseline()
@@ -351,7 +375,7 @@ def execute(
                     raise ValueError("observed usage exceeded reservation; all further execution stopped")
                 if row["status"] == "budget_stop":
                     result["state"] = "stopped_at_request_reservation_gate"
-                elif len(ledger) >= 3 and all(r["status"] != "valid" for r in ledger[-3:]):
+                elif systemic_failures(ledger, policy.operator_cancellations):
                     result["state"] = "stopped_for_consecutive_execution_failures"
                 elif limit is not None and performed >= limit:
                     result["state"] = "stopped_at_requested_attempt_limit"

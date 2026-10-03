@@ -14,7 +14,13 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from frozen_study import append_json, budget_totals, digest, file_sha, read_json, read_jsonl, write_json  # noqa: E402
-from run_budgeted_study import BudgetPolicy, CostInventory, lock_outputs, remaining_slots  # noqa: E402
+from run_budgeted_study import (  # noqa: E402
+    BudgetPolicy,
+    CostInventory,
+    lock_outputs,
+    remaining_slots,
+    systemic_failures,
+)
 from study_worker import BillingMonitor, StudyBudget  # noqa: E402
 
 
@@ -262,3 +268,37 @@ def test_execute_dry_run_never_loads_credentials_or_writes_attempt_ledger(tmp_pa
     assert result["state"] == "dry_run" and result["model_calls_started"] == 0
     assert (output / "attempts.jsonl").read_text() == ""
     assert not (output / "attempts").exists()
+
+
+def test_operator_cancellations_do_not_form_three_provider_failures():
+    rows = [
+        {"status": "valid", "outcome_sha256": "previous"},
+        {"status": "timeout", "error_class": "StudyDeadline", "outcome_sha256": "cancel1"},
+        {"status": "timeout", "error_class": "StudyDeadline", "outcome_sha256": "cancel2"},
+        {"status": "infrastructure_error", "outcome_sha256": "failed1"},
+    ]
+    cancellations = frozenset({"cancel1", "cancel2"})
+    assert not systemic_failures(rows, cancellations)
+    rows.extend({"status": "infrastructure_error", "outcome_sha256": f"failed{i}"} for i in (2, 3))
+    assert systemic_failures(rows, cancellations)
+
+
+@pytest.mark.parametrize(
+    "row",
+    [
+        {"status": "valid", "error_class": None, "outcome_sha256": "wrong"},
+        {"status": "timeout", "error_class": "SDKTimeout", "outcome_sha256": "wrong"},
+    ],
+)
+def test_provider_failures_cannot_be_annotated_as_operator_cancellations(row):
+    with pytest.raises(ValueError, match="annotation disagrees"):
+        systemic_failures([row], frozenset({"wrong"}))
+
+
+def test_operator_annotation_requires_a_baseline_outcome(tmp_path):
+    path = balance_policy_file(tmp_path)
+    data = read_json(path)
+    data["operator_cancelled_outcomes"] = ["unretained"]
+    write_json(path, data)
+    with pytest.raises(ValueError, match="immutable baseline"):
+        BudgetPolicy.load(path, tmp_path)
