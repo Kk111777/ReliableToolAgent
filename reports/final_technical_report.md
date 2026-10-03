@@ -52,7 +52,7 @@ The fixed-model Qwen3.5 Flash ablation used four conditions, 24 runs per conditi
 
 Model configuration in the recorded artifact was temperature `0`, max tokens `512`, reasoning effort `none`, client timeout `60s`, and client retries `0`.
 
-The artifact-level results were mixed rather than uniformly positive. For example, in single-target terminal tasks:
+The original artifact-level results were mixed rather than uniformly positive across the 24 runs in each condition:
 
 | Condition | Task success | Timely stop | Post-terminal unnecessary-call rate |
 |---|---:|---:|---:|
@@ -61,7 +61,9 @@ The artifact-level results were mixed rather than uniformly positive. For exampl
 | E2 raw, no retry | 0.9583 | 0.2083 | 1.5000 |
 | E3 structured, no retry | 1.0000 | 0.1250 | 1.6667 |
 
-The paired comparison reported a small average reduction in duplicate-failed calls for structured error, but it did not show a consistent improvement in timely stopping or task success. The retry-framing factor also had mixed effects. These are descriptive fixed-task results, not evidence that structured errors or retry framing generally improve agents.
+Scoring-version note: the table preserves original recorded metrics. The existing [`evaluator-v2-ablation-summary.json`](evaluator-v2-ablation-summary.json) reports E2 success as `1.0000` (24/24) instead of `0.9583` (23/24). Only P04/r01 changes its success label: v2 accepts the already-produced Chinese missing-order wording “无法找到”. The answer and trajectory did not change. The [packaging audit](packaging_audit_20261003.md) records the comparison; neither existing result file was rewritten.
+
+In this four-condition study, structured feedback had more duplicate failed calls than raw feedback under both retry settings: 29→50 with retry ON and 33→40 with retry OFF. Its additional average tool-call burden was larger with retry ON (0.8750) than OFF (0.1667). This is a descriptive adverse interaction, without a significance claim. The separate earlier 48-pair raw/structured pilot in `artifacts/comparison/` reported a small average reduction in duplicate-failed calls; it is historical evidence from a different experiment and must not be substituted for the 2×2 results. Neither study supports a consistent general benefit from metadata or retry framing.
 
 ## 5. Runtime Duplicate Guard
 
@@ -137,6 +139,8 @@ The first user-simulator diagnostic compared two accessible development conditio
 
 This was a development diagnostic comparison, not an official τ³ leaderboard comparison. It showed that User Simulator behavior could materially affect whether the Agent received another turn after confirmation. The project therefore froze U2 for the clean development audit rather than mixing U0 and U2 outcomes.
 
+The final U0 denominator includes a same-configuration replacement for one initial infrastructure-invalid T04 trial 1. That parse failure remains documented in the stability analysis; 15/15 describes the final valid diagnostic set, not the absence of failed initial attempts. The comparison was not randomized and does not establish a universal Simulator ranking.
+
 ## 10. Clean Benchmark Results
 
 The clean development audit used:
@@ -154,6 +158,8 @@ runner max_retries: 0
 concurrency: 1
 seed: 300
 ```
+
+The native Agent, environment, orchestrator, and reward rules were preserved. An external evaluator wrapper allowed up to two additional parse retries for malformed NL-evaluator output; this changes infrastructure handling rather than reward semantics. It does not make the full launch path identical to an unwrapped upstream run.
 
 Results:
 
@@ -201,6 +207,8 @@ The project deliberately stops before adding another intervention.
 - The only valid reward-zero case is entangled with User Simulator termination and a changed user request.
 
 These negative results narrow the claim: the project has stronger observability and failure attribution, not a validated recovery algorithm for τ³.
+
+The research progression is hypothesis → controlled test → external validation → Simulator-confound discovery → a no-go decision for further controller work at this measured scope. Rejecting that extension follows the observed failure distribution; it is not a claim that recovery loops never occur in other tasks or Agent configurations.
 
 ## 13. Limitations
 

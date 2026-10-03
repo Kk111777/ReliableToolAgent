@@ -112,6 +112,11 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.venv-presentation/
+# Personal preparation materials; retained locally, never published.
+/docs/interview_guide_zh.md
+/docs/github_presentation.md
+/reports/resume_notes.md
 env/
 venv/
 ENV/

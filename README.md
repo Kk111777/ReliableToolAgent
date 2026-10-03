@@ -1,199 +1,203 @@
-<div align="center">
-
 # ReliableToolAgent
 
-### Evidence-first reliability engineering for tool-calling agents
+**A reproducible harness for tool-agent reliability, runtime safeguards, and trajectory-level failure analysis across controlled tests and public τ³ retail auditing.**
 
-从可控故障注入到公开 τ³ retail benchmark：记录每一次工具调用，区分 Agent、User Simulator 与基础设施故障，并用证据决定是否值得实现 recovery method。
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB)](https://www.python.org/)
+[![smolagents fork](https://img.shields.io/badge/Runtime-smolagents-FFD21E)](https://github.com/huggingface/smolagents)
+[![τ³ retail](https://img.shields.io/badge/Evaluation-%CF%84%C2%B3%20retail-6F42C1)](benchmark/tau3/README.md)
 
-[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Framework](https://img.shields.io/badge/Framework-smolagents-FFD21E)](https://github.com/huggingface/smolagents)
-[![Benchmark](https://img.shields.io/badge/Benchmark-%CF%84%C2%B3%20Retail-6F42C1)](https://github.com/sierra-research/tau2-bench)
-[![Status](https://img.shields.io/badge/Status-Scoped%20Audit%20Complete-2EA44F)](reports/final_technical_report.md)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+## Overview
 
-[Technical Report](reports/final_technical_report.md) · [Artifact Index](reports/artifact_index.md) · [T05 Case Study](reports/residual_case_T05.md)
+When a tool-using Agent fails, a zero reward does not identify which component failed.
+This project instruments a `smolagents` runtime, tests error feedback and an exact duplicate-failure safeguard in a deterministic toy environment, then audits a pinned public benchmark through its native interface.
+The result is an evaluation and attribution workflow, including negative results and a documented decision to stop extending the controller.
+Start with the findings below; the [technical report](reports/final_technical_report.md) contains the experimental detail.
 
-</div>
+## What I Built
 
----
+- **Runtime instrumentation:** per-call result/error logging, parallel-call observability, canonical arguments, and a structured error pipeline in [`agents.py`](src/smolagents/agents.py), [`memory.py`](src/smolagents/memory.py), and [`utils.py`](src/smolagents/utils.py).
+- **A narrow safeguard:** block exact repeat attempts after a recorded non-retryable failure, with separate blocked/executed counts, run-isolated state, and [regression tests](local_demo/test_duplicate_guard.py).
+- **Controlled experiments:** deterministic faults and outcome checks; fixed-model raw/structured error × retry-framing ablations; a separate Guard smoke study.
+- **Public evaluation and evidence:** native τ³ launchers, an offline READ/WRITE trajectory analyzer, Simulator diagnostics, case attribution, pinned configuration, and [auditable snapshots](reports/artifact_index.md).
 
-## My progress — 2026-10-02
+## Key Findings
 
-已完成：T01–T05 故障 harness、逐工具调用日志、结构化错误、受控消融、τ³ retail 审计与残余失败归因。公开结果为 20 次尝试、19 次有效、18/19 final reward success；这些是固定开发配置下的观测结果。
-
-本轮研究停在证据支持的范围：没有将 toy Guard 作为 τ³ intervention 评测，没有宣称 leaderboard 提升。项目验证与发布状态见 [GitHub publication checks](reports/github_publication_20261002.md)。
-
-## At a glance
-
-| What was built | Public benchmark evidence | Research outcome |
+| Study | Observed result | What it supports |
 |---|---|---|
-| Deterministic fault harness, per-call telemetry, structured errors, ablations, and an isolated duplicate-failure guard | 20 τ³ retail tasks attempted; 19 valid; 18/19 final reward and DB reward; 19/19 NL reward | Strong observability and failure attribution; insufficient evidence for another Agent intervention |
+| **Toy error ablation** — 8 tasks × 3 repeats per condition | With retry framing ON, raw → structured feedback changed timely stop **4/24 → 1/24** and duplicate failures **29 → 50**. | Metadata alone did not reliably improve behavior; the sampled retry/feedback interaction was adverse. |
+| **Toy Guard smoke** — 3 tasks × 1 repeat per condition | Duplicate **executed** failures **6 → 0**; **3 blocked attempts**; task success **3/3** in each condition. | The runtime safeguard worked on this small fixture. |
+| **τ³ Simulator diagnostic** — 5 tasks × 3 trials per condition | With the Agent fixed, expected-WRITE success **5/15 → 14/15**; premature termination **8/15 → 0/15**. | Simulator choice materially changed measured Agent outcomes and failure attribution. |
+| **Clean τ³ development audit** — 20 attempts | **18/19 valid tasks** passed final and DB reward; **0 cross-turn exact repeats**. One attempt was infrastructure-invalid. | Recovery loops were not the dominant failure mode in this audited subset. |
 
-ReliableToolAgent is a research-engineering fork of HuggingFace `smolagents`. The project asks a practical question:
+**Decision:** retain the tested safeguard and negative results, but stop further controller development and τ³ Guard migration. These observations support a scoped evaluation finding, not an Agent algorithm improvement on τ³.
 
-> When a tool-calling workflow fails, is the cause the Agent, the tool, the environment, the User Simulator, the evaluator, or the runtime?
+## System / Experiment Architecture
 
-The project does **not** claim a τ³ leaderboard improvement. Its contribution is a reproducible measurement pipeline and a documented decision to stop adding recovery logic when the public-benchmark evidence did not justify it.
-
-## What I built
-
-- A deterministic T01–T05 harness covering clean multi-step execution, transient failure, wrong-entity repair, legitimate not-found state, and repeated failure.
-- Independent per-tool-call telemetry for tool name, canonical arguments, result/error, error type, status, and same-step parallel calls.
-- Structured Error Feedback V1 with explicit error semantics, without automatic retry, replanning, or stopping policy.
-- A fixed-model raw/structured error × retry-framing 2×2 ablation.
-- Duplicate Failure Guard V1 as an isolated toy smoke experiment, including retryable-error and run-isolation checks.
-- A τ³ retail observability analyzer for READ/WRITE calls, explicit tool failures, exact duplicates/repeats, reward components, confirmation flow, and infrastructure validity.
-- A User Simulator confound study and a clean public-benchmark failure audit.
-
-## System view
+### Controlled Agent runtime
 
 ```mermaid
 flowchart LR
-    T[Task] --> A[Agent]
-    U[User Simulator] <--> A
-    A --> C[Tool Call]
-    C --> E[Tool / Environment]
-    E --> O[Result or Error]
-    O --> M[Trajectory / Memory]
-    M --> A
-    M --> V[Evaluator]
-    V --> R[Reward + Audit Metrics]
-
-    style M fill:#fff4cc,stroke:#d4a72c
-    style R fill:#dafbe1,stroke:#2da44e
+    T[Task] --> A[ToolCallingAgent]
+    A --> C[Tool-call attempt]
+    C --> G{Exact failure guard}
+    G -->|Allow| E[Tool / toy environment]
+    G -->|Block repeat| B[Blocked observation]
+    E --> F[Result / structured error pipeline]
+    F --> L[Per-call logging]
+    B --> L
+    L --> O[Observation / memory]
+    O --> A
+    L --> V[Offline evaluator]
 ```
 
-The controlled toy harness and τ³ benchmark stay separate. The τ³ study keeps the official Agent, tools, RetailDB environment, orchestrator, and evaluator behavior unchanged.
+The Guard matches **tool name + normalized identical arguments** against a previously recorded **non-retryable** failure. It does not rewrite identifiers, pick another tool, call `final_answer`, or block retryable temporary failures. A blocked attempt still consumes an Agent decision and is logged; it is not another executed tool failure. This is a history-based safeguard, not a universal idempotency mechanism.
 
-## Experiment map
+### Research workflow
 
-| Phase | Purpose | Evidence-based result |
-|---|---|---|
-| A. Controlled toy pilot | Validate fault injection, memory, evaluator, logging, and intervention isolation | Full experimental path worked; structured errors and retry framing had mixed effects |
-| B. τ³ migration | Move from a toy environment to a pinned public retail benchmark | Official execution loop ran with call-level offline observability |
-| C. User Simulator study | Test whether terminal behavior was a simulator confound | U0 premature termination 8/15; U2 0/15 under the fixed development setup |
-| D. Clean 20×1 audit | Audit residual Agent-side failures without interventions | 19 valid runs, 18 reward successes, one residual reward-zero case |
+```mermaid
+flowchart LR
+    P[Toy pilot] --> A[Controlled ablation]
+    A --> M[Public benchmark migration]
+    M --> F[Initial failure audit]
+    F --> S[Fixed-Agent Simulator study]
+    S --> C[Clean development audit]
+    C --> D[No-go: stop controller extension]
+```
 
-## Key evidence
+The public study uses the **official τ³ Agent interface and orchestrator**. It does not insert the `smolagents` loop into τ³. The reusable contribution is the measurement workflow; the toy runtime safeguard and public audit are separate evidence paths.
 
-### Clean τ³ retail audit
+## Why This Matters
 
-| Metric | Result |
-|---|---:|
-| Simulations attempted | 20 |
-| Valid simulations | 19 |
-| Final reward = 1 | 18/19 |
-| DB reward = 1 | 18/19 |
-| NL reward = 1 | 19/19 |
-| Successful expected WRITE | 16/17 |
-| Cross-turn exact repeats | 0 |
-| Same-message duplicate | 1 task / 2 calls |
-| Explicit tool-failure tasks | 3 |
-| Valid reward-zero residual cases | 1 — T05 |
+An Agent benchmark is a coupled system: **Agent policy, runtime, tool environment, User Simulator, evaluator, and infrastructure** can all affect the outcome. A valid task that misses its expected WRITE, a Simulator that terminates before another Agent turn, and an evaluator parse error require different explanations.
 
-T04 was an evaluator JSON parse failure and is excluded from Agent behavior statistics. T05 contains both a mismatched final WRITE and a User Simulator `###TRANSFER###`, so the project records it as a residual candidate rather than assigning a single cause.
+The initial hypothesis was that unnecessary retry and repeated failures justified more controller logic. Controlled tests exposed that behavior, but external validation changed the diagnosis: many initial WRITE failures were entangled with Simulator termination. After freezing a cleaner development setup, the remaining audit contained no cross-turn exact repeats and one ambiguous reward-zero case. Continuing to optimize a controller for that single case would outrun the evidence.
 
-Machine-readable snapshot: [reports/tau3-clean-audit-summary.json](reports/tau3-clean-audit-summary.json)
+This is the project's research contribution: **hypothesis → controlled test → external validation → confound discovery → rejection of further controller work at the measured scope**. The implementation contribution is the observability and reproducibility needed to reach that decision.
 
-### User Simulator confound
+## Experiments
 
-The Agent stayed fixed at `openai/qwen3.5-flash-2026-02-23`.
+### 1. Toy error feedback and retry framing
 
-| 5 tasks × 3 trials | U0: Qwen3.5 Flash | U2: Qwen3.8 Max |
+The Agent model stayed at `qwen3.5-flash-2026-02-23`, with temperature `0`, max output tokens `512`, client timeout `60s`, and client retries `0`. Each condition contains the same P01–P08 tasks and three repeats; no Guard was enabled.
+
+| Condition | Feedback / retry framing | Original task success | Timely stop | Duplicate failed calls | Avg. tool calls |
+|---|---|---:|---:|---:|---:|
+| E0 | Raw / ON | 24/24 | 4/24 | 29 | 2.3333 |
+| E1 | Structured / ON | 24/24 | 1/24 | 50 | 3.2083 |
+| E2 | Raw / OFF | 23/24 | 5/24 | 33 | 2.5000 |
+| E3 | Structured / OFF | 24/24 | 3/24 | 40 | 2.6667 |
+
+**Scoring-version note:** the existing evaluator-v2 rescore reports E2 **24/24**. P04/r01 already answered “无法找到订单”; v2 accepted that missing-order wording. Its answer and trajectory are unchanged. The table preserves the original recorded scores; both versions and their provenance are explained in the [evidence audit](reports/packaging_audit_20261003.md). Timely-stop and duplicate-call counts are unchanged.
+
+Structured feedback produced no consistent stopping benefit. Its additional average tool-call burden was larger with retry framing ON than OFF. This is a descriptive pattern in a small controlled sample, without a significance or generalization claim.
+
+### 2. Exact duplicate-failure safeguard
+
+The separate P03–P05 smoke holds structured feedback ON and retry framing OFF; one repeat per condition.
+
+| Toy-only metric | Guard OFF | Guard ON |
 |---|---:|---:|
-| Premature user termination | 8/15 | 0/15 |
-| Expected WRITE executed | 5/15 | 14/15 |
+| Task success | 3/3 | 3/3 |
+| Terminal-violation / unnecessary attempts | 6 / 6 | 3 / 3 |
+| Duplicate executed failures | 6 | 0 |
+| Blocked attempts | 0 | 3 |
+| Executed tool calls | 9 | 3 |
+
+The Guard prevented execution of known failing repeats. It did not eliminate the model's repeat attempts or demonstrate broad cost savings. No corresponding τ³ intervention experiment was performed.
+
+### 3. User Simulator confound
+
+The Agent stayed at `openai/qwen3.5-flash-2026-02-23`. Only the User Simulator model changed in the diagnostic; tasks, runtime, generation settings, and evaluation logic stayed fixed.
+
+| 5 selected tasks × 3 trials | U0: Qwen3.5 Flash | U2: Qwen3.8 Max |
+|---|---:|---:|
+| Valid trials | 15/15 | 15/15 |
+| Premature termination before expected WRITE | 8/15 | 0/15 |
+| Successful expected WRITE | 5/15 | 14/15 |
 | DB success | 5/15 | 14/15 |
 
-This is a development diagnostic comparison—not an official τ³ leaderboard comparison or a general model ranking.
+U0: `openai/qwen3.5-flash-2026-02-23`; U2: `openai/qwen3.8-max-2026-09-02`. The final U0 set includes a replacement of one infrastructure-invalid trial with the same task/trial configuration, recorded in the audit. The comparison is diagnostic and non-randomized; it does not establish a universal ranking of Simulator models.
 
-### Negative results matter
+![Fixed-Agent Simulator diagnostic: expected WRITE and premature termination](assets/simulator_ablation.png)
 
-- Structured error feedback did not consistently improve timely stopping or task success in the toy ablation.
-- Retry framing did not produce a stable positive effect.
-- The toy Duplicate Failure Guard blocked repeated non-retryable failures in a 3-task smoke run, but it was never evaluated as a τ³ improvement.
-- The clean τ³ audit had zero cross-turn exact repeats, so it did not support migrating that Guard.
+### 4. Clean τ³ retail development audit
 
-## Evaluation setup
+Pinned benchmark: [`sierra-research/tau2-bench`](https://github.com/sierra-research/tau2-bench), commit `b7ea9074c1cba482b30687fecdb5c8425fd6f619`. The Agent and U2 Simulator are frozen as above; see the [full configuration](benchmark/tau3/README.md#frozen-clean-audit-configuration).
 
-```yaml
-benchmark: sierra-research/tau2-bench
-commit: b7ea9074c1cba482b30687fecdb5c8425fd6f619
-domain: retail
+- **Coverage:** 20 attempted tasks, one trial each; 19 valid and one evaluator-parse failure, T04.
+- **Outcomes among valid tasks:** final reward **18/19**, DB **18/19**, NL **19/19**; expected WRITE **16/17**.
+- **Tool behavior:** **0** cross-turn exact repeats; one same-message duplicate group containing **2 calls in 1 task**; **3 explicit tool failures across 3 tasks**.
+- **Residual:** T05 was the only valid reward-zero task. It had no tool failures or exact repeats.
 
-agent: openai/qwen3.5-flash-2026-02-23
-user_simulator: openai/qwen3.8-max-2026-09-02
-temperature: 0
-max_tokens: 512
-request_timeout: 60s
-request_retries: 3
-simulation_timeout: unset
-max_steps: 200
-runner_retries: 0
-concurrency: 1
-seed: 300
-```
+T04 remains visible in the attempted/valid accounting and is excluded only from Agent-behavior denominators. The small development subset does not establish performance on the full benchmark.
 
-U2 is the project's frozen **development evaluation configuration**. It is not the official leaderboard default.
+## Example Failure Analysis
 
-## Reproduce locally
+**Toy P03 — attempted repeat versus execution.** A non-retryable missing-order observation is followed by an identical call. Without the Guard, the tool executes again; with it, the runtime emits a blocked observation and logs the attempted call. This makes prevention measurable without silently crediting the Agent with better decisions. See the [Guard tests](local_demo/test_duplicate_guard.py) and [smoke evidence](reports/packaging_evidence_20261003.json).
 
-### Deterministic project tests
+**Public T05 — reward zero without a recovery loop.** A confirmed desk-lamp exchange succeeds, then the user changes the request to a water-bottle return. The final expected return WRITE is absent; the Simulator sends `###TRANSFER###` after the Agent explains the changed order state. DB reward is `0`, NL reward is `1`, and there are no tool failures or exact repeats. The trace leaves Agent completion, request changes, and Simulator termination entangled; no primary cause or new controller is assigned. [Read the reconstruction](reports/residual_case_T05.md).
+
+## Reproduction
+
+### Review the public evidence without credentials
 
 ```bash
 git clone https://github.com/Kk111777/ReliableToolAgent.git
 cd ReliableToolAgent
-
 bash setup-local.sh
 
-.venv/bin/python -m pytest -q local_demo
+# Check published snapshots; no API calls and no experiment-file writes.
+.venv/bin/python scripts/audit_packaging_evidence.py
+
+# Check local document links, anchors, and image paths.
+.venv/bin/python scripts/check_markdown_links.py
 ```
 
-### Re-score frozen toy artifacts
+The [artifact index](reports/artifact_index.md) maps each claim to code and evidence. The [packaging audit](reports/packaging_audit_20261003.md) records which retained sources were cross-checked. Public snapshots enable review, but a fresh clone does not contain the ignored raw trajectories for independent re-analysis.
+
+### Validate the harness and inspect retained trajectories
 
 ```bash
-.venv/bin/python -m local_demo.rescore --source all
+# Deterministic tests; no model API calls.
+.venv/bin/python -m pytest -q local_demo
+
+# Requires the retained local artifact directories; reads them without changes.
+.venv/bin/python scripts/audit_packaging_evidence.py --local
+.venv/bin/python -m local_demo.compare_ablation --task-id P03 --repeat 1
 ```
 
-### Inspect or reproduce the τ³ study
+Benchmark execution requires a separate pinned τ³ checkout and provider credentials. The [benchmark bundle](benchmark/tau3/README.md) documents paid launchers and offline analyzers separately. This presentation update does not run those launchers. Chart generation from the existing snapshot is documented in [assets/README.md](assets/README.md).
 
-The public [τ³ evidence bundle](benchmark/tau3/README.md) contains the pinned benchmark configuration, launchers, offline analyzers, and compact result snapshots. Re-running the benchmark requires a separate τ³ checkout and provider credentials; reviewing the project does not.
-
-Raw API trajectories and the independent τ³ checkout are intentionally excluded from the public repository. Their provenance and local locations are documented in the [artifact index](reports/artifact_index.md).
-
-## Repository guide
+## Repository Structure
 
 ```text
-local_demo/          Deterministic harness, pilot tasks, evaluators, ablations
-src/smolagents/      Per-call logging, structured errors, Guard instrumentation
-tests/               Project and regression tests
-benchmark/tau3/      Public τ³ launchers, analyzers, config, compact evidence
-reports/             Public evidence, technical report, case study, resume notes
-artifacts/           Local raw toy trajectories; ignored when large
+src/smolagents/     Fork modifications: telemetry, errors, exact failure guard
+local_demo/        Toy tasks, fault harness, evaluators, experiments, project tests
+benchmark/tau3/    Native benchmark workflow, offline analyzers, compact results
+reports/           Technical report, case study, evidence index, source audit
+docs/              Retained upstream framework documentation
+scripts/           Read-only evidence and documentation checks; chart generation
+assets/            Data-derived presentation figures and provenance
+artifacts/         Retained local raw toy evidence (ignored)
+tau2-bench-baseline/  Separate pinned benchmark checkout (ignored)
 ```
 
-Recommended reading order:
+Historical pilots, diagnostic scripts, and raw experiments remain in place to preserve references and negative evidence. Use the [artifact index](reports/artifact_index.md) as the navigation map. `examples/` and most of `docs/source/` are retained upstream material; they are not claimed as original project contributions.
 
-1. [Final technical report](reports/final_technical_report.md)
-2. [T05 residual case](reports/residual_case_T05.md)
-3. [Artifact index](reports/artifact_index.md)
-4. [τ³ evidence bundle](benchmark/tau3/README.md)
-5. [`local_demo/run.py`](local_demo/run.py)
-6. [`local_demo/test_tool_call_logging.py`](local_demo/test_tool_call_logging.py)
-7. [`local_demo/test_duplicate_guard.py`](local_demo/test_duplicate_guard.py)
+## Limitations
 
-## Scope and limitations
+- This is a scoped reliability/evaluation project, with no leaderboard, SOTA, or production-readiness claim.
+- Toy tasks are synthetic; the Guard is supported mainly by toy tests and a three-task smoke. No evidence shows that it improves τ³.
+- The public study is a limited retail development subset. The clean audit has one trial per task and 19 valid simulations.
+- The development User Simulator differs from official leaderboard configuration; the five-task diagnostic is not a universal model ranking.
+- Reward outcomes and mechanical attribution fields are observational. T05 does not isolate an Agent-only defect.
+- Evaluator-v2 changed one toy success label; both scoring versions are preserved. The evaluator parse-retry wrapper changes infrastructure handling, not task reward logic.
+- Qwen prices were absent from the local LiteLLM price map. A runner display of `$0.0000` is not a valid cost estimate.
+- Raw trajectories are retained locally, not shipped with the public evidence bundle. Full upstream regression limitations are recorded in the [publication checks](reports/github_publication_20261002.md).
 
-- The toy environment is narrow and synthetic.
-- The clean τ³ audit used one trial per task and produced 19 valid simulations.
-- The development User Simulator is not the official leaderboard default.
-- No Guard, Completion Controller, recovery prompt, or Agent intervention was evaluated on τ³.
-- Qwen costs were unavailable from the local LiteLLM price map; `$0.0000` runner output is not a real cost estimate.
-- Public claims should use the compact reports in `reports/`; local raw artifacts remain the source of truth for detailed trajectory review.
+## Reports and Evidence
 
-## Upstream and license
+- [Technical report](reports/final_technical_report.md): methods, results, interpretation, and negative evidence.
+- [Artifact index](reports/artifact_index.md): where to verify each study.
 
-This repository is based on HuggingFace `smolagents` commit `30bb1161095dbae2271e6bc3cc4c219cc3897a57`. The public benchmark study used Sierra τ³-bench commit `b7ea9074c1cba482b30687fecdb5c8425fd6f619`.
-
-Licensed under Apache 2.0. See [LICENSE](LICENSE).
+Based on Hugging Face `smolagents` commit `30bb1161095dbae2271e6bc3cc4c219cc3897a57`. Original attribution and [Apache 2.0 license](LICENSE) are preserved.
