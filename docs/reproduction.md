@@ -60,3 +60,16 @@ Original E2 task success is 23/24; the existing evaluator-v2 rescore is 24/24 fo
 Follow the [τ³ guide](../benchmark/tau3/README.md) for the pinned commit, model configuration, independent environment, launchers, and offline analyzers. The launchers make paid model calls; offline analyzers read saved simulations and write derived analysis reports. The project environment above is separate from the benchmark environment.
 
 The [technical report](../reports/final_technical_report.md#13-limitations) covers the development subset, Simulator configuration, evaluator retries, and unavailable cost estimates. To regenerate the figure from saved counts, use the [asset guide](../assets/README.md).
+
+## Check the paired holdout protocol
+
+The [holdout guide](../benchmark/tau3/studies/retail-holdout-v1/README.md) explains the new task selection, first-attempt denominators, output limits, request-cost records, and task-level bootstrap. These public checks run without API access:
+
+```bash
+.venv/bin/python -m pytest -q benchmark/tau3/tests
+.venv/bin/python benchmark/tau3/scripts/audit_frozen_study.py
+```
+
+The 30 development inspection traces and 12 synthetic protocol fragments check event measurement. They are not additional benchmark outcomes or independent human annotations. Formal-run compact metrics, when published, support offline aggregate recomputation; full official reward verification still needs the local raw trajectories.
+
+The [separate stratified replication](../benchmark/tau3/studies/retail-replication-v1/README.md) extends coverage while keeping test and train cohorts separate.

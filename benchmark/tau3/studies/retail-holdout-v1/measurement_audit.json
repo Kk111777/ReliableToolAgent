@@ -1,0 +1,15 @@
+{
+  "trajectories": 30,
+  "field_checks": 180,
+  "confusion": {
+    "tp": 8,
+    "tn": 22,
+    "fp": 0,
+    "fn": 0
+  },
+  "precision": 1.0,
+  "recall": 1.0,
+  "reviewer": "Codex trace inspection; the same author implemented the analyzer. No independent human/blind annotation is claimed.",
+  "panel_sha256": "ca6240963f6457d32a038d9a3f4b1666ad70b81a4dbdf3043ee696915963794b",
+  "boundary": "purposively selected development traces; same-author inspection, not independent human validation"
+}

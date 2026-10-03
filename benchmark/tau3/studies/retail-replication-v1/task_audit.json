@@ -1,0 +1,245 @@
+{
+  "scope": "20 local-unseen official train tasks, separate from the 35-task test primary; no model outcomes used in selection",
+  "selection_seed": 20261003,
+  "quotas": {
+    "cancel": 2,
+    "exchange": 3,
+    "multi_write": 5,
+    "pending_modify": 4,
+    "policy_or_readonly": 2,
+    "profile_modify": 1,
+    "return": 3
+  },
+  "candidate_pool_after_near_duplicate_exclusion": 54,
+  "near_duplicate_threshold": 0.9,
+  "excluded_against_prior_or_reserved": [
+    {
+      "task_id": "25",
+      "stratum": "policy_or_readonly",
+      "write_family": "no_reference_write",
+      "user_entity_cluster": "isabella_johansson_2152",
+      "scenario_sha256": "c43f5b72fa78b952df8788114294ae05baa8aa568cc4937927d458478907eedb",
+      "nearest_prior_or_reserved_task": "26",
+      "similarity": 0.904995
+    },
+    {
+      "task_id": "31",
+      "stratum": "multi_write",
+      "write_family": "cancel_pending_order+return_delivered_order_items",
+      "user_entity_cluster": "olivia_lopez_3865",
+      "scenario_sha256": "1e83d41fe73c187726ae7ba3782aab04af4fa96ee8bee762761909d5c2e7ef1c",
+      "nearest_prior_or_reserved_task": "32",
+      "similarity": 0.951337
+    },
+    {
+      "task_id": "63",
+      "stratum": "pending_modify",
+      "write_family": "modify_pending_order_items",
+      "user_entity_cluster": "chen_johnson_4204",
+      "scenario_sha256": "bc458280451555bf138510e9ad41282dca9bbaf10006d73791432b0faf6ab7cb",
+      "nearest_prior_or_reserved_task": "62",
+      "similarity": 0.936953
+    },
+    {
+      "task_id": "67",
+      "stratum": "policy_or_readonly",
+      "write_family": "no_reference_write",
+      "user_entity_cluster": "noah_ito_3850",
+      "scenario_sha256": "0b4a724ce107cc147d204190ffaf0793b01fca5d85ce9a63d65c54d57007594d",
+      "nearest_prior_or_reserved_task": "68",
+      "similarity": 0.90027
+    },
+    {
+      "task_id": "93",
+      "stratum": "exchange",
+      "write_family": "exchange_delivered_order_items",
+      "user_entity_cluster": "ba3a4007839d3e5d",
+      "scenario_sha256": "a74b851293713ec7599e6b36169043588fef95a75e2b3eb50be903811af29631",
+      "nearest_prior_or_reserved_task": "94",
+      "similarity": 0.995485
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "21",
+      "stratum": "pending_modify",
+      "write_family": "modify_pending_order_items",
+      "user_entity_cluster": "ethan_garcia_1261",
+      "scenario_sha256": "a78f149980abace865e370c4e1b80458dda281698e29f7732f3d47636c96ef9b",
+      "nearest_prior_or_reserved_task": "17",
+      "similarity": 0.35461
+    },
+    {
+      "task_id": "24",
+      "stratum": "policy_or_readonly",
+      "write_family": "no_reference_write",
+      "user_entity_cluster": "d42430b0311f4301",
+      "scenario_sha256": "0720045c4792d952436c71b641e99e8d3887061d4bba6c61a7cb18389a6506b2",
+      "nearest_prior_or_reserved_task": "64",
+      "similarity": 0.49725
+    },
+    {
+      "task_id": "29",
+      "stratum": "exchange",
+      "write_family": "exchange_delivered_order_items",
+      "user_entity_cluster": "isabella_johansson_2152",
+      "scenario_sha256": "9eeb39a0c1f8dc359d7141556d2aaf7a99d1f3a93db392ceb61338fdb919daa9",
+      "nearest_prior_or_reserved_task": "26",
+      "similarity": 0.379085
+    },
+    {
+      "task_id": "37",
+      "stratum": "pending_modify",
+      "write_family": "modify_pending_order_items",
+      "user_entity_cluster": "daiki_sanchez_3253",
+      "scenario_sha256": "a4718bac480d97bd2d8b22c4a9d7f7012884f942ec1a84fea13fb1dd5225e856",
+      "nearest_prior_or_reserved_task": "36",
+      "similarity": 0.834138
+    },
+    {
+      "task_id": "41",
+      "stratum": "multi_write",
+      "write_family": "modify_pending_order_address+modify_pending_order_items+modify_user_address",
+      "user_entity_cluster": "mei_patel_7272",
+      "scenario_sha256": "a0b6b9b8069ee59ce77ba7e95841b6f15bfb40f82300d6237702da75d6cf16bb",
+      "nearest_prior_or_reserved_task": "42",
+      "similarity": 0.713764
+    },
+    {
+      "task_id": "43",
+      "stratum": "profile_modify",
+      "write_family": "modify_user_address",
+      "user_entity_cluster": "lucas_santos_6600",
+      "scenario_sha256": "7a2ed9169aedb8a623ca6bfb3a5d27d15c10102b38f8c771e61bf721c7c6ebba",
+      "nearest_prior_or_reserved_task": "8",
+      "similarity": 0.367925
+    },
+    {
+      "task_id": "44",
+      "stratum": "pending_modify",
+      "write_family": "modify_pending_order_items",
+      "user_entity_cluster": "88f16bbd91aae97a",
+      "scenario_sha256": "4d77c5385a865e191fa30c41257491d58b38d31be1de6e091ce211868aa45a18",
+      "nearest_prior_or_reserved_task": "49",
+      "similarity": 0.516236
+    },
+    {
+      "task_id": "46",
+      "stratum": "return",
+      "write_family": "return_delivered_order_items",
+      "user_entity_cluster": "8de580f29290b883",
+      "scenario_sha256": "96f0266036d6fe4ba9b836eaf4687440bee144d0f30f9477e2c71f0b5bcd623e",
+      "nearest_prior_or_reserved_task": "45",
+      "similarity": 0.396761
+    },
+    {
+      "task_id": "54",
+      "stratum": "multi_write",
+      "write_family": "cancel_pending_order+return_delivered_order_items",
+      "user_entity_cluster": "amelia_silva_7726",
+      "scenario_sha256": "f17f32ab9f6e5bbde81c13e5dc09517175b68b7b6822893869f6191daf8893cc",
+      "nearest_prior_or_reserved_task": "55",
+      "similarity": 0.592317
+    },
+    {
+      "task_id": "57",
+      "stratum": "policy_or_readonly",
+      "write_family": "no_reference_write",
+      "user_entity_cluster": "cdbb2d3a7f3985e7",
+      "scenario_sha256": "c5d5669f9d76be1065290e7fd9afe32b0a4f051111c1724b54993b81d58feee8",
+      "nearest_prior_or_reserved_task": "19",
+      "similarity": 0.365159
+    },
+    {
+      "task_id": "76",
+      "stratum": "cancel",
+      "write_family": "cancel_pending_order",
+      "user_entity_cluster": "201d4e39776fcc33",
+      "scenario_sha256": "9e180cc8d270d4d3c8bef5a4db1b4e397d8c54ef7f9d633e9c51c33bdfd60f5c",
+      "nearest_prior_or_reserved_task": "77",
+      "similarity": 0.410423
+    },
+    {
+      "task_id": "81",
+      "stratum": "cancel",
+      "write_family": "cancel_pending_order",
+      "user_entity_cluster": "1853fcdb60993d8d",
+      "scenario_sha256": "c66cc791d688f39dc96093a68cb29c9d94f44ec56a5d921c9c6ac6f62af3491e",
+      "nearest_prior_or_reserved_task": "86",
+      "similarity": 0.387029
+    },
+    {
+      "task_id": "83",
+      "stratum": "return",
+      "write_family": "return_delivered_order_items",
+      "user_entity_cluster": "69067755829bf961",
+      "scenario_sha256": "ba09370d040e818ed49256568d6ff13f552ee06ac71cf54c90d0d0668e1c75b8",
+      "nearest_prior_or_reserved_task": "64",
+      "similarity": 0.511521
+    },
+    {
+      "task_id": "84",
+      "stratum": "return",
+      "write_family": "return_delivered_order_items",
+      "user_entity_cluster": "69067755829bf961",
+      "scenario_sha256": "41b795f3ac3361bc25418e5f272089cadc43e176d0483db7fbf9034a70d2426d",
+      "nearest_prior_or_reserved_task": "8",
+      "similarity": 0.475822
+    },
+    {
+      "task_id": "85",
+      "stratum": "pending_modify",
+      "write_family": "modify_pending_order_items",
+      "user_entity_cluster": "e44498b74294d9e7",
+      "scenario_sha256": "a603db8491834f00fffb919783509f864943230e9d418a56dc3c2a2858c154c5",
+      "nearest_prior_or_reserved_task": "86",
+      "similarity": 0.762246
+    },
+    {
+      "task_id": "95",
+      "stratum": "exchange",
+      "write_family": "exchange_delivered_order_items",
+      "user_entity_cluster": "ba3a4007839d3e5d",
+      "scenario_sha256": "3badad751b0fc1941185f9ca381e1e53ea2be3b96bf0142b99f0d5aa6829203a",
+      "nearest_prior_or_reserved_task": "94",
+      "similarity": 0.716148
+    },
+    {
+      "task_id": "96",
+      "stratum": "multi_write",
+      "write_family": "modify_pending_order_address+modify_pending_order_items",
+      "user_entity_cluster": "3280bab95741d872",
+      "scenario_sha256": "68b3b8f1ac434a47da01f8ea0e287005ae3c4af7ce5fe971d0942514483e263b",
+      "nearest_prior_or_reserved_task": "97",
+      "similarity": 0.755471
+    },
+    {
+      "task_id": "103",
+      "stratum": "multi_write",
+      "write_family": "modify_pending_order_address+modify_pending_order_items+return_delivered_order_items",
+      "user_entity_cluster": "c7af76dc2d8a7a11",
+      "scenario_sha256": "1cfeaaf55e88109c8a37cf05b41af9d459799f6cf7b05c3a6aa5f3a6c7b2c825",
+      "nearest_prior_or_reserved_task": "86",
+      "similarity": 0.343224
+    },
+    {
+      "task_id": "104",
+      "stratum": "multi_write",
+      "write_family": "modify_pending_order_address+modify_pending_order_items+return_delivered_order_items",
+      "user_entity_cluster": "c7af76dc2d8a7a11",
+      "scenario_sha256": "990fe33a1b744831e61acdd701680ab9c2015854eba7f5198a1e778acc8cc387",
+      "nearest_prior_or_reserved_task": "86",
+      "similarity": 0.321616
+    },
+    {
+      "task_id": "107",
+      "stratum": "exchange",
+      "write_family": "exchange_delivered_order_items",
+      "user_entity_cluster": "5a4aeb18b25e30bf",
+      "scenario_sha256": "a7d569d077d20e839ba3f97efbc94fe3e22b7cd3a1498cb8dcb435e4e1e343d8",
+      "nearest_prior_or_reserved_task": "111",
+      "similarity": 0.409437
+    }
+  ],
+  "selection_inputs": "Only official task metadata and existing/planned task IDs. No rewards, new trace contents, or Agent outputs."
+}

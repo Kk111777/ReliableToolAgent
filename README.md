@@ -88,6 +88,10 @@ With the Agent fixed, changing the Simulator changed premature termination **8/1
 
 **T05** was the only valid reward-zero run. A desk-lamp exchange succeeded, the user changed the request to a water-bottle return, and the Simulator transferred the conversation before the expected return WRITE. There were no tool failures or exact repeats. The trace leaves completion behavior and Simulator termination entangled. [Read the case analysis](reports/residual_case_T05.md).
 
+## Paired Retail Extension
+
+A [frozen 35-task test study](benchmark/tau3/studies/retail-holdout-v1/README.md) and a separate [20-task stratified replication](benchmark/tau3/studies/retail-replication-v1/README.md) add 55 different retail tasks and 330 planned paired trajectories. The runner preserves every attempt and interrupted trajectory, records request usage and estimated fees, and supports offline task-level bootstrap. Execution is in progress; these planned slots are separate from the historical results above.
+
 ## Quick Start
 
 Requires Python 3.12 and `uv`. No model credentials are needed for these checks.
