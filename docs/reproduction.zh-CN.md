@@ -34,6 +34,8 @@ bash setup-local.sh
 
 新克隆的仓库包含精简结果快照，不包含原始模型轨迹。这些命令检查实现和公开文件，不会独立复算全部实验结果，也不会重跑基准。
 
+另有[上游回归流程](../.github/workflows/tests.yml)，使用 uv 0.12.23，在独立 CI 环境中分别检查 Python 3.10 和 3.12。它要求使用 `tokenizers` 预编译包：此前的依赖解析选择了 0.10.3，随后在 Python 3.12 的 Rust 源码构建阶段失败。[uv 的包选项](https://docs.astral.sh/uv/reference/cli/#uv-pip-install)让解析器选择兼容的预编译包，不覆盖依赖要求。应分别核对两个 job 的 pytest 结果，依赖解析成功本身不代表回归测试通过。
+
 ## 检查本地保留的原始证据
 
 原始本地工作区的路径见[证据索引](../reports/artifact_index.md)。完整审计需要以下目录：

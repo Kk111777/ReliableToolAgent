@@ -34,6 +34,8 @@ The tests cover the scripted fault harness, error handling, per-call logging, an
 
 A fresh clone contains compact result snapshots, not the raw model trajectories. These commands check the implementation and published files; they do not independently recompute all experimental results or rerun the benchmark.
 
+The separate [upstream regression workflow](../.github/workflows/tests.yml) runs Python 3.10 and 3.12 in fresh CI environments with uv 0.12.23. It requires a prebuilt `tokenizers` wheel because an earlier resolution selected 0.10.3 and failed its Rust source build on Python 3.12. The [uv package option](https://docs.astral.sh/uv/reference/cli/#uv-pip-install) lets the resolver choose compatible wheels without overriding dependency requirements. Check each matrix job's pytest result; resolving dependencies alone does not establish a passed regression suite.
+
 ## Inspect retained raw evidence
 
 For the original local workspace, the [evidence index](../reports/artifact_index.md) lists the raw paths. The complete audit needs:
