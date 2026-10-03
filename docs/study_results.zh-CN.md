@@ -16,6 +16,19 @@ test 主实验和 train 补充复核分别报告。每份报告先说明执行�
 
 [精简导出与审计](../benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md#精简证据复算) 在打包前核验本地原始证据。公开 clone 可用匹配版本的精简包和源码重新生成报告。这能复算已报告指标，不能独立重新评分未公开的完整轨迹。
 
+## 核对案例记录
+
+[`audit_study_cases.py`](../benchmark/tau3/scripts/audit_study_cases.py) 将脱敏 `case_index.json` 与匹配的精简证据核对。两份文件就绪后，使用它们的实际路径：
+
+```bash
+.venv/bin/python benchmark/tau3/scripts/audit_study_cases.py \
+  --evidence /path/to/public_evidence.json --cases /path/to/case_index.json
+```
+
+入口先审计证据包，再检查每个案例对应的原始 attempt、outcome 哈希、simulation 哈希和冻结指标。它从脱敏工具事件序列复算调用总数、明确错误、未知结果、同消息重复和跨轮重复。案例身份重复、工具事件遗漏、指标不符，以及额外的原始参数或消息字段都会被拒绝。没有工具调用的案例也可以核验。
+
+记录只保留参数哈希和消息位置。位置与角色只能检查内部一致性，公开入口不能证明它们与未公开轨迹相符；来源哈希也只是标识本地证据，不能认证其真实性。语义解释仍依赖作者对原始轨迹的核验，选取的案例不是随机样本或独立标注。这个入口先于最终案例发布，不证明实验已结束。
+
 ## 分母和缺失结果
 
 | 字段 | 含义 |
