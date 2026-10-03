@@ -76,5 +76,7 @@ The [separate stratified replication](../benchmark/tau3/studies/retail-replicati
 
 The [compact evidence commands](../benchmark/tau3/studies/retail-holdout-v1/README.md#compact-evidence-checks) separate local raw verification/export from public offline aggregate checks. The audit verifies identities, source versions, billing coverage and recomputed summaries; it does not call a model or independently rescore private trajectories. Final bundles will be published after execution and review.
 
+The [cohort report guide](study_results.md) generates matching English and Chinese reports from one audited bundle. It keeps first attempts, additional attempts and unstarted slots visible, including the boundary for a study stopped by budget or engineering conditions.
+
 
 Recorded paid execution uses the [budgeted resume guide](budgeted_execution.md). It separates original list prices, confirmed discounts, reported balances and missing-usage reservations; old manifest caps are historical. The default command makes no model calls.
