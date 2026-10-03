@@ -6,9 +6,6 @@ on:
     branches:
       - ci-*
 
-env:
-  UV_SYSTEM_PYTHON: 1
-
 jobs:
   build-ubuntu:
     runs-on: ubuntu-latest
@@ -27,17 +24,20 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # Setup venv
       - name: Setup uv
         run: |
-          pip install --upgrade uv
+          python -m pip install uv==0.12.23
+          uv venv .venv --python "${{ matrix.python-version }}"
 
       # Install dependencies
       - name: Install dependencies
         run: |
-          uv pip install "smolagents[test] @ ."
+          # Reject legacy tokenizers source builds unsupported by the CI toolchain.
+          uv pip install --python .venv/bin/python --only-binary tokenizers "smolagents[test] @ ."
 
       # Run tests
       - name: Test with pytest
         run: |
-          pytest ./tests/
+          # MCP fixtures launch Python subprocesses by name.
+          source .venv/bin/activate
+          .venv/bin/python -m pytest ./tests/
