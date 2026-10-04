@@ -98,3 +98,8 @@ Recorded paid execution uses the [budgeted resume guide](budgeted_execution.md).
 ```
 
 Use a new output directory. The three generated files (`summary.json`, `report.md`, `report.zh-CN.md`) should match the published files byte for byte. This checks compact aggregation and case counters without raw data or paid calls; it does not independently validate the original official rewards.
+
+
+## Engineering repairs v2
+
+See [interfaces and response recovery](engineering_v2.md) and [public offline checks](../reports/engineering-v2/README.md). The revision does not rewrite the frozen cohort.

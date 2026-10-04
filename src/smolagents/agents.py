@@ -24,7 +24,7 @@ import warnings
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from contextvars import copy_context
+from contextvars import ContextVar, copy_context
 from dataclasses import dataclass
 from logging import getLogger
 from pathlib import Path
@@ -127,12 +127,24 @@ class ToolOutput:
 
 @dataclass(frozen=True)
 class FailureRecord:
-    """One actually executed tool failure used by Duplicate Failure Guard V1."""
+    """One executed failure, keyed by the arguments resolved for that call."""
 
     tool_name: str
     normalized_arguments: str
     error_type: str | None
     retryable_same_call: bool | None
+
+
+@dataclass(frozen=True)
+class _ResolvedToolCall:
+    agent: object
+    tool_name: str
+    raw_arguments_key: str
+    resolved_arguments: Any
+    resolved_arguments_key: str
+
+
+_RESOLVED_TOOL_CALL: ContextVar[_ResolvedToolCall | None] = ContextVar("resolved_tool_call", default=None)
 
 
 class PlanningPromptTemplate(TypedDict):
@@ -1486,19 +1498,25 @@ class ToolCallingAgent(MultiStepAgent):
         def process_single_tool_call(tool_call: ToolCall) -> ToolOutput:
             tool_name = tool_call.name
             tool_arguments = tool_call.arguments or {}
-            normalized_arguments = normalize_tool_arguments(tool_arguments)
+            raw_arguments_key = normalize_tool_arguments(tool_arguments)
+            arguments_snapshot = json.loads(raw_arguments_key)
+            # Resolve once: Guard identity, failure history and execution must
+            # refer to the same target even if an alias in state changes later.
+            resolved_arguments = self._substitute_state_variables(tool_arguments)
+            normalized_arguments = normalize_tool_arguments(resolved_arguments)
+            resolved_arguments_snapshot = json.loads(normalized_arguments)
             self.logger.log(
                 Panel(Text(f"Calling tool: '{tool_name}' with arguments: {tool_arguments}")),
                 level=LogLevel.INFO,
             )
-            previous_failure = self._previous_non_retryable_failure(tool_name, tool_arguments)
+            previous_failure = self._previous_non_retryable_failure(tool_name, resolved_arguments)
             if previous_failure is not None:
                 blocked_observation = json.dumps(
                     {
                         "status": "blocked",
                         "error_type": "REPEATED_FAILED_CALL",
                         "tool": tool_name,
-                        "arguments": tool_arguments,
+                        "arguments": arguments_snapshot,
                         "previous_error_type": previous_failure.error_type,
                         "message": "This identical non-retryable tool call has already failed.",
                     },
@@ -1510,7 +1528,8 @@ class ToolCallingAgent(MultiStepAgent):
                         {
                             "call_index": call_indexes[tool_call.id],
                             "tool_name": tool_name,
-                            "arguments": tool_arguments,
+                            "arguments": arguments_snapshot,
+                            "resolved_arguments": resolved_arguments_snapshot,
                             "normalized_arguments": normalized_arguments,
                             "status": "blocked",
                             "result": None,
@@ -1536,7 +1555,13 @@ class ToolCallingAgent(MultiStepAgent):
                     tool_call=tool_call,
                 )
             try:
-                tool_call_result = self.execute_tool_call(tool_name, tool_arguments)
+                context_token = _RESOLVED_TOOL_CALL.set(
+                    _ResolvedToolCall(self, tool_name, raw_arguments_key, resolved_arguments, normalized_arguments)
+                )
+                try:
+                    tool_call_result = self.execute_tool_call(tool_name, tool_arguments)
+                finally:
+                    _RESOLVED_TOOL_CALL.reset(context_token)
             except AgentError as error:
                 structured_error = error.structured_error
                 structured_fields = structured_error.dict() if structured_error is not None else {}
@@ -1555,7 +1580,8 @@ class ToolCallingAgent(MultiStepAgent):
                         {
                             "call_index": call_indexes[tool_call.id],
                             "tool_name": tool_name,
-                            "arguments": tool_arguments,
+                            "arguments": arguments_snapshot,
+                            "resolved_arguments": resolved_arguments_snapshot,
                             "normalized_arguments": normalized_arguments,
                             "status": "error",
                             "result": None,
@@ -1590,7 +1616,8 @@ class ToolCallingAgent(MultiStepAgent):
                     {
                         "call_index": call_indexes[tool_call.id],
                         "tool_name": tool_name,
-                        "arguments": tool_arguments,
+                        "arguments": arguments_snapshot,
+                        "resolved_arguments": resolved_arguments_snapshot,
                         "normalized_arguments": normalized_arguments,
                         "status": "success",
                         "result": tool_call_result,
@@ -1668,6 +1695,32 @@ class ToolCallingAgent(MultiStepAgent):
             tool_name (`str`): Name of the tool or managed agent to execute.
             arguments (dict[str, str] | str): Arguments passed to the tool call.
         """
+        context = _RESOLVED_TOOL_CALL.get()
+        if context is not None and context.agent is self:
+            if (
+                tool_name != context.tool_name
+                or normalize_tool_arguments(arguments) != context.raw_arguments_key
+                or normalize_tool_arguments(context.resolved_arguments) != context.resolved_arguments_key
+            ):
+                raise AgentToolCallError(
+                    "Unsupported execute_tool_call override rewrite of the tool or arguments after Guard matching.",
+                    self.logger,
+                )
+            resolved_arguments = context.resolved_arguments
+            # The dispatch snapshot belongs to this hook invocation, not to
+            # further direct calls made from inside the tool being executed.
+            context_token = _RESOLVED_TOOL_CALL.set(None)
+            try:
+                return self._execute_resolved_tool_call(tool_name, resolved_arguments)
+            finally:
+                _RESOLVED_TOOL_CALL.reset(context_token)
+        else:
+            resolved_arguments = self._substitute_state_variables(arguments)
+        return self._execute_resolved_tool_call(tool_name, resolved_arguments)
+
+    def _execute_resolved_tool_call(self, tool_name: str, arguments: dict[str, Any] | str) -> Any:
+        """Validate and execute one resolved argument snapshot without resolving it again."""
+
         # Check if the tool exists
         available_tools = {**self.tools, **self.managed_agents}
         if tool_name not in available_tools:
@@ -1682,9 +1735,8 @@ class ToolCallingAgent(MultiStepAgent):
                 structured_error=structured_error,
             )
 
-        # Get the tool and substitute state variables in arguments
+        # Arguments already refer to the resolved values for this call.
         tool = available_tools[tool_name]
-        arguments = self._substitute_state_variables(arguments)
         is_managed_agent = tool_name in self.managed_agents
 
         try:

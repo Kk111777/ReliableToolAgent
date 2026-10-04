@@ -18,6 +18,8 @@ A Hugging Face `smolagents` runtime fork, with a separate study using the native
 - Completed a frozen **35-task × 3-trial × 2-Simulator** study, preserving all **210 first attempts**, request costs and eight reviewed cases.
 - Published offline result checks and task-level bootstrap. Valid pairs were **93/105**, below the 90% engineering gate; the planned train replication was not started.
 
+The latest engineering revision fixes state-alias false blocks, adds bounded response recovery, and covers partial WRITE omissions while retaining the frozen results. [Design and validation](docs/engineering_v2.md).
+
 <a id="key-findings"></a>
 
 ## Key Results
@@ -76,7 +78,7 @@ flowchart LR
     L --> V[Offline evaluator]
 ```
 
-The Guard checks **tool name + normalized identical arguments + a recorded non-retryable failure**. It leaves the next decision to the Agent. A blocked attempt is logged but does not execute the tool.
+The Guard checks **tool name + identical normalized arguments after state resolution + a recorded non-retryable failure**. It leaves the next decision to the Agent. A blocked attempt is logged but does not execute the tool.
 
 This diagram describes the toy runtime. The τ³ study uses the official Agent and orchestrator; the measurement workflow is reused, while the Guard stays in the toy experiments.
 
