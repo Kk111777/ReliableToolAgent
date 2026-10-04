@@ -2,30 +2,47 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
-**Runtime safeguards and failure analysis for tool-using LLM agents.**
+**A reliability-focused extension of Hugging Face `smolagents` for studying tool-execution failures and Agent evaluation.**
 
-I extended the `smolagents` tool-execution runtime and built trajectory diagnostics for the τ³ retail benchmark, then used controlled experiments to investigate repeated failures and incomplete tasks.
+ReliableToolAgent adds tool-call tracing, structured errors, and a state-aware failure Guard to the Agent runtime. A separate τ³ retail pipeline examines tool failures, repeated calls, partial task completion, and Simulator or evaluator interruptions.
+
+The project started with repeated tool failures in controlled tasks. Moving to native retail evaluation shifted the focus: the inspected runs offered little evidence for adding another failure controller, while changing the User Simulator substantially changed measured outcomes. The work now combines runtime safeguards with trajectory analysis and controlled evaluation.
 
 [![Reliability checks](https://github.com/Kk111777/ReliableToolAgent/actions/workflows/reliability-study.yml/badge.svg)](https://github.com/Kk111777/ReliableToolAgent/actions/workflows/reliability-study.yml)
 [![Python tests](https://github.com/Kk111777/ReliableToolAgent/actions/workflows/tests.yml/badge.svg)](https://github.com/Kk111777/ReliableToolAgent/actions/workflows/tests.yml)
 
-## My contributions
+## What is different from smolagents?
 
-- **Agent runtime:** per-call traces, structured errors, and a state-aware duplicate-failure Guard. The Guard checks the resolved execution target and records attempted, executed, and blocked calls separately. [Runtime](src/smolagents/agents.py) · [Tests](local_demo/test_duplicate_guard.py)
-- **Trajectory analysis:** READ/WRITE classification, repeat and termination diagnostics, and reference-action matching that counts each occurrence and tracks partial completion. [Analyzer](benchmark/tau3/scripts/measurement_v2.py)
-- **Controlled experiments:** structured-error × retry-framing ablations, Guard mechanism tests, and a fixed-Agent Simulator comparison. These distinguish a runtime mechanism from benchmark outcomes. [Experiment records](reports/final_technical_report.md)
+The comparison uses the [pinned upstream baseline](https://github.com/huggingface/smolagents/tree/30bb1161095dbae2271e6bc3cc4c219cc3897a57) from which this fork was built.
 
-Project changes are concentrated in `src/smolagents/{agents,memory,utils}.py`, `local_demo/`, `benchmark/tau3/`, and project-specific `scripts/`. Framework examples and `docs/source/` are inherited upstream material.
+| Upstream baseline | This project adds |
+|---|---|
+| Tool calls and observations stored in step history | Per-call outcomes with separate attempted / executed / blocked counts |
+| Tool-call and execution exceptions | Structured error types, retryability, and failure history |
+| State references substituted during tool execution | One resolved argument snapshot shared by Guard matching, execution, and failure records |
+| No `duplicate_guard` option | An optional Guard for exact repeats of known non-retryable failures |
+
+Framework examples and `docs/source/` retain their upstream attribution. The runtime extensions and retail evaluation tools are described below.
+
+## Core components
+
+**Reliable tool runtime.** Each call records its original arguments, resolved target, result, and error. The Guard can block a previously failed target while allowing the same state alias to point somewhere new. [Runtime](src/smolagents/agents.py) · [Regression tests](local_demo/test_duplicate_guard.py)
+
+**Trajectory failure analysis.** The offline pipeline classifies READ/WRITE operations, counts repeat and failure events, and matches successful calls to individual reference-action occurrences. Partial completion and unavailable references remain visible in the analysis. [Analyzer](benchmark/tau3/scripts/measurement_v2.py)
+
+**Controlled Agent evaluation.** The harness supports structured-error × retry-framing ablations, toy Guard tests, and fixed-Agent User Simulator comparisons in native τ³. Response adapters and execution controls support these experiments. [Experiments](docs/experiments.md)
 
 <a id="key-findings"></a>
 
-## Selected results
+## Results
 
-| Contribution | Evidence | Finding |
-|---|---|---|
-| Duplicate-failure Guard | Repeated executed failures **6 → 0** in a three-task toy smoke | Blocks known non-retryable failures; state-alias regressions separately verify that changed targets remain callable. |
-| Partial-completion analysis | **13 additional cases** among 197 valid retail trajectories | Reference-action matching detects unfinished tasks after earlier WRITE actions succeeded. |
-| Simulator comparison | Fixed Agent: **48/94** versus **93/103** valid successes under U0/U2 | Changing the User Simulator substantially changes measured outcomes. |
+| Finding | Result |
+|---|---|
+| Exact duplicate-failure Guard | Repeated executed failures **6 → 0** in a three-task controlled toy smoke |
+| Partial-completion analysis | **13 additional partially completed trajectories** detected among 197 valid retail runs |
+| Fixed-Agent Simulator study | Mean reward difference U2−U0 **+0.36**, 95% task-bootstrap interval **[0.24, 0.48]** |
+
+The Simulator estimate uses 25 tasks with all three valid trial pairs. Missing outcomes differed by condition and pair coverage limited further expansion. It measures evaluation sensitivity under a fixed Agent. [Study and limits](reports/frozen_study/retail-holdout-v1/README.md)
 
 <a id="system--experiment-architecture"></a>
 <a id="architecture"></a>
@@ -34,31 +51,37 @@ Project changes are concentrated in `src/smolagents/{agents,memory,utils}.py`, `
 
 ```mermaid
 flowchart LR
-    subgraph Runtime[smolagents runtime]
-        A[Tool call] --> B[Resolve state arguments once]
-        B --> C[Guard check]
-        C --> D[Execute or block]
-        D --> E[Per-call trace and failure history]
+    subgraph Runtime[Extended smolagents runtime]
+        T[Task] --> A[Agent]
+        A --> C[Tool call]
+        C --> R[Resolve arguments once]
+        R --> G{Failure Guard}
+        G -->|Allow| E[Tool execution]
+        G -->|Block| O[Trace and structured observation]
+        E --> O
+        O --> A
     end
-    subgraph Study[Separate native τ³ workflow]
-        F[Saved trajectories] --> G[Reference-action matching]
-        G --> H[Failure and completion diagnostics]
+    subgraph Retail[Separate native τ³ evaluation]
+        N[Official Agent and User Simulator] --> S[Saved retail trajectories]
+        S --> D[Offline failure and completion analysis]
     end
 ```
 
-## Engineering case: one alias, two execution targets
+## One engineering example
 
-The call `{"order_id":"lookup"}` first resolves to a missing order and fails. Later, `state["lookup"]` points to a valid order. A failure key built from the raw arguments would incorrectly block the second call.
+Two calls can have identical raw arguments and different execution targets:
 
-The implementation resolves arguments once and shares that target across the Guard, execution, and failure history. A changed target can execute; an unchanged known failure can be blocked. [Design and interface limits](docs/engineering_v2.md#guard-match-the-execution-target)
+```text
+{"order_id": "lookup"}
+First:  state["lookup"] → missing order → non-retryable failure
+Later:  state["lookup"] → valid order   → allowed to execute
+```
 
-## Benchmark finding: the Simulator matters
-
-The retail study held the Agent fixed across **35 test tasks × 3 trials × U0/U2**. On 25 tasks with all three valid pairs, mean reward difference U2−U0 was **+0.36**, with a 95% task-bootstrap interval **[0.24, 0.48]**. Missing outcomes differed by condition. Pair coverage was 93/105 (88.57%), below the preset 90% gate, so the train expansion was not started. This is Simulator sensitivity, not an Agent improvement. [Full study](reports/frozen_study/retail-holdout-v1/README.md)
+Matching only the raw arguments would block the second call. Resolving once keeps the Guard, actual execution, and failure history aligned. [Interface design](docs/engineering_v2.md#guard-match-the-execution-target)
 
 ## Quick start
 
-Requires `uv`, Python 3.12, and `make`. This creates a project-specific environment and runs offline checks without model credentials.
+Requires `uv`, Python 3.12, and `make`. Setup creates the repository's own `.venv`; the checks run offline without model credentials.
 
 ```bash
 git clone https://github.com/Kk111777/ReliableToolAgent.git
@@ -67,16 +90,27 @@ bash setup-local.sh
 make verify-project
 ```
 
-## Deep dive
+See the [reproduction guide](docs/reproduction.md) for native benchmark runs and evidence checks.
 
-- [Engineering design](docs/engineering_v2.md): runtime interfaces, response adapters, and completion analysis.
-- [Experiments and findings](reports/frozen_study/retail-holdout-v1/README.md): fixed-Agent comparison and result boundaries.
-- [Technical appendix](docs/technical_appendix.md): reproduction, source evidence, historical experiments, review, and operations.
+## Project structure
+
+Project-specific work is concentrated in these files and directories:
+
+```text
+src/smolagents/{agents,memory,utils}.py  Runtime extensions
+local_demo/                            Controlled tasks and regression tests
+benchmark/tau3/                        Native experiments and trajectory analysis
+scripts/                               Public evidence and documentation checks
+```
+
+## Further reading
+
+- [Engineering design](docs/engineering_v2.md): runtime contracts, Guard behavior, and reference matching.
+- [Experiments and findings](docs/experiments.md): toy ablations, native retail evaluation, and Simulator sensitivity.
+- [Reproduction and evidence](docs/reproduction.md): setup and commands; [technical appendix](docs/technical_appendix.md) for full records, review, and operations.
 
 ## Scope
 
-- The Guard has toy mechanism evidence; it was not deployed in native τ³.
-- Reference matching is a diagnostic and does not replace official task scoring.
-- Response recovery is covered by fault contracts and retained-response replay; its four new integration attempts did not trigger recovery.
+The Guard is validated in controlled toy tasks; native τ³ uses its official Agent. Reference matching diagnoses task completion alongside official scoring. The fixed retail schedule and engineering revision are complete, with train expansion left unstarted at the preset coverage gate.
 
-Based on Hugging Face `smolagents` commit `30bb1161095dbae2271e6bc3cc4c219cc3897a57`; upstream attribution and the [Apache 2.0 license](LICENSE) are retained.
+Based on Hugging Face `smolagents` under the [Apache 2.0 license](LICENSE).

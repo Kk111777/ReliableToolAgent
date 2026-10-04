@@ -2,30 +2,47 @@
 
 [English](README.md) | **简体中文**
 
-**工具调用 LLM Agent 的运行时防护与失败分析。**
+**基于 Hugging Face `smolagents` 的可靠性扩展，用于研究工具执行失败与 Agent 评估。**
 
-我扩展了 `smolagents` 工具执行运行时，构建 τ³ retail 轨迹分析器，用受控实验研究重复失败与任务未完成。
+ReliableToolAgent 为 Agent 运行时增加逐调用记录、结构化错误和感知 state 的失败 Guard。另一条独立的 τ³ retail 分析链检查工具失败、重复调用、任务部分完成，以及 Simulator 或评估器导致的中断。
+
+项目从受控任务中的重复工具失败出发。迁移到原生 retail 后，已检查的运行没有提供足够依据来新增失败控制器；改变 User Simulator 却明显改变了测得的结果。因此，项目逐渐转向运行时防护、轨迹分析和受控评估。
 
 [![可靠性检查](https://github.com/Kk111777/ReliableToolAgent/actions/workflows/reliability-study.yml/badge.svg)](https://github.com/Kk111777/ReliableToolAgent/actions/workflows/reliability-study.yml)
 [![Python 测试](https://github.com/Kk111777/ReliableToolAgent/actions/workflows/tests.yml/badge.svg)](https://github.com/Kk111777/ReliableToolAgent/actions/workflows/tests.yml)
 
-## 我的贡献
+## 与 smolagents 有什么不同？
 
-- **Agent 运行时**：逐调用记录、结构化错误与 state 感知 Guard；按实际执行目标判断重复，区分尝试、执行和拦截。[运行时源码](src/smolagents/agents.py) · [回归测试](local_demo/test_duplicate_guard.py)
-- **轨迹分析**：READ/WRITE、重复与终止诊断；按出现次数匹配参考动作，保留部分完成。[分析器源码](benchmark/tau3/scripts/measurement_v2.py)
-- **受控实验**：结构化错误 × 重试引导消融、Guard 机制检查和固定 Agent 的 Simulator 对照。[实验记录](reports/final_technical_report.md)
+以下对照基于本 fork 使用的[固定上游版本](https://github.com/huggingface/smolagents/tree/30bb1161095dbae2271e6bc3cc4c219cc3897a57)。
 
-主要改动位于 `src/smolagents/{agents,memory,utils}.py`、`local_demo/`、`benchmark/tau3/` 及项目专用 `scripts/`；框架示例与 `docs/source/` 继承自上游。
+| 上游基线 | 本项目的扩展 |
+|---|---|
+| 在 step 历史中保存工具调用与 observation | 逐调用结果，区分尝试 / 执行 / 拦截 |
+| 工具调用与执行异常 | 结构化错误类型、可重试信息与失败历史 |
+| 执行工具时替换 state 引用 | Guard 检查、执行和失败记录共用一次解析后的参数快照 |
+| 没有 `duplicate_guard` 选项 | 可选的 Guard，拦截已知不可重试失败的精确重复调用 |
+
+框架示例与 `docs/source/` 保留上游归属；运行时扩展与 retail 评估工具见下文。
+
+## 核心模块
+
+**可靠工具运行时。** 每次调用记录原始参数、解析后的目标、结果和错误。Guard 可以拦截已失败的目标，同时允许同一个 state 引用指向新目标。[运行时源码](src/smolagents/agents.py) · [回归测试](local_demo/test_duplicate_guard.py)
+
+**轨迹失败分析。** 离线分析链区分 READ/WRITE，统计重复与失败事件，并把成功调用匹配到逐个参考动作。部分完成与参考信息缺失都会保留在分析中。[分析器](benchmark/tau3/scripts/measurement_v2.py)
+
+**受控 Agent 评估。** 实验框架覆盖结构化错误 × 重试引导消融、toy Guard 检查和原生 τ³ 中固定 Agent 的 User Simulator 对照。响应适配器与执行护栏为这些实验提供支持。[实验说明](docs/experiments.zh-CN.md)
 
 <a id="key-findings"></a>
 
-## 主要结果
+## 结果
 
-| 贡献 | 证据 | 发现 |
-|---|---|---|
-| 重复失败 Guard | 三个任务的 toy smoke 中，重复的实际执行失败 **6 → 0** | 拦截不可重试失败；别名回归另验证目标改变后可调用。 |
-| 部分完成分析 | 197 条有效 retail 轨迹中发现 **13 个旧指标漏掉的案例** | 识别“前面的 WRITE 已成功，但任务未完成”。 |
-| Simulator 对照 | 固定 Agent，U0/U2 有效成功分别为 **48/94**、**93/103** | 只改变 User Simulator，也会明显改变测得的任务结果。 |
+| 发现 | 结果 |
+|---|---|
+| 精确重复失败 Guard | 三个任务的受控 toy smoke 中，重复的实际执行失败 **6 → 0** |
+| 部分完成分析 | 在 197 条有效 retail 运行中，识别出 **13 条旧指标遗漏的部分完成轨迹** |
+| 固定 Agent 的 Simulator 研究 | U2−U0 平均 reward 差 **+0.36**，95% 任务级 bootstrap 区间 **[0.24, 0.48]** |
+
+Simulator 估计使用三对 trial 均有效的 25 个任务。两组缺失情况不同，配对覆盖限制了后续扩展；该比较用于衡量固定 Agent 下的评估敏感性。[研究与边界](reports/frozen_study/retail-holdout-v1/README.zh-CN.md)
 
 <a id="system--experiment-architecture"></a>
 <a id="architecture"></a>
@@ -34,31 +51,37 @@
 
 ```mermaid
 flowchart LR
-    subgraph Runtime[smolagents 运行时]
-        A[工具调用] --> B[解析一次 state 参数]
-        B --> C[Guard 检查]
-        C --> D[执行或拦截]
-        D --> E[逐调用轨迹与失败历史]
+    subgraph Runtime[扩展的 smolagents 运行时]
+        T[任务] --> A[Agent]
+        A --> C[工具调用]
+        C --> R[解析一次参数]
+        R --> G{失败 Guard}
+        G -->|允许| E[工具执行]
+        G -->|拦截| O[轨迹与结构化 observation]
+        E --> O
+        O --> A
     end
-    subgraph Study[独立的原生 τ³ 工作流]
-        F[保存的轨迹] --> G[参考动作匹配]
-        G --> H[失败与完成情况诊断]
+    subgraph Retail[独立的原生 τ³ 评估]
+        N[官方 Agent 与 User Simulator] --> S[保存的 retail 轨迹]
+        S --> D[离线失败与完成情况分析]
     end
 ```
 
-## 工程案例：同一个引用，两个执行目标
+## 一个工程案例
 
-`{"order_id":"lookup"}` 第一次解析到不存在的订单并失败。之后，`state["lookup"]` 指向有效订单。如果按原始参数生成失败键，第二次合法调用也会被拦截。
+两次调用的原始参数相同，执行目标却可能不同：
 
-实现中只解析一次参数，Guard、实际执行和失败历史共用同一目标。目标改变后允许执行；目标未变且已有不可重试失败时可以拦截。[设计与接口边界](docs/engineering_v2.zh-CN.md#guard按执行目标判断重复)
+```text
+{"order_id": "lookup"}
+第一次：state["lookup"] → 不存在的订单 → 不可重试失败
+之后：  state["lookup"] → 有效订单     → 允许执行
+```
 
-## 基准发现：Simulator 会影响结果
-
-Retail 研究固定 Agent，执行 **35 个 test 任务 × 3 trial × U0/U2**。在三对 trial 均有效的 25 个任务上，U2−U0 的平均 reward 差为 **+0.36**，95% 任务级 bootstrap 区间为 **[0.24, 0.48]**。两组缺失情况不同；配对覆盖为 93/105（88.57%），低于预设 90% 门槛，因此没有启动 train 扩展。这个结果说明 Simulator 敏感性，不代表 Agent 提升。[完整研究](reports/frozen_study/retail-holdout-v1/README.zh-CN.md)
+只匹配原始参数会误拦截第二次调用。参数只解析一次，让 Guard、实际执行与失败历史保持一致。[接口设计](docs/engineering_v2.zh-CN.md#guard按执行目标判断重复)
 
 ## 快速开始
 
-需要 `uv`、Python 3.12 和 `make`。以下命令创建项目自己的环境，运行离线检查，不需要模型凭据。
+需要 `uv`、Python 3.12 和 `make`。安装脚本创建仓库自己的 `.venv`，检查离线运行，不需要模型凭据。
 
 ```bash
 git clone https://github.com/Kk111777/ReliableToolAgent.git
@@ -67,16 +90,27 @@ bash setup-local.sh
 make verify-project
 ```
 
+原生 benchmark 运行与证据检查见[复现说明](docs/reproduction.zh-CN.md)。
+
+## 项目结构
+
+项目扩展主要位于以下文件与目录：
+
+```text
+src/smolagents/{agents,memory,utils}.py  运行时扩展
+local_demo/                            受控任务与回归测试
+benchmark/tau3/                        原生实验与轨迹分析
+scripts/                               公开证据与文档检查
+```
+
 ## 深入阅读
 
-- [工程设计](docs/engineering_v2.zh-CN.md)：运行时接口、响应适配与完成情况分析。
-- [实验与发现](reports/frozen_study/retail-holdout-v1/README.zh-CN.md)：固定 Agent 对照与结果边界。
-- [技术附录](docs/technical_appendix.zh-CN.md)：复现、来源证据、历史实验、复核与运行记录。
+- [工程设计](docs/engineering_v2.zh-CN.md)：运行时接口、Guard 行为与参考匹配。
+- [实验与发现](docs/experiments.zh-CN.md)：toy 消融、原生 retail 评估与 Simulator 敏感性。
+- [复现与证据](docs/reproduction.zh-CN.md)：环境与命令；完整记录、复核和运行细节见[技术附录](docs/technical_appendix.zh-CN.md)。
 
 ## 范围
 
-- Guard 有 toy 机制证据，没有部署到原生 τ³。
-- 参考匹配用于诊断，不能替代官方任务评分。
-- 响应恢复通过故障合同与真实保留响应回放检查；四条新接通运行未触发恢复分支。
+Guard 的验证来自受控 toy 任务，原生 τ³ 使用官方 Agent。参考匹配配合官方评分诊断完成情况。固定 retail 队列与工程修补已完成，train 扩展按预设覆盖门槛保持未启动。
 
-基于 Hugging Face `smolagents` commit `30bb1161095dbae2271e6bc3cc4c219cc3897a57`，保留上游归属与 [Apache 2.0 许可证](LICENSE)。
+基于 Hugging Face `smolagents`，保留 [Apache 2.0 许可证](LICENSE)。
