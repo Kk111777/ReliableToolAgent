@@ -98,3 +98,8 @@ E2 原始任务成功为 23/24，已有 evaluator-v2 重评分为 24/24，使用
 ```
 
 输出使用新目录。生成的 `summary.json`、`report.md`、`report.zh-CN.md` 应与公开文件逐字节一致。检查不需要原始数据或付费调用，复核的是精简汇总和案例计数，不能独立核验原始官方评分。
+
+
+## 工程修补 v2
+
+参见[接口与故障恢复](engineering_v2.zh-CN.md)及[公开离线检查](../reports/engineering-v2/README.zh-CN.md)。新版本不改写旧冻结批次。

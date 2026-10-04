@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "boundary": "Four exposed-development integration attempts; no error-rate estimate or algorithm gain.",
+  "execution_state": "finished",
+  "manifest_file_sha256": "14d6202322265d4cca3db4fee977deca7260d496ff320e882a8822020972fe9f",
+  "protocol": {
+    "engineering_version": "engineering-v2",
+    "study_id": "engineering-v2-integration-20261004",
+    "task_ids": [
+      "0",
+      "5"
+    ],
+    "trials": 1,
+    "conditions": [
+      "U0",
+      "U2"
+    ],
+    "schedule_sha256": "da4568de6cf991cc4e43c555d2a1e5fb196628c2ed4b5aa7e7fee8edaed2a1ce",
+    "base_seed": 300,
+    "agent_model": "openai/qwen3.5-flash-2026-02-23",
+    "user_models": {
+      "U0": "openai/qwen3.5-flash-2026-02-23",
+      "U2": "openai/qwen3.8-max-2026-09-02"
+    },
+    "evaluator_model": "openai/qwen3.5-flash-2026-02-23",
+    "model_args": {
+      "temperature": 0,
+      "max_tokens": 512,
+      "timeout": 60,
+      "num_retries": 3,
+      "max_completion_tokens": 8192
+    },
+    "deadline_seconds": 600,
+    "user_empty_retries": 1,
+    "evaluator_parse_retries": 2,
+    "benchmark_commit": "b7ea9074c1cba482b30687fecdb5c8425fd6f619",
+    "source_sha256": {
+      "tau2-bench-baseline/data/tau2/domains/retail/split_tasks.json": "ed0580ec52575b63fbf76568af42490da6ee7783ecb4aa81af46961291358f20",
+      "tau2-bench-baseline/data/tau2/domains/retail/tasks.json": "8e03ebce7901bd6218e7a7dc3105faa9324091a68058f7fe61c65262868812e8",
+      "reports/packaging_evidence_20261003.json": "ea6e81109a0f71b26c2f80ec183deed116abb30724affab62b5f2d8d7be2bb49",
+      "reports/tau3-clean-audit-summary.json": "350eb250906c66778b01f03584b6e6f6dc5b8b1f0f02759246c2503fd6d8a497",
+      "tau2-bench-baseline/data/simulations/tau3-retail-baseline-1/results.json": "954dce44a80d53c776c549a2dd44004491a4fb7732a2769e0eda596d5fbddb6c",
+      "tau2-bench-baseline/data/simulations/tau3-retail-baseline-5/results.json": "89fb97723fb489d0b65d4a5f59004e8f839cebe314c91564b6b695c5f9155a28",
+      "tau2-bench-baseline/data/simulations/tau3-retail-baseline-5-final/results.json": "19f64a5118996d0f2c5b0756be920582a77ee7394b2de8c0c3fde96fb1b3a512",
+      "tau2-bench-baseline/data/simulations/tau3-retail-baseline-5-qwen-eval/results.json": "e2a03c7d4adbac0e28838ee6162959b97ac1a9daa578fd3592ccde83ad58231e",
+      "tau2-bench-baseline/data/simulations/tau3-retail-baseline-task2/results.json": "fe0e5bafefe728f35c29baa56c03fe20cab57be31c3e0faeb715b68f0e31cbd7",
+      "tau2-bench-baseline/data/simulations/tau3-retail-baseline-task4-final/results.json": "cf050fd9c01e098cd053f0894d8382af131267b860843eb4774936b341bd4e79",
+      "tau2-bench-baseline/data/simulations/tau3-retail-clean-u2-20x1/results.json": "f55687f87d8d2efb0538a2706afbafd85504ea7f8dd58174e68fe11a1a3be134",
+      "tau2-bench-baseline/data/simulations/tau3-retail-m3.5-infra-stable-0-4/results.json": "d4e6b9404866dd97befc7706c00885b6eebdf5d78c961aeaee490e927ec614cf",
+      "tau2-bench-baseline/data/simulations/tau3-retail-m3.5-infrastructure-audit-20x1/results.json": "2f29527bd4ac6dc5dc41ffa54d5ffb19e7daab87981a01e9f934c6f9399eee04",
+      "tau2-bench-baseline/data/simulations/tau3-retail-m3.5-sanity-0-4/results.json": "91536dd91f45b55d39b69bb1350228ea64e08437e18ebeb4d7ee227bafe16c83",
+      "tau2-bench-baseline/data/simulations/tau3-retail-m3.5-sanity-unset-0-4/results.json": "c0fb72c4185b1111d6fc2365b9c616f247a0b8de19be33fb8162e59568600fc6",
+      "tau2-bench-baseline/data/simulations/tau3-retail-observability-20x1/results.json": "b00ddd78b524cee09e8ab3871d03c96a9df967ce11d22c56bd1caa5b0f1d1d26",
+      "tau2-bench-baseline/data/simulations/tau3-retail-user-simulator-ablation-u0-0-4/results.json": "24d32cc146bb021cd117e2b0745e5667baaaef38daa370420b8e8bb323994694",
+      "tau2-bench-baseline/data/simulations/tau3-retail-user-simulator-ablation-u1-0-4/results.json": "e2db66a10487331a82e0769f9234bfc0f6cfcc0d86ff944c8718ab34a96b3173",
+      "tau2-bench-baseline/data/simulations/tau3-retail-user-simulator-ablation-u2-0-4/results.json": "b5353bab773c45cc51f2ef0a37e616069afc8dead39f47ba07964feb0ca1ae75",
+      "benchmark/tau3/scripts/audit_frozen_study.py": "967c9132439543a0e64bc72b743f9ffe4d869944e35c983f223a1ace0f6ce148",
+      "benchmark/tau3/scripts/frozen_study.py": "fdde9ea3b2d37162d5864da0a2f4e504e2166e660faca873a26c0db1bf80f305",
+      "benchmark/tau3/scripts/run_frozen_study.py": "8ad0c3437ee33cb64d4e2c99e1034b2fe2605a80cca13127d63794595a9290c7",
+      "benchmark/tau3/scripts/analyze_frozen_study.py": "cb301fc3ecd46844b5af43d25a9968827c0f66e7f90b2d102063660ca34bc4b4",
+      "benchmark/tau3/scripts/study_worker.py": "ea8275bf6f374e7ad2a951686015e192a7baf4b375633c1a8f2e482545e7ae56",
+      "benchmark/tau3/scripts/evaluator_retry_wrapper.py": "32e9b7576cca5ef53e5a4f385de30fe50f8485a9309e774a182b973af6688601",
+      "benchmark/tau3/tests/test_frozen_study.py": "58212b38e06a66042822a8ba817313188a821decffd0f1e7c97de8fb226a68e3",
+      "benchmark/tau3/tests/fixtures/event_fragments.json": "6a83df0c07b8d854a44f124c06ac6de68772ef7ad918bd680e2342b4aa4801ee",
+      "benchmark/tau3/studies/retail-holdout-v1/measurement_panel.json": "0cc2a31aaaaf27603c8ee9c952397742284f5c650c9221474b0fa4b44ac906ab",
+      "benchmark/tau3/studies/retail-holdout-v1/measurement_audit.json": "3851d7c04a74b120e2608d63ea6352f27f7801f76e69fc5e0b83a5f439073b35",
+      "benchmark/tau3/studies/retail-holdout-v1/task_audit.json": "3670596147f534d22dbef24effb2a8b7aceace418a8a59d6247a07dd3cb1394f",
+      "benchmark/tau3/scripts/engineering_worker.py": "6aba5d5f95aee6824462966bb78b305601467dda7115e11bee93f793330f746d",
+      "benchmark/tau3/scripts/engineering_diagnostics.py": "6458fc29772ff66e120fe8e483642610e04dbb53994b45a89bbf58c1f8f6ad74",
+      "benchmark/tau3/scripts/run_engineering_pilot.py": "1d7aa5661df1c54563f7c348dc9afd42f65e9ff03c8641f386fa1c65f13a798e",
+      "benchmark/tau3/scripts/run_budgeted_study.py": "e38f99d541a0cbb05c543b801367f86769dba38ea57c7347d7fb21de2ea7cdfe"
+    }
+  },
+  "rows": [
+    {
+      "study_id": "engineering-v2-integration-20261004",
+      "slot_id": "formal-t0-U0-r0",
+      "task_id": "0",
+      "condition": "U0",
+      "trial": 0,
+      "attempt": 0,
+      "status": "valid",
+      "billing": {
+        "known_list_price_rmb": 0.038251600000000004,
+        "budget_debit_rmb": 0.038251600000000004,
+        "calls": 13,
+        "usage_unknown_calls": 0
+      },
+      "empty_user_responses": 0,
+      "user_response_retries": 0,
+      "evaluator_format_retries": 0,
+      "normalized_evaluator_responses": 0,
+      "source_sha256": {
+        "calls.jsonl": "f608dc5fa767991e66dd276a4b96209020c6e56567c14ca30c9024922b8def43",
+        "identity.json": "1470a5f7fd1507aebc04516db47c5cb0b86842653b067264b15e2624d654b5a8",
+        "job.json": "3b2686a2d3f6c19dc397445943b3ff4db4d80064698694eaaf15bdf1789032d4",
+        "outcome.json": "e7ffe7169ade9211d9e1e3c311a2f932e3f86d747ac0fd93391ac2193405d871",
+        "process.json": "508228a2618b67e94c01844829c7ab2ae9c2f420343b911b81298030b79f899b",
+        "requests.jsonl": "7cc47ee68e584760c149d3630ad149b169111184634ebd627a8f11584b8d23e4",
+        "response_adapters.jsonl": "e763b0d9fb13b6b0d8814d2184cb6370c8d8f639134391ead861ee0f0e6edeab",
+        "simulation.json": "7f27d55dee17252401a83215867093cef1daac1cf7c2b480d5d959c25d5a893b",
+        "worker.log": "277a42e910be40eeb171a5346955ba05d6c9bb6d47ee53ad40e5b87fc3dc61cf"
+      }
+    },
+    {
+      "study_id": "engineering-v2-integration-20261004",
+      "slot_id": "formal-t0-U2-r0",
+      "task_id": "0",
+      "condition": "U2",
+      "trial": 0,
+      "attempt": 0,
+      "status": "valid",
+      "billing": {
+        "known_list_price_rmb": 0.1516084,
+        "budget_debit_rmb": 0.1516084,
+        "calls": 14,
+        "usage_unknown_calls": 0
+      },
+      "empty_user_responses": 0,
+      "user_response_retries": 0,
+      "evaluator_format_retries": 0,
+      "normalized_evaluator_responses": 0,
+      "source_sha256": {
+        "calls.jsonl": "5433fe107bba61c9fd204e390188f913238c60bd5482e07952006e7a2d738326",
+        "identity.json": "354630b4b8e915eaa412bafa4c0ae9f4ed9f8fbde822b89d16fa91840d2a9a1e",
+        "job.json": "273287a7ae07314d621f8c2a364bbac6ccbc128408dedad943c3215f3509a703",
+        "outcome.json": "6e6d2ead86efabe7c118c3496842b1671664caee4b9c50ab58b12e1ea3db08e4",
+        "process.json": "f87b9c1cae168e2cd452f56f8be43dff2030c4a23f2f9d12691ffb90b2e416f9",
+        "requests.jsonl": "0bccc4878de2369c0d24abdc55ca136194c3160e48b12ae6aa6291b912bef9cb",
+        "response_adapters.jsonl": "0596441313c3ed7dfea2c66e9e3a9e2f8aae862bad473b271e24bbd8d9562245",
+        "simulation.json": "4ac535d4b85b73d6a4db460b9e54a1c2aab98fa33a32739a21b1faa269d564de",
+        "worker.log": "5194b20234909037ba318411ea151327824b5d7369ad0472a5d1caed99cb6dd1"
+      }
+    },
+    {
+      "study_id": "engineering-v2-integration-20261004",
+      "slot_id": "formal-t5-U2-r0",
+      "task_id": "5",
+      "condition": "U2",
+      "trial": 0,
+      "attempt": 0,
+      "status": "valid",
+      "billing": {
+        "known_list_price_rmb": 0.2580598,
+        "budget_debit_rmb": 0.2580598,
+        "calls": 21,
+        "usage_unknown_calls": 0
+      },
+      "empty_user_responses": 0,
+      "user_response_retries": 0,
+      "evaluator_format_retries": 0,
+      "normalized_evaluator_responses": 0,
+      "source_sha256": {
+        "calls.jsonl": "6a7f37f8b89c42ebedf35eb6631cb491dccf3f14df5fdb8e925ca7ca69750940",
+        "identity.json": "99b387b83e2450f9993fdaa3343d24e7b76828a3071cfe0b364511ee7ceca4d0",
+        "job.json": "70bff9e038b4b4d3f140b264f6e6e67f4c8027332c96f6a3a6c0182dfca73291",
+        "outcome.json": "db5d3788385a672d39cb9a3ef5b08c8ec1856bfc4f3c0bcd7171a2ecf91d44a6",
+        "process.json": "8c736a3f0636717f1d859f3354f4066fbc7c5e54d496f2d0ddaa4508bcbe6811",
+        "requests.jsonl": "1c238b9a5dbd6381a485cd469eceaa58d9411656f5bfccda944715e59b072d33",
+        "response_adapters.jsonl": "9ae4ea3df8b57c98e9975191884bc7d07528d5874b3e803e17c009dd34d5b88e",
+        "simulation.json": "8ab71dccb83ac5ebf36cb068c682bd5208e9f9e2001d75028edebcf4cee1a367",
+        "worker.log": "fb1b6dc635f84d92b89c3bbeeb445371af8c791ab4162acfa271b615cdfb502c"
+      }
+    },
+    {
+      "study_id": "engineering-v2-integration-20261004",
+      "slot_id": "formal-t5-U0-r0",
+      "task_id": "5",
+      "condition": "U0",
+      "trial": 0,
+      "attempt": 0,
+      "status": "valid",
+      "billing": {
+        "known_list_price_rmb": 0.051545600000000004,
+        "budget_debit_rmb": 0.0696696,
+        "calls": 19,
+        "usage_unknown_calls": 1
+      },
+      "empty_user_responses": 0,
+      "user_response_retries": 0,
+      "evaluator_format_retries": 0,
+      "normalized_evaluator_responses": 0,
+      "source_sha256": {
+        "calls.jsonl": "3895ecd3c2ab3e9cdb4e09c83578d0d2cca11cd6e0f6e1ca8e38e348e959b598",
+        "identity.json": "d309f27bdfe476ae2f9e1c862e20e1030dd5f808b0f9c4ff5e5386501e772123",
+        "job.json": "8856b9c77f332a01398e9ac3d9941c3f543589dddf71863d315f624e77025552",
+        "outcome.json": "8a093cfa6ff01c9a15caa8ffd9bad428a9c3eecf17b25d501c4bf5e524bc09e2",
+        "process.json": "33c463bfe497329a230eb126f99adfa0656c096cffae2fc3f6188ce2f7be9478",
+        "requests.jsonl": "597f86961b6d1bd79788810130d44e9bf30727786d41f60470cd7782dc1d0ff1",
+        "response_adapters.jsonl": "9d921bbe1e05cfa30ab997e599e6e353580fb7ea3ab808de48284eee5a296aff",
+        "simulation.json": "5e375b02e2d8e31550b93b0d07ff2cd7dea7cf388027c8bef954032c1087fcf7",
+        "worker.log": "2ddb30cca2977453b76d522e132c69cf0016c23f412c0c763d3dcc48efbf7146"
+      }
+    }
+  ],
+  "summary": {
+    "attempts": 4,
+    "status_counts": {
+      "valid": 4
+    },
+    "known_list_price_rmb": 0.4994654,
+    "conservative_list_debit_rmb": 0.5175894,
+    "http_requests": 67,
+    "unknown_usage_requests": 1,
+    "empty_user_responses": 0,
+    "user_response_retries": 0,
+    "evaluator_format_retries": 0,
+    "accepted_normalized_evaluator_responses": 0
+  },
+  "payload_sha256": "8a17845521e2746a7e4ae315e7a226530bf7631a34e57b95f4cc151b56a93f56"
+}

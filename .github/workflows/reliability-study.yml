@@ -12,6 +12,7 @@ on:
       - "docs/reproduction*"
       - "docs/budgeted_execution*"
       - "docs/study_results*"
+      - "docs/engineering_v2*"
       - ".github/workflows/reliability-study.yml"
   push:
     branches: [main]
@@ -45,8 +46,8 @@ jobs:
           python scripts/check_markdown_links.py benchmark/tau3/studies/retail-holdout-v1/README.md benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md benchmark/tau3/studies/retail-replication-v1/README.md benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md docs/budgeted_execution.md docs/budgeted_execution.zh-CN.md docs/study_results.md docs/study_results.zh-CN.md 开始这里.md
       - name: Check study code style
         run: |
-          ruff check benchmark/tau3/scripts/frozen_study.py benchmark/tau3/scripts/study_worker.py benchmark/tau3/scripts/run_frozen_study.py benchmark/tau3/scripts/analyze_frozen_study.py benchmark/tau3/scripts/audit_frozen_study.py benchmark/tau3/scripts/prepare_frozen_replay.py benchmark/tau3/scripts/extend_retail_design.py benchmark/tau3/scripts/analyze_replication.py benchmark/tau3/scripts/finish_retail_studies.py benchmark/tau3/scripts/study_evidence.py benchmark/tau3/scripts/run_budgeted_study.py benchmark/tau3/scripts/report_study_evidence.py benchmark/tau3/scripts/audit_study_cases.py benchmark/tau3/tests
-          ruff format --check benchmark/tau3/scripts/frozen_study.py benchmark/tau3/scripts/study_worker.py benchmark/tau3/scripts/run_frozen_study.py benchmark/tau3/scripts/analyze_frozen_study.py benchmark/tau3/scripts/audit_frozen_study.py benchmark/tau3/scripts/prepare_frozen_replay.py benchmark/tau3/scripts/extend_retail_design.py benchmark/tau3/scripts/analyze_replication.py benchmark/tau3/scripts/finish_retail_studies.py benchmark/tau3/scripts/study_evidence.py benchmark/tau3/scripts/run_budgeted_study.py benchmark/tau3/scripts/report_study_evidence.py benchmark/tau3/scripts/audit_study_cases.py benchmark/tau3/tests
+          ruff check benchmark/tau3/scripts/frozen_study.py benchmark/tau3/scripts/study_worker.py benchmark/tau3/scripts/run_frozen_study.py benchmark/tau3/scripts/analyze_frozen_study.py benchmark/tau3/scripts/audit_frozen_study.py benchmark/tau3/scripts/prepare_frozen_replay.py benchmark/tau3/scripts/extend_retail_design.py benchmark/tau3/scripts/analyze_replication.py benchmark/tau3/scripts/finish_retail_studies.py benchmark/tau3/scripts/study_evidence.py benchmark/tau3/scripts/run_budgeted_study.py benchmark/tau3/scripts/report_study_evidence.py benchmark/tau3/scripts/audit_study_cases.py benchmark/tau3/scripts/engineering_*.py benchmark/tau3/scripts/run_engineering_pilot.py benchmark/tau3/scripts/measurement_v2.py benchmark/tau3/tests
+          ruff format --check benchmark/tau3/scripts/frozen_study.py benchmark/tau3/scripts/study_worker.py benchmark/tau3/scripts/run_frozen_study.py benchmark/tau3/scripts/analyze_frozen_study.py benchmark/tau3/scripts/audit_frozen_study.py benchmark/tau3/scripts/prepare_frozen_replay.py benchmark/tau3/scripts/extend_retail_design.py benchmark/tau3/scripts/analyze_replication.py benchmark/tau3/scripts/finish_retail_studies.py benchmark/tau3/scripts/study_evidence.py benchmark/tau3/scripts/run_budgeted_study.py benchmark/tau3/scripts/report_study_evidence.py benchmark/tau3/scripts/audit_study_cases.py benchmark/tau3/scripts/engineering_*.py benchmark/tau3/scripts/run_engineering_pilot.py benchmark/tau3/scripts/measurement_v2.py benchmark/tau3/tests
       - name: Recompute released cohort and case counters
         run: |
           python benchmark/tau3/scripts/study_evidence.py audit --input reports/frozen_study/retail-holdout-v1/public_evidence.json
@@ -57,3 +58,8 @@ jobs:
             cmp "reports/frozen_study/retail-holdout-v1/$name" "$result_dir/report/$name"
           done
           python scripts/check_markdown_links.py reports/frozen_study/retail-holdout-v1/README.md reports/frozen_study/retail-holdout-v1/README.zh-CN.md reports/frozen_study/retail-holdout-v1/report.md reports/frozen_study/retail-holdout-v1/report.zh-CN.md reports/frozen_study/retail-holdout-v1/cases.md reports/frozen_study/retail-holdout-v1/cases.zh-CN.md
+      - name: Check engineering repairs and retrospective measurement
+        run: |
+          python benchmark/tau3/scripts/engineering_evidence.py --audit reports/engineering-v2/integration.json
+          python benchmark/tau3/scripts/measurement_v2.py audit --input reports/engineering-v2/measurement.json --evidence reports/frozen_study/retail-holdout-v1/public_evidence.json --cases reports/frozen_study/retail-holdout-v1/case_index.json
+          python scripts/check_markdown_links.py docs/engineering_v2.md docs/engineering_v2.zh-CN.md reports/engineering-v2/README.md reports/engineering-v2/README.zh-CN.md
