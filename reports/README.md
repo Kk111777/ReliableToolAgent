@@ -1,10 +1,14 @@
 # Reports and Evidence
 
+**English** | [简体中文](README.zh-CN.md)
+
 Use these files to follow an experiment from its design to its recorded result.
 
 | Question | Read |
 |---|---|
+| What does the completed engineering revision implement? | [Interfaces](../docs/engineering_v2.md) · [Validation record](engineering-v2/README.md) |
 | What did the new frozen 35-task study find? | [Final results](frozen_study/retail-holdout-v1/README.md) · [中文](frozen_study/retail-holdout-v1/README.zh-CN.md) |
+| What did the separate model review check? | [First-response comparison and limits](model-review-v1/README.md) · [中文](model-review-v1/README.zh-CN.md) |
 | How were the historical studies designed, and what were the results? | [Technical report](final_technical_report.md) |
 | What happened in the historical audit's remaining failed task? | [T05 case analysis](residual_case_T05.md) |
 | Which code and files support each number? | [Evidence index](artifact_index.md) |
@@ -15,6 +19,9 @@ Use these files to follow an experiment from its design to its recorded result.
 
 | File | Contents |
 |---|---|
+| [Engineering integration](engineering-v2/integration.json) | Four new attempts and request accounting; no recovery branch triggered |
+| [Measurement v2](engineering-v2/measurement.json) | All 210 first-attempt identities; reference-action diagnostics and partial-completion candidates |
+| [Model review](model-review-v1/summary.json) | Twenty selected excerpts, first/protocol labels, 117/120 agreements and all three count disagreements |
 | [Frozen primary evidence](frozen_study/retail-holdout-v1/public_evidence.json) | 210 first attempts, source hashes, task bootstrap, missing pairs, request usage and costs; below engineering acceptance |
 | [Eight case records](frozen_study/retail-holdout-v1/case_index.json) | Sanitized positions and tool counters; [English](frozen_study/retail-holdout-v1/cases.md) · [中文](frozen_study/retail-holdout-v1/cases.zh-CN.md) |
 | [Release status](frozen_study/retail-holdout-v1/release_status.json) | Primary closure, failed engineering gate and train plan with zero started slots |

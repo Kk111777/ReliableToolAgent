@@ -28,7 +28,7 @@ These adapters define a new protocol. Additional requests change cost and genera
 
 [`measurement_v2.py`](../benchmark/tau3/scripts/measurement_v2.py) is a separate diagnostic entry point. Each successful tool response matches at most one reference WRITE occurrence; unknown results are not successes. A terminal message with any unmatched reference WRITE becomes a candidate, including trajectories that completed earlier actions but missed the last one.
 
-Without an actual STOP/TRANSFER User message, `agent_after_terminal_user_v2` is unavailable. Missing reference actions or trajectories remain unknown.
+Without an actual STOP/TRANSFER User message, `agent_after_terminal_user_v2` is unavailable. Missing reference actions or trajectories remain unknown. In particular, a successful *reference-match count* is `null` when references are missing, even if no WRITE was observed. An available, explicitly empty reference list instead yields `0`.
 
 On the old 197 valid traces, v2 flags 61 candidates versus 48 in v1. All 13 additional candidates have partial completion. C03 matches 2/3 and C07 3/4. This is a retrospective coverage correction, not new success, causal attribution or performance improvement. Equivalent business outcomes may use different arguments; exact reference matching does not replace official scoring.
 
@@ -38,6 +38,6 @@ Offline contracts cover aliases, duplicate identity, one-time resolution, empty-
 
 A separate four-slot integration check uses already exposed development tasks 0 and 5, once under U0/U2. It keeps the original model settings, a 600-second deadline, per-HTTP budget checks and historical cost accounting. No attempt retries, reward-based selection or automatic expansion. See the [engineering evidence](../reports/engineering-v2/README.md). This checks integration, not an error-rate reduction or a new holdout result.
 
-Historical labels, cases and new measurement checks come from the same author and code review; no independent human validation is claimed. Public compact data can check row identities, source hashes and aggregate consistency. Raw semantic remeasurement requires local trajectories.
+Historical labels, cases and new measurement checks come from the same author and code review; no independent human validation is claimed. A [separate-session model review](../reports/model-review-v1/README.md) subsequently checked 20 selected excerpts, retained three first-response count disagreements, and exposed the availability-rule ambiguity clarified above. Automatic project context was disclosed; the review is not strict independent blind validation. Public compact data can check row identities, source hashes and aggregate consistency. Raw semantic remeasurement requires local trajectories.
 
 Shared mutable state objects retain their execution identity. Their contents are checked again before execution, rejecting in-place changes made by a hook. Mutation by other threads during a call is not isolated; callers need external synchronization.

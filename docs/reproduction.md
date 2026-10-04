@@ -22,6 +22,14 @@ bash setup-local.sh
 
 The setup script creates `.venv` with Python 3.12.14, installs `requirements-local.lock`, and checks dependencies. Use `.venv/bin/python` below so the commands run with that environment.
 
+With `make` installed, one entry point runs all project tests and public evidence checks:
+
+```bash
+make verify-project
+```
+
+This includes frozen-cohort and case audits, engineering integration, measurement v2, model-review counts and document links. It makes no model requests and does not need the ignored raw-data directories. The inherited framework regression suite is separate and runs in [GitHub CI](../.github/workflows/tests.yml).
+
 ## Check the public files
 
 ```bash
@@ -72,7 +80,7 @@ The [holdout guide](../benchmark/tau3/studies/retail-holdout-v1/README.md) expla
 .venv/bin/python benchmark/tau3/scripts/audit_frozen_study.py
 ```
 
-The 30 development inspection traces and 12 synthetic protocol fragments check event measurement. They are not additional benchmark outcomes or independent human annotations. Formal-run compact metrics, when published, support offline aggregate recomputation; full official reward verification still needs the local raw trajectories.
+The 30 development inspection traces and 12 synthetic protocol fragments check event measurement. They are not additional benchmark outcomes or independent human annotations. The released formal-run compact metrics support offline aggregate recomputation; full official reward verification still needs the local raw trajectories.
 
 The [separate stratified train plan](../benchmark/tau3/studies/retail-replication-v1/README.md) remains unstarted because the primary pair-completeness gate failed. Planned tasks are not observed results.
 
@@ -103,3 +111,12 @@ Use a new output directory. The three generated files (`summary.json`, `report.m
 ## Engineering repairs v2
 
 See [interfaces and response recovery](engineering_v2.md) and [public offline checks](../reports/engineering-v2/README.md). The revision does not rewrite the frozen cohort.
+
+## Recount the model review
+
+```bash
+.venv/bin/python scripts/audit_model_review.py \
+  --input reports/model-review-v1/summary.json
+```
+
+The [review report](../reports/model-review-v1/README.md) distinguishes first judgments from retained protocol labels. The command validates the compact payload and recounts 117/120 agreements, including all three disagreements. It does not re-label excerpts, certify reviewer independence or estimate measurement accuracy. The original reviewer material and full first reply remain locally retained, identified by source fingerprints.

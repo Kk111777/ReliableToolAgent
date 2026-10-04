@@ -1,0 +1,490 @@
+{
+  "schema_version": 1,
+  "review_material_version": 3,
+  "measurement_version": "retail-reference-events-v2",
+  "reviewer": {
+    "type": "separate_codex_conversation",
+    "exact_model_version": "unknown",
+    "reports_hidden_key_seen": false,
+    "reports_analyzer_outputs_seen": false,
+    "automatic_project_context_disclosed": true,
+    "strict_independent_blind_review": false,
+    "human_annotation": false
+  },
+  "selection": {
+    "method": "purposeful",
+    "development_clips": 12,
+    "primary_clips": 8
+  },
+  "source_sha256": {
+    "first_reply": "a3196d941c08b1ccb0c1c37f1993d1ce281e675c13d96e7337d35321bbcc1f6e",
+    "reviewer_archive": "30129302e2aaaf216e2d8eac6c958387e59d81535a29b461ba942a06e82a55a6",
+    "prelabels": "e553838bb5ea5061da118581566b53f0482ce5e13c0c860296b0ed6b8d85a582",
+    "measurement_source": "c58e3783154151c06ec3b3f5789cc35764bc2af9e35d32e5748a5e10dee3698b",
+    "review_instructions": "c5e4f5169d3f6e86cb1928d7de57710d38b5f6d916289ec2d1c197c1a97c86ce"
+  },
+  "rows": [
+    {
+      "clip_id": "B01",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "B02",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 1,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 1,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "B03",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 3,
+        "successful_exact_reference_matches": 3,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 3,
+        "successful_exact_reference_matches": 3,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "B04",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 2,
+        "successful_exact_reference_matches": 2,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 2,
+        "successful_exact_reference_matches": 2,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "B05",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 2,
+        "successful_exact_reference_matches": 2,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 2,
+        "successful_exact_reference_matches": 2,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "B06",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 1,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 1,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "B07",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "B08",
+      "reference_available": false,
+      "first_labels": {
+        "reference_write_occurrences": null,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": null,
+        "final_user_terminal_marker": "NONE",
+        "assistant_observed_after_terminal_user": null,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": null,
+        "successful_exact_reference_matches": null,
+        "unmatched_reference_occurrences_at_final_user": null,
+        "final_user_terminal_marker": "NONE",
+        "assistant_observed_after_terminal_user": null,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": true
+    },
+    {
+      "clip_id": "B09",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 0,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "TRANSFER",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 0,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "TRANSFER",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "B10",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "TRANSFER",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "TRANSFER",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "B11",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "B12",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "TRANSFER",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 1,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "TRANSFER",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "S01",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 4,
+        "successful_exact_reference_matches": 3,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 4,
+        "successful_exact_reference_matches": 3,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "S02",
+      "reference_available": false,
+      "first_labels": {
+        "reference_write_occurrences": null,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": null,
+        "final_user_terminal_marker": "NONE",
+        "assistant_observed_after_terminal_user": null,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": null,
+        "successful_exact_reference_matches": null,
+        "unmatched_reference_occurrences_at_final_user": null,
+        "final_user_terminal_marker": "NONE",
+        "assistant_observed_after_terminal_user": null,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": true
+    },
+    {
+      "clip_id": "S03",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 4,
+        "successful_exact_reference_matches": 4,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 4,
+        "successful_exact_reference_matches": 4,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "S04",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 2,
+        "successful_exact_reference_matches": 2,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 2,
+        "successful_exact_reference_matches": 2,
+        "unmatched_reference_occurrences_at_final_user": 0,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "S05",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 2,
+        "successful_exact_reference_matches": 1,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 2,
+        "successful_exact_reference_matches": 1,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "S06",
+      "reference_available": false,
+      "first_labels": {
+        "reference_write_occurrences": null,
+        "successful_exact_reference_matches": 0,
+        "unmatched_reference_occurrences_at_final_user": null,
+        "final_user_terminal_marker": "NONE",
+        "assistant_observed_after_terminal_user": null,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": null,
+        "successful_exact_reference_matches": null,
+        "unmatched_reference_occurrences_at_final_user": null,
+        "final_user_terminal_marker": "NONE",
+        "assistant_observed_after_terminal_user": null,
+        "terminal_with_unmatched_reference_occurrences": false
+      },
+      "uncertain": true
+    },
+    {
+      "clip_id": "S07",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 3,
+        "successful_exact_reference_matches": 2,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 3,
+        "successful_exact_reference_matches": 2,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "uncertain": false
+    },
+    {
+      "clip_id": "S08",
+      "reference_available": true,
+      "first_labels": {
+        "reference_write_occurrences": 2,
+        "successful_exact_reference_matches": 1,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "protocol_labels": {
+        "reference_write_occurrences": 2,
+        "successful_exact_reference_matches": 1,
+        "unmatched_reference_occurrences_at_final_user": 1,
+        "final_user_terminal_marker": "STOP",
+        "assistant_observed_after_terminal_user": false,
+        "terminal_with_unmatched_reference_occurrences": true
+      },
+      "uncertain": false
+    }
+  ],
+  "summary": {
+    "clips": 20,
+    "labels_compared": 120,
+    "labels_agreeing": 117,
+    "labels_disagreeing": 3,
+    "known_reference_labels_compared": 102,
+    "known_reference_labels_agreeing": 102,
+    "uncertain_clips": [
+      "B08",
+      "S02",
+      "S06"
+    ],
+    "agreements_by_field": {
+      "reference_write_occurrences": 20,
+      "successful_exact_reference_matches": 17,
+      "unmatched_reference_occurrences_at_final_user": 20,
+      "final_user_terminal_marker": 20,
+      "assistant_observed_after_terminal_user": 20,
+      "terminal_with_unmatched_reference_occurrences": 20
+    },
+    "differences": [
+      {
+        "clip_id": "B08",
+        "field": "successful_exact_reference_matches",
+        "first_label": 0,
+        "protocol_label": null
+      },
+      {
+        "clip_id": "S02",
+        "field": "successful_exact_reference_matches",
+        "first_label": 0,
+        "protocol_label": null
+      },
+      {
+        "clip_id": "S06",
+        "field": "successful_exact_reference_matches",
+        "first_label": 0,
+        "protocol_label": null
+      }
+    ]
+  },
+  "payload_sha256": "6bf359b4ad50986873f8f20c81d16d5fc9ab4fbe4af69a16a825805c4a88b67d"
+}
