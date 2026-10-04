@@ -11,9 +11,9 @@
 
 ## 我的贡献
 
-- **Agent 运行时：**逐调用记录、结构化错误与 state 感知 Guard；按实际执行目标判断重复，区分尝试、执行和拦截。[运行时源码](src/smolagents/agents.py) · [回归测试](local_demo/test_duplicate_guard.py)
-- **轨迹分析：**READ/WRITE、重复与终止诊断；按出现次数匹配参考动作，保留部分完成。[分析器源码](benchmark/tau3/scripts/measurement_v2.py)
-- **受控实验：**结构化错误 × 重试引导消融、Guard 机制检查和固定 Agent 的 Simulator 对照。[实验记录](reports/final_technical_report.md)
+- **Agent 运行时**：逐调用记录、结构化错误与 state 感知 Guard；按实际执行目标判断重复，区分尝试、执行和拦截。[运行时源码](src/smolagents/agents.py) · [回归测试](local_demo/test_duplicate_guard.py)
+- **轨迹分析**：READ/WRITE、重复与终止诊断；按出现次数匹配参考动作，保留部分完成。[分析器源码](benchmark/tau3/scripts/measurement_v2.py)
+- **受控实验**：结构化错误 × 重试引导消融、Guard 机制检查和固定 Agent 的 Simulator 对照。[实验记录](reports/final_technical_report.md)
 
 主要改动位于 `src/smolagents/{agents,memory,utils}.py`、`local_demo/`、`benchmark/tau3/` 及项目专用 `scripts/`；框架示例与 `docs/source/` 继承自上游。
 
