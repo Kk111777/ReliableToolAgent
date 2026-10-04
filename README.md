@@ -114,9 +114,15 @@ bash setup-local.sh
 .venv/bin/python scripts/audit_packaging_evidence.py
 .venv/bin/python benchmark/tau3/scripts/study_evidence.py audit \
   --input reports/frozen_study/retail-holdout-v1/public_evidence.json
+.venv/bin/python benchmark/tau3/scripts/engineering_evidence.py \
+  --audit reports/engineering-v2/integration.json
+.venv/bin/python benchmark/tau3/scripts/measurement_v2.py audit \
+  --input reports/engineering-v2/measurement.json \
+  --evidence reports/frozen_study/retail-holdout-v1/public_evidence.json \
+  --cases reports/frozen_study/retail-holdout-v1/case_index.json
 ```
 
-This runs deterministic tests and checks published evidence, including the frozen cohort aggregates and intervals. The [reproduction guide](docs/reproduction.md) also covers case checks and bilingual report regeneration. Model reruns need a separate benchmark checkout and credentials.
+These commands run deterministic tests and audit the frozen cohort, the four engineering integration attempts and measurement v2. Public audits check counters, recorded source hashes and aggregates; reviewing raw semantics still requires the retained trajectories. The [reproduction guide](docs/reproduction.md) also covers case checks and bilingual report regeneration. Model reruns need a separate benchmark checkout and credentials.
 
 ## Repository Structure
 

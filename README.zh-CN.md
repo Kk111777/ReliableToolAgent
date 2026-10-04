@@ -114,9 +114,15 @@ bash setup-local.sh
 .venv/bin/python scripts/audit_packaging_evidence.py
 .venv/bin/python benchmark/tau3/scripts/study_evidence.py audit \
   --input reports/frozen_study/retail-holdout-v1/public_evidence.json
+.venv/bin/python benchmark/tau3/scripts/engineering_evidence.py \
+  --audit reports/engineering-v2/integration.json
+.venv/bin/python benchmark/tau3/scripts/measurement_v2.py audit \
+  --input reports/engineering-v2/measurement.json \
+  --evidence reports/frozen_study/retail-holdout-v1/public_evidence.json \
+  --cases reports/frozen_study/retail-holdout-v1/case_index.json
 ```
 
-这些命令运行确定性测试并检查公开证据，包括冻结批次的汇总与区间。[复现说明](docs/reproduction.zh-CN.md)另列出案例复核及双语报告再生成步骤。重新调用模型需要独立基准环境和凭据。
+这些命令运行确定性测试，并核对冻结批次、四条工程接通记录和测量 v2 的公开证据。公开审计检查计数、来源哈希和汇总一致性；原始语义复核仍需要保留的轨迹。[复现说明](docs/reproduction.zh-CN.md)另列出案例复核及双语报告再生成步骤。重新调用模型需要独立基准环境和凭据。
 
 ## 仓库结构（Repository Structure）
 
