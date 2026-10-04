@@ -13,6 +13,9 @@ on:
       - "docs/budgeted_execution*"
       - "docs/study_results*"
       - "docs/engineering_v2*"
+      - "docs/technical_appendix*"
+      - "docs/GETTING_STARTED*"
+      - "docs/operations/**"
       - ".github/workflows/reliability-study.yml"
   push:
     branches: [main]
@@ -43,7 +46,7 @@ jobs:
           python scripts/audit_packaging_evidence.py
           python benchmark/tau3/scripts/audit_frozen_study.py
           python scripts/check_markdown_links.py
-          python scripts/check_markdown_links.py benchmark/tau3/studies/retail-holdout-v1/README.md benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md benchmark/tau3/studies/retail-replication-v1/README.md benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md docs/budgeted_execution.md docs/budgeted_execution.zh-CN.md docs/study_results.md docs/study_results.zh-CN.md 开始这里.md
+          python scripts/check_markdown_links.py benchmark/tau3/studies/retail-holdout-v1/README.md benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md benchmark/tau3/studies/retail-replication-v1/README.md benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md docs/budgeted_execution.md docs/budgeted_execution.zh-CN.md docs/study_results.md docs/study_results.zh-CN.md docs/GETTING_STARTED.zh-CN.md docs/technical_appendix.md docs/technical_appendix.zh-CN.md docs/operations/budget_accounting.md docs/operations/budget_accounting.zh-CN.md
       - name: Check study code style
         run: |
           ruff check scripts/audit_model_review.py local_demo/test_model_review_evidence.py
