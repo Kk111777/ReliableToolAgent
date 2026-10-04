@@ -84,12 +84,12 @@ Launchers run the studies; analyzers read saved trajectories. Historical pilots 
 ## Fast review order
 
 1. [README](../README.md)
-2. [`final_technical_report.md`](final_technical_report.md)
+2. [Engineering interfaces](../docs/engineering_v2.md)
 3. [Reproduction guide](../docs/reproduction.md)
-4. [`packaging_audit_20261003.md`](packaging_audit_20261003.md)
-5. [`residual_case_T05.md`](residual_case_T05.md)
+4. [Frozen primary results](frozen_study/retail-holdout-v1/README.md)
+5. [Separate-session model review](model-review-v1/README.md)
 6. [`local_demo/run.py`](../local_demo/run.py)
-7. [`analyze_retail_observability.py`](../benchmark/tau3/scripts/analyze_retail_observability.py)
+7. [Historical technical report](final_technical_report.md)
 
 
 ## Frozen primary release (2026-10-04)
@@ -106,3 +106,16 @@ The new test cohort is separate from the historical development results above: 3
 | [Release status](frozen_study/retail-holdout-v1/release_status.json) | Author closure attestation, artifact hashes and unstarted train disposition | Local locks, finished jobs and raw hash checks |
 
 No paid secondary retries were made. Complete raw logs, datasets, account balances and credentials remain outside Git. The manifest's old budget cap is historical metadata, not the actual bill or current spending authority.
+
+## Completed engineering and measurement review
+
+| Public artifact | What it supports |
+|---|---|
+| [Engineering design](../docs/engineering_v2.md) · [中文](../docs/engineering_v2.zh-CN.md) | State-alias Guard identity, bounded response adapters, partial-WRITE diagnostics and interface limits |
+| [Engineering validation](engineering-v2/README.md) · [中文](engineering-v2/README.zh-CN.md) | Six retained-response replays and four native integration attempts; recovery branches did not trigger in the new attempts |
+| [Measurement v2](engineering-v2/measurement.json) | Retrospective diagnostics joined to every frozen first attempt, with source hashes and preserved v1 fields |
+| [Model review](model-review-v1/README.md) · [中文](model-review-v1/README.zh-CN.md) | Twenty selected excerpts; 117/120 initial label agreements and three missing-reference count disagreements |
+| [Review scalar record](model-review-v1/summary.json) | First and protocol labels with fingerprints; no raw excerpts or business arguments |
+| [Review recount](../scripts/audit_model_review.py) | Public payload, schema and comparison counts; cannot authenticate withheld raw semantics or reviewer independence |
+
+The review clarification retains `null` for unavailable reference-match counts. It was written after the first response, without overwriting the first judgments, reviewer archive, prelabels, frozen scores or analysis protocol. Automatic project context was disclosed; this is model review, not strict independent blind or human validation.

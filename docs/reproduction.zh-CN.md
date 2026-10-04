@@ -22,6 +22,14 @@ bash setup-local.sh
 
 配置脚本使用 Python 3.12.14 创建 `.venv`，安装 `requirements-local.lock` 并检查依赖。下文使用 `.venv/bin/python`，确保命令在这一环境中运行。
 
+安装 `make` 后，一条命令可以运行全部项目测试及公开证据检查：
+
+```bash
+make verify-project
+```
+
+其中包含冻结批次与案例、工程接通、测量 v2、模型复核计数及文档链接。命令不发起模型请求，也不需要被忽略的原始数据目录。继承的框架回归测试另由 [GitHub CI](../.github/workflows/tests.yml) 运行。
+
 ## 检查公开文件
 
 ```bash
@@ -72,7 +80,7 @@ E2 原始任务成功为 23/24，已有 evaluator-v2 重评分为 24/24，使用
 .venv/bin/python benchmark/tau3/scripts/audit_frozen_study.py
 ```
 
-30 条开发集检查轨迹与十二个合成协议片段用于核对事件测量，不是新增基准结果，也不是独立人工标注。正式运行的精简指标发布后支持离线重算汇总；完整官方评分核验仍需要本地原始轨迹。
+30 条开发集检查轨迹与十二个合成协议片段用于核对事件测量，不是新增基准结果，也不是独立人工标注。已发布的正式运行精简指标支持离线重算汇总；完整官方评分核验仍需要本地原始轨迹。
 
 [独立的 train 分层计划](../benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md)因主批次配对门槛未通过而没有启动。计划任务不能当作已测结果。
 
@@ -81,7 +89,7 @@ E2 原始任务成功为 23/24，已有 evaluator-v2 重评分为 24/24，使用
 [单批次报告说明](study_results.zh-CN.md) 从一份已审计的精简包生成对应的中英文报告，显示首次、补跑和未启动槽位，也说明预算或工程条件停止时的结果边界。
 
 
-当前付费执行使用[按预算恢复说明](budgeted_execution.zh-CN.md)，分别保留原价、已确认折扣、报告余额和缺失用量预留；旧 manifest 上限只代表历史计划。默认命令不调用模型。
+历史付费执行记录遵循[按预算恢复说明](budgeted_execution.zh-CN.md)，分别保留原价、已确认折扣、报告余额和缺失用量预留；旧 manifest 上限只代表历史计划。默认命令不调用模型。
 
 
 ## 复算已发布批次
@@ -103,3 +111,12 @@ E2 原始任务成功为 23/24，已有 evaluator-v2 重评分为 24/24，使用
 ## 工程修补 v2
 
 参见[接口与故障恢复](engineering_v2.zh-CN.md)及[公开离线检查](../reports/engineering-v2/README.zh-CN.md)。新版本不改写旧冻结批次。
+
+## 复算模型复核记录
+
+```bash
+.venv/bin/python scripts/audit_model_review.py \
+  --input reports/model-review-v1/summary.json
+```
+
+[复核报告](../reports/model-review-v1/README.zh-CN.md)区分首次判断与既有协议标签。命令检查精简 payload，复算 117/120 一致及全部三处分歧，不重新标注片段、不认证复核者独立性，也不估计测量准确率。原复核材料和完整首次回复保留在本地，由来源指纹记录。
