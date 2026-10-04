@@ -74,11 +74,27 @@ The [holdout guide](../benchmark/tau3/studies/retail-holdout-v1/README.md) expla
 
 The 30 development inspection traces and 12 synthetic protocol fragments check event measurement. They are not additional benchmark outcomes or independent human annotations. Formal-run compact metrics, when published, support offline aggregate recomputation; full official reward verification still needs the local raw trajectories.
 
-The [separate stratified replication](../benchmark/tau3/studies/retail-replication-v1/README.md) extends coverage while keeping test and train cohorts separate.
+The [separate stratified train plan](../benchmark/tau3/studies/retail-replication-v1/README.md) remains unstarted because the primary pair-completeness gate failed. Planned tasks are not observed results.
 
-The [compact evidence commands](../benchmark/tau3/studies/retail-holdout-v1/README.md#compact-evidence-checks) separate local raw verification/export from public offline aggregate checks. The audit verifies identities, source versions, billing coverage and recomputed summaries; it does not call a model or independently rescore private trajectories. Final bundles will be published after execution and review.
+The [compact evidence commands](../benchmark/tau3/studies/retail-holdout-v1/README.md#compact-evidence-checks) separate local raw verification/export from public offline aggregate checks. The audit verifies identities, source versions, billing coverage and recomputed summaries; it does not call a model or independently rescore private trajectories. The [completed primary bundle](../reports/frozen_study/retail-holdout-v1/README.md) is now available: 210 first attempts retained, below engineering acceptance. The planned train cohort was not started and has no model scores.
 
 The [cohort report guide](study_results.md) generates matching English and Chinese reports from one audited bundle. It keeps first attempts, additional attempts and unstarted slots visible, including the boundary for a study stopped by budget or engineering conditions.
 
 
 Recorded paid execution uses the [budgeted resume guide](budgeted_execution.md). It separates original list prices, confirmed discounts, reported balances and missing-usage reservations; old manifest caps are historical. The default command makes no model calls.
+
+
+## Recompute the released cohort
+
+```bash
+.venv/bin/python benchmark/tau3/scripts/study_evidence.py audit \
+  --input reports/frozen_study/retail-holdout-v1/public_evidence.json
+.venv/bin/python benchmark/tau3/scripts/audit_study_cases.py \
+  --evidence reports/frozen_study/retail-holdout-v1/public_evidence.json \
+  --cases reports/frozen_study/retail-holdout-v1/case_index.json
+.venv/bin/python benchmark/tau3/scripts/report_study_evidence.py \
+  --input reports/frozen_study/retail-holdout-v1/public_evidence.json \
+  --output artifacts/recomputed-retail-holdout
+```
+
+Use a new output directory. The three generated files (`summary.json`, `report.md`, `report.zh-CN.md`) should match the published files byte for byte. This checks compact aggregation and case counters without raw data or paid calls; it does not independently validate the original official rewards.

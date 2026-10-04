@@ -74,11 +74,27 @@ E2 原始任务成功为 23/24，已有 evaluator-v2 重评分为 24/24，使用
 
 30 条开发集检查轨迹与十二个合成协议片段用于核对事件测量，不是新增基准结果，也不是独立人工标注。正式运行的精简指标发布后支持离线重算汇总；完整官方评分核验仍需要本地原始轨迹。
 
-[独立的分层补充复核](../benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md) 扩大任务覆盖，test 与 train 两个批次分别报告。
+[独立的 train 分层计划](../benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md)因主批次配对门槛未通过而没有启动。计划任务不能当作已测结果。
 
-[精简证据命令](../benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md#精简证据复算)将本地原始记录核验／导出与公开离线汇总复算分开。复算检查身份、源码版本、费用覆盖和重算汇总，不调用模型，也不独立重评私有轨迹。最终证据包待运行及审阅完成后发布。
+[精简证据命令](../benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md#精简证据复算)将本地原始记录核验／导出与公开离线汇总复算分开。复算检查身份、源码版本、费用覆盖和重算汇总，不调用模型，也不独立重评私有轨迹。现在可检查[主批次最终证据包](../reports/frozen_study/retail-holdout-v1/README.zh-CN.md)：210 个首次尝试保留，未达到工程验收。计划中的 train 批次没有启动，也没有模型成绩。
 
 [单批次报告说明](study_results.zh-CN.md) 从一份已审计的精简包生成对应的中英文报告，显示首次、补跑和未启动槽位，也说明预算或工程条件停止时的结果边界。
 
 
 当前付费执行使用[按预算恢复说明](budgeted_execution.zh-CN.md)，分别保留原价、已确认折扣、报告余额和缺失用量预留；旧 manifest 上限只代表历史计划。默认命令不调用模型。
+
+
+## 复算已发布批次
+
+```bash
+.venv/bin/python benchmark/tau3/scripts/study_evidence.py audit \
+  --input reports/frozen_study/retail-holdout-v1/public_evidence.json
+.venv/bin/python benchmark/tau3/scripts/audit_study_cases.py \
+  --evidence reports/frozen_study/retail-holdout-v1/public_evidence.json \
+  --cases reports/frozen_study/retail-holdout-v1/case_index.json
+.venv/bin/python benchmark/tau3/scripts/report_study_evidence.py \
+  --input reports/frozen_study/retail-holdout-v1/public_evidence.json \
+  --output artifacts/recomputed-retail-holdout
+```
+
+输出使用新目录。生成的 `summary.json`、`report.md`、`report.zh-CN.md` 应与公开文件逐字节一致。检查不需要原始数据或付费调用，复核的是精简汇总和案例计数，不能独立核验原始官方评分。

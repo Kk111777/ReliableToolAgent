@@ -15,7 +15,8 @@
 - 改造 Agent 运行时，加入逐工具调用轨迹、结构化错误和精确重复失败 Guard。
 - 构建确定性故障测试，完成错误反馈 × 重试提示的受控消融。
 - 实现 τ³ 离线分析器，检查工具执行、预期 WRITE 完成、重复调用、Simulator 终止和 reward 结果。
-- 审计 20 个 retail 任务：**19 个有效任务中 18 个成功**，**跨轮精确重复为 0**。案例分析没有发现继续扩展重试控制器的依据。
+- 完成冻结的 **35 题 × 3 trial × 2 种 Simulator** 研究，保留全部 **210 个首次尝试**、请求费用及八个核验案例。
+- 提供公开离线复算与任务级 bootstrap。有效配对为 **93/105**，未达到 90% 工程门槛，计划中的 train 复核没有启动。
 
 <a id="key-findings"></a>
 
@@ -29,8 +30,11 @@ WRITE 指改变业务状态的工具操作，例如换货或退货。
 | [Toy Guard smoke](reports/final_technical_report.md#5-runtime-duplicate-guard)——每组 3 个任务 | 重复的**实际执行失败**为 **6 → 0** | 运行时阻止了已有失败历史的相同调用再次执行。 |
 | [固定 Agent 的 Simulator 研究](reports/final_technical_report.md#9-user-simulator-confound)——每组 15 个 trial | 预期 WRITE 成功为 **5/15 → 14/15** | Simulator 选择改变了测得的 Agent 结果。 |
 | [τ³ retail 审计](reports/final_technical_report.md#10-clean-benchmark-results)——20 次尝试 | 有效任务成功 **18/19**；跨轮精确重复 **0** | 在这个子集中，重试循环不是主要失败模式。 |
+| [冻结 retail 主实验](reports/frozen_study/retail-holdout-v1/README.zh-CN.md)——210 个首次尝试 | U0 有效成功 **48/94**，U2 **93/103**；有效配对 **93/105** | 仍观察到 Simulator 敏感性，配对覆盖未达到工程门槛。 |
 
 审计共 19 次有效运行，另有 T04 因评估器解析失败而无效。完整指标、模型配置及 toy 原始／v2 评分差异见[技术报告](reports/final_technical_report.md)。
+
+冻结主实验保留 197 个有效评分、13 个无效尝试，没有新增正式补跑。完整三对 trial 的 25 个任务中，U2−U0 的任务级 reward 差为 **0.36 [0.24, 0.48]**。两组缺失情况不同，这个完整任务子集上的诊断不能证明 Agent 提升。[结果与边界](reports/frozen_study/retail-holdout-v1/README.zh-CN.md) · [English](reports/frozen_study/retail-holdout-v1/README.md)。
 
 ## 实现内容（What I Built）
 
@@ -51,7 +55,7 @@ WRITE 指改变业务状态的工具操作，例如换货或退货。
 
 ### 失败分析
 
-固定 Agent，仅替换 User Simulator，调查预期 WRITE 为什么没有完成。将基础设施无效运行与行为失败分开，再沿消息、工具调用和最终业务状态分析唯一有效的 reward-zero 案例。
+固定 Agent，仅替换 User Simulator，调查预期 WRITE 为什么没有完成。将无效运行与已评分失败分开，沿消息、工具调用和最终业务状态分析案例。[八个新案例](reports/frozen_study/retail-holdout-v1/cases.zh-CN.md)涵盖动作顺序错误、原生恢复、终止和指标覆盖限制。
 
 <a id="system--experiment-architecture"></a>
 
@@ -80,17 +84,19 @@ Guard 检查**工具名 + 规范化后完全相同的参数 + 已记录的不可
 
 Reward 为零可能来自 Agent 决策、工具执行、Simulator 行为，也可能来自评估器或基础设施错误。轨迹记录帮助区分这些情况，再判断是否需要恢复机制。
 
-固定 Agent 后，替换 Simulator 使提前终止从 **8/15 降至 0/15**，预期 WRITE 完成从 **5/15 升至 14/15**。后续审计没有跨轮精确重复。这些发现促使项目停止为这一子集继续扩展重试控制器。
+历史五任务开发研究中，替换 Simulator 使提前终止从 **8/15 降至 0/15**，预期 WRITE 完成从 **5/15 升至 14/15**。随后 20 题审计没有跨轮精确重复。新的 35 题研究观察到少量重复，其中包括成功的 READ；这不能证明重复失败循环或原生 Guard 收益。本轮仍停止扩展控制器。
 
 ![固定 Agent 的 Simulator 研究：WRITE 完成与提前终止](assets/simulator_ablation.png)
 
 ## 代表案例（Representative Case）
 
-**T05** 是唯一有效的 reward-zero 运行。台灯换货成功后，用户改为要求水瓶退货，Simulator 在预期 return WRITE 前结束并转接会话。轨迹没有工具失败或精确重复，完成行为与 Simulator 终止仍交织在一起。[查看案例分析](reports/residual_case_T05.md)。
+**T05** 是历史 20 题开发审计中唯一有效的 reward-zero 运行。台灯换货成功后，用户改为要求水瓶退货，Simulator 在预期 return WRITE 前结束并转接会话。轨迹没有工具失败或精确重复，完成行为与 Simulator 终止仍交织在一起。[查看案例分析](reports/residual_case_T05.md)。
 
 ## Retail 配对复核
 
-[35 个 test 任务的冻结主实验](benchmark/tau3/studies/retail-holdout-v1/README.zh-CN.md)与独立的[20 任务分层补充复核](benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md)，合计增加 55 个不同 retail 任务、330 条计划配对轨迹。运行器保存每次尝试与中断轨迹，记录请求用量和估算费用，并支持离线任务级 bootstrap。2026-10-04 因预算调整暂停时，210 个正式首次槽位中已有 108 个记录，train 补充复核尚未启动。[按预算恢复的入口](docs/budgeted_execution.zh-CN.md)检查总请求费用并保留冻结协议。计划槽位与上方历史结果分开报告。
+[35 题 test 主实验](reports/frozen_study/retail-holdout-v1/README.zh-CN.md)于 2026-10-04 完成固定的 210 槽队列，有效配对覆盖 88.57%，低于预设的 90% 门槛。因此独立的 [20 题 train 计划](benchmark/tau3/studies/retail-replication-v1/README.zh-CN.md)没有启动：120 个计划槽位，无模型成绩。计划覆盖不等于已完成证据。
+
+运行器保留每个首次尝试和中断轨迹，记录请求用量、未知费用预留和进程锁。公开精简包支持重算汇总与区间，八个脱敏案例支持复核工具计数；完整轨迹留在本地。[预算运行说明](docs/budgeted_execution.zh-CN.md)介绍保持冻结协议不变的费用核算。
 
 [单批次报告说明](docs/study_results.zh-CN.md)介绍离线双语报告，以及未完成覆盖、基础设施失败和补跑的统计口径。
 
@@ -104,9 +110,11 @@ cd ReliableToolAgent
 bash setup-local.sh
 .venv/bin/python -m pytest -q local_demo
 .venv/bin/python scripts/audit_packaging_evidence.py
+.venv/bin/python benchmark/tau3/scripts/study_evidence.py audit \
+  --input reports/frozen_study/retail-holdout-v1/public_evidence.json
 ```
 
-这些命令运行确定性测试并检查公开证据，不执行模型基准。[复现说明](docs/reproduction.zh-CN.md)介绍本地原始数据核对；[τ³ 文档](benchmark/tau3/README.md)介绍基准环境和分析流程。
+这些命令运行确定性测试并检查公开证据，包括冻结批次的汇总与区间。[复现说明](docs/reproduction.zh-CN.md)另列出案例复核及双语报告再生成步骤。重新调用模型需要独立基准环境和凭据。
 
 ## 仓库结构（Repository Structure）
 
@@ -121,7 +129,7 @@ scripts/         证据检查、文档检查、图表生成
 ## 研究范围（Scope）
 
 - Guard 在受控 toy 实验中验证，没有测得其在 τ³ 上的性能收益。
-- 公开结果来自 20 个任务的 retail 开发审计，不是完整排行榜提交。
+- 公开原生结果包括历史 20 题开发审计，以及未达到工程验收的独立 35 题配对 test 研究；两者都不是完整排行榜提交。
 - Simulator 研究衡量固定 Agent 下的评估敏感性，不是模型通用排名。
 
 ## 进一步阅读（Further Reading）

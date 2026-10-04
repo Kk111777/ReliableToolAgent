@@ -4,6 +4,10 @@
 
 This study checks whether the earlier User Simulator diagnostic carries over to retail tasks that had not appeared in the retained local runs. The native Agent, its prompt, the retail tools, environment, and official scoring stay fixed. U0 uses Qwen3.5 Flash as the User Simulator; U2 uses Qwen3.8 Max. This is an evaluation-sensitivity study, not a claim that the Agent has improved.
 
+## Released status
+
+The [final cohort](../../../../reports/frozen_study/retail-holdout-v1/README.md) retained all 210 formal first attempts on 2026-10-04: 197 valid scores, 13 invalid attempts and zero additional formal attempts. Valid pair coverage was 93/105 (88.57%), below the frozen 90% engineering threshold. The fixed schedule is complete; train replication and paid secondary retries were not started. The effective manifest in the public bundle identifies the actual run; this page retains the original design.
+
 ## Frozen design
 
 | Item | Setting |
@@ -90,7 +94,7 @@ Full trajectories remain local. Published compact metrics support recomputing ag
 
 [`study_evidence.py`](../../scripts/study_evidence.py) exports an immutable compact bundle after checking retained outcome, trajectory and request hashes. Its offline `audit` command recomputes the frozen aggregates, task-level intervals, missing-slot list, latency and usage by role. Input and completion tokens are counted only where usage was returned; reasoning tokens are a part of completion tokens. Missing usage keeps its budget reservation and is reported separately. Checksums identify files and detect inconsistencies; they do not authenticate a reward without the private trajectory.
 
-At the budget pause on 2026-10-04, 108/210 formal first attempts were retained (101 valid, five infrastructure errors, two operator cancellations saved as timeouts). No final bundle is published yet. After a local study finishes:
+The [released compact bundle](../../../../reports/frozen_study/retail-holdout-v1/public_evidence.json) contains all 210 first attempts and four smoke attempts. A public clone can audit that file directly. To export a new bundle from retained local raw evidence:
 
 ```bash
 .venv/bin/python benchmark/tau3/scripts/study_evidence.py export \

@@ -4,6 +4,10 @@
 
 这项实验检查：旧开发集上观察到的 User Simulator 敏感性，是否也出现在本地尚未运行过的 retail 任务中。原生 Agent、prompt、工具、环境和官方评分规则保持固定。U0 的 User Simulator 使用 Qwen3.5 Flash，U2 使用 Qwen3.8 Max。实验衡量评估配置的影响，不将结果描述为 Agent 能力提升。
 
+## 已发布状态
+
+[最终主批次](../../../../reports/frozen_study/retail-holdout-v1/README.zh-CN.md)于 2026-10-04 保留全部 210 个正式首次尝试：197 个有效评分、13 个无效尝试、0 新增正式补跑。有效配对 93/105（88.57%），低于冻结的 90% 工程门槛。固定队列已完成，train 复核和付费次级补跑没有启动。公开精简包内的 effective manifest 标识实际运行；本页保留原设计说明。
+
 ## 冻结设计
 
 | 项目 | 配置 |
@@ -90,7 +94,7 @@
 
 [`study_evidence.py`](../../scripts/study_evidence.py) 核对本地 outcome、轨迹和请求记录的哈希后，导出不可覆盖的精简证据包。它的离线 `audit` 入口重算冻结汇总、任务级区间、缺失槽位、延迟及各角色用量。只累加已返回用量的输入和输出 token；推理 token 已包含在输出中。缺失用量单列，并保留费用预留。校验和用于识别文件和检查一致性；没有私有轨迹时，它不能认证官方 reward。
 
-2026-10-04 因预算调整暂停时已保留 108/210 个正式首次尝试（101 个 valid、五个基础设施错误、两次人为取消保存为 timeout），尚未发布最终证据包。完整本地实验结束后执行：
+[已发布精简包](../../../../reports/frozen_study/retail-holdout-v1/public_evidence.json)包含全部 210 个首次尝试与四个 smoke。公开 clone 可以直接复算该文件。保留本地原始记录时，可向新文件导出：
 
 ```bash
 .venv/bin/python benchmark/tau3/scripts/study_evidence.py export \

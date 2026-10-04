@@ -53,4 +53,4 @@
 
 两个冻结诊断字段需要按其实际范围解释。`terminal_before_reference_write_candidate` 要求**没有任何**参考 WRITE key 成功，因此可能漏掉部分完成后仍缺少的 WRITE。`agent_after_terminal_user` 实际记录最后一条用户消息之后是否有 assistant；只有 `terminal_marker` 是 STOP 或 TRANSFER 时，才对应结束消息之后的响应检查。没有用户消息时该值也可能为 True。这些限制如实报告，不改写冻结指标。
 
-本次实验曾在 210 个正式首次槽位中的 108 个完成后暂停：101 个 valid、五个基础设施错误，以及两次人为取消。冻结 worker 将这两次取消保存为 timeout，不能把它们算作模型失败。暂停时，120 槽位的 train 补充复核尚未启动。这是有日期的进度快照，不是完整 benchmark 结果；最终精简证据和两个批次报告在执行及审阅后发布。
+[主批次](../reports/frozen_study/retail-holdout-v1/README.zh-CN.md)现已收尾：保留全部 210 个正式首次尝试，其中 197 个有效、13 个无效，两次人为取消仍按原记录列为 timeout。有效配对 93/105，低于 90% 门槛，因此没有启动 train 复核或付费次级补跑。本页说明执行时的费用核算，不授权对已收尾实验继续付费调用。

@@ -1,0 +1,173 @@
+{
+  "study_id": "retail-holdout-v1c-20261003",
+  "invalid_first_attempts": [
+    {
+      "slot_id": "formal-t39-U0-r0",
+      "outcome_sha256": "8b7eb41e60474496368be6575b7854fc3be8926137eef9fa186ff0c83cbeb746",
+      "status": "infrastructure_error",
+      "error_class": "JSONDecodeError",
+      "stage": "evaluation",
+      "last_user_finish_reasons": [
+        "stop"
+      ],
+      "last_user_completion_tokens": 2082,
+      "last_user_reasoning_tokens": 1932,
+      "operational_cancellation": false
+    },
+    {
+      "slot_id": "formal-t40-U0-r1",
+      "outcome_sha256": "b05a026c61aaf9157249c6e5aba7c504b19def0e6d622de027555041aa105f8f",
+      "status": "infrastructure_error",
+      "error_class": "ValueError",
+      "stage": "simulation",
+      "last_user_finish_reasons": [
+        "length"
+      ],
+      "last_user_completion_tokens": 8194,
+      "last_user_reasoning_tokens": 8192,
+      "operational_cancellation": false
+    },
+    {
+      "slot_id": "formal-t45-U0-r2",
+      "outcome_sha256": "c613c6132a0d64cd8680a12446755842ed6b8b153160e3bfb76373e45ead493c",
+      "status": "infrastructure_error",
+      "error_class": "ValueError",
+      "stage": "simulation",
+      "last_user_finish_reasons": [
+        "length"
+      ],
+      "last_user_completion_tokens": 8194,
+      "last_user_reasoning_tokens": 8192,
+      "operational_cancellation": false
+    },
+    {
+      "slot_id": "formal-t56-U0-r1",
+      "outcome_sha256": "f3c308c67faec5afa0482af39b268497b47b56247a8ed453dc77a25eb36c7777",
+      "status": "infrastructure_error",
+      "error_class": "ValueError",
+      "stage": "simulation",
+      "last_user_finish_reasons": [
+        "length"
+      ],
+      "last_user_completion_tokens": 8194,
+      "last_user_reasoning_tokens": 8192,
+      "operational_cancellation": false
+    },
+    {
+      "slot_id": "formal-t56-U0-r2",
+      "outcome_sha256": "ffc88633e9d7d3f1670780fa4c2155a15311bd77a41f039ce807d2ccbf9911e2",
+      "status": "infrastructure_error",
+      "error_class": "ValueError",
+      "stage": "simulation",
+      "last_user_finish_reasons": [
+        "length"
+      ],
+      "last_user_completion_tokens": 8194,
+      "last_user_reasoning_tokens": 8192,
+      "operational_cancellation": false
+    },
+    {
+      "slot_id": "formal-t62-U2-r2",
+      "outcome_sha256": "93304363034e21ec4fc1210d096341c1695e7b3fa54e584ab002974021e83091",
+      "status": "timeout",
+      "error_class": "StudyDeadline",
+      "stage": "simulation",
+      "last_user_finish_reasons": null,
+      "last_user_completion_tokens": null,
+      "last_user_reasoning_tokens": null,
+      "operational_cancellation": true
+    },
+    {
+      "slot_id": "formal-t62-U0-r2",
+      "outcome_sha256": "6854d9bcf77e9b783dd96d85f3776d31dc284884a0979759b19063571481de0e",
+      "status": "timeout",
+      "error_class": "StudyDeadline",
+      "stage": "simulation",
+      "last_user_finish_reasons": [
+        "stop"
+      ],
+      "last_user_completion_tokens": 1512,
+      "last_user_reasoning_tokens": 1426,
+      "operational_cancellation": true
+    },
+    {
+      "slot_id": "formal-t64-U0-r0",
+      "outcome_sha256": "e0a9fe81fd80a0840f52135140db9c0eb538424ec7f0438075049618716787e7",
+      "status": "infrastructure_error",
+      "error_class": "ValueError",
+      "stage": "simulation",
+      "last_user_finish_reasons": [
+        "length"
+      ],
+      "last_user_completion_tokens": 8194,
+      "last_user_reasoning_tokens": 8192,
+      "operational_cancellation": false
+    },
+    {
+      "slot_id": "formal-t64-U0-r1",
+      "outcome_sha256": "65e2930f5b9ecab19b102f3db24e1f23cfe2497edafee7d72f2af5b072a41fcb",
+      "status": "infrastructure_error",
+      "error_class": "ValueError",
+      "stage": "simulation",
+      "last_user_finish_reasons": [
+        "length"
+      ],
+      "last_user_completion_tokens": 8194,
+      "last_user_reasoning_tokens": 8192,
+      "operational_cancellation": false
+    },
+    {
+      "slot_id": "formal-t68-U2-r1",
+      "outcome_sha256": "4c598bd2e9feb02aecafc88c62f3a792036e77fd749f8e63ccaa96ec20143fcc",
+      "status": "infrastructure_error",
+      "error_class": "JSONDecodeError",
+      "stage": "evaluation",
+      "last_user_finish_reasons": [
+        "stop"
+      ],
+      "last_user_completion_tokens": 79,
+      "last_user_reasoning_tokens": 73,
+      "operational_cancellation": false
+    },
+    {
+      "slot_id": "formal-t71-U0-r0",
+      "outcome_sha256": "8e38389077c5a144d044ae1c9b9d92a0373443fca11ca385c0cfa6ea0d887715",
+      "status": "infrastructure_error",
+      "error_class": "ValueError",
+      "stage": "simulation",
+      "last_user_finish_reasons": [
+        "length"
+      ],
+      "last_user_completion_tokens": 8194,
+      "last_user_reasoning_tokens": 8192,
+      "operational_cancellation": false
+    },
+    {
+      "slot_id": "formal-t101-U0-r0",
+      "outcome_sha256": "f8472476b2dcd0ec415db2462163d46b7b3d8ba2dc0b26a003d38ac611c3c5f3",
+      "status": "infrastructure_error",
+      "error_class": "ValueError",
+      "stage": "simulation",
+      "last_user_finish_reasons": [
+        "length"
+      ],
+      "last_user_completion_tokens": 8194,
+      "last_user_reasoning_tokens": 8192,
+      "operational_cancellation": false
+    },
+    {
+      "slot_id": "formal-t108-U0-r0",
+      "outcome_sha256": "f58481f26464eb30063044e368bc1c7f11f8b9dbe26b77202a49a01c666fe846",
+      "status": "infrastructure_error",
+      "error_class": "ValueError",
+      "stage": "simulation",
+      "last_user_finish_reasons": [
+        "length"
+      ],
+      "last_user_completion_tokens": 8194,
+      "last_user_reasoning_tokens": 8192,
+      "operational_cancellation": false
+    }
+  ],
+  "boundary": "Observed request metadata and original exception classes; associations do not establish a complete causal chain. Cancellation annotations do not change original statuses, costs or denominators."
+}
