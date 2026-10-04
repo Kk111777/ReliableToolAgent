@@ -2,6 +2,8 @@
 
 **English** | [简体中文](README.zh-CN.md) · [Project overview](../../../README.md)
 
+With the native Agent fixed, changing the User Simulator changed measured retail outcomes: U0 achieved **48/94** valid successes and U2 **93/103**. On 25 tasks with all three valid pairs, mean reward difference U2−U0 was **+0.36 [0.24, 0.48]**. This is evidence of Simulator sensitivity; asymmetric missing outcomes limit the comparison, and the result does not establish an Agent improvement.
+
 The fixed 35-task test schedule finished on 2026-10-04: **210/210 first attempts retained**, with 197 valid scores and 13 invalid attempts. **93/105 trial pairs were valid (88.57%)**, below the frozen 90% engineering gate. This is a completed execution schedule with a diagnostic result boundary. The separate 20-task train replication was not started; its 120 planned slots have no model scores. No additional formal attempts were made.
 
 ## What was compared
@@ -35,11 +37,7 @@ Two frozen fields need care. `terminal_before_reference_write_candidate` require
 
 The toy failed-call Guard was not deployed in native τ³. Its mechanism evidence, Simulator sensitivity and native Agent behavior are separate. This round stops controller expansion: the inspected failures do not establish an independently measured native Guard benefit.
 
-## Usage and cost coverage
-
-This cohort includes 210 formal first attempts and four reused smoke attempts, counted once: 214 attempts and 3747 observed HTTP requests. Known list-price usage totals **RMB 21.929163**; reserving 27 missing-usage requests raises the conservative debit to **RMB 23.0958958**. At the user-confirmed 50% discount these estimates are **RMB 10.9645815** and **RMB 11.5479479**, respectively. They cover this bundle only; earlier preflight and other account activity are excluded. These are estimates, not verified provider invoices.
-
-The generated report separates Agent/User/evaluator requests, known input/output tokens and unknown-usage reserves. Reasoning is already included in output tokens. The manifest's original budget field is historical plan metadata, superseded during execution; it is neither the actual bill nor an authorization to spend that amount.
+Request/token accounting was retained for reproducibility. Details are in the [operations appendix](../../../docs/operations/budget_accounting.md).
 
 ## Recompute from a public clone
 

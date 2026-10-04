@@ -71,7 +71,7 @@ T04 is infrastructure-invalid and excluded from Agent-behavior rates. T05 is the
 
 | Item | Entry | Scope |
 |---|---|---|
-| Project overview | [English](../README.md) · [中文](../README.zh-CN.md) | Implementation, result summary, one runtime diagram, one diagnostic chart |
+| Project overview | [English](../README.md) · [中文](../README.zh-CN.md) | Implementation, selected findings, and separate runtime/native workflows |
 | Setup and reproduction | [English](../docs/reproduction.md) · [中文](../docs/reproduction.zh-CN.md) | Public checks, retained-raw checks, separate benchmark execution |
 | Read-only evidence check | [`audit_packaging_evidence.py`](../scripts/audit_packaging_evidence.py) | Public snapshot consistency; optional retained-raw re-analysis and source hashes |
 | Presentation snapshot | [`packaging_evidence_20261003.json`](packaging_evidence_20261003.json) | Existing toy, Guard, Simulator, clean-audit values; no new experiment |
@@ -81,16 +81,12 @@ T04 is infrastructure-invalid and excluded from Agent-behavior rates. T05 is the
 
 Launchers run the studies; analyzers read saved trajectories. Historical pilots and raw inputs remain in their existing locations. `examples/` and most `docs/source/` are inherited upstream framework material.
 
-## Fast review order
+## Reading order
 
-1. [README](../README.md)
-2. [Engineering interfaces](../docs/engineering_v2.md)
-3. [Reproduction guide](../docs/reproduction.md)
-4. [Frozen primary results](frozen_study/retail-holdout-v1/README.md)
-5. [Separate-session model review](model-review-v1/README.md)
-6. [`local_demo/run.py`](../local_demo/run.py)
-7. [Historical technical report](final_technical_report.md)
-
+1. [Project overview](../README.md): implementation and selected findings.
+2. [Engineering design](../docs/engineering_v2.md): runtime interfaces and completion analysis.
+3. [Experiments and findings](frozen_study/retail-holdout-v1/README.md): fixed-Agent study.
+4. [Technical appendix](../docs/technical_appendix.md): reproduction, historical records, review and operations.
 
 ## Frozen primary release (2026-10-04)
 
