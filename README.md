@@ -83,6 +83,7 @@ flowchart LR
         S --> V[Evaluator and execution errors]
         V --> B
     end
+    Runtime ~~~ Retail
 ```
 
 <a id="key-findings"></a>

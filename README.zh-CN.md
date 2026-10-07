@@ -84,6 +84,7 @@ flowchart LR
         S --> V[评估器与执行错误]
         V --> B
     end
+    Runtime ~~~ Retail
 ```
 
 <a id="key-findings"></a>
