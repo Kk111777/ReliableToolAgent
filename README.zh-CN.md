@@ -59,9 +59,9 @@ ReliableToolAgent 为工具执行增加逐调用记录、结构化错误和感�
 ## 系统结构
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph Runtime[扩展的 smolagents 运行时]
-        direction LR
+        direction TB
         T[任务] --> A[Agent]
         A --> C[工具调用]
         C --> R[解析一次参数]
@@ -72,6 +72,7 @@ flowchart TB
         O --> A
     end
     subgraph Retail[独立的原生 τ³ 分析]
+        direction TB
         N[官方 Agent 与 User Simulator] --> S[保存的轨迹与执行状态]
         S --> D[轨迹分析器]
         D --> F[工具错误]

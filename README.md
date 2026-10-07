@@ -58,9 +58,9 @@ Deduplicating raw arguments would wrongly block the second call. The runtime res
 ## Architecture
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph Runtime[Extended smolagents runtime]
-        direction LR
+        direction TB
         T[Task] --> A[Agent]
         A --> C[Tool call]
         C --> R[Resolve arguments once]
@@ -71,6 +71,7 @@ flowchart TB
         O --> A
     end
     subgraph Retail[Separate native τ³ analysis]
+        direction TB
         N[Official Agent and User Simulator] --> S[Saved trajectories and execution status]
         S --> D[Trajectory analyzer]
         D --> F[Tool errors]
